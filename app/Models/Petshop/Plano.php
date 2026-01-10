@@ -2,6 +2,7 @@
 
 namespace App\Models\Petshop;
 
+use App\Models\Filial;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -46,7 +47,7 @@ class Plano extends Model
 
     public function local()
     {
-        return $this->belongsTo(\App\Models\Localizacao::class, 'local_id');
+        return $this->belongsTo(Filial::class, 'local_id');
     }
 
     public function esteticas()

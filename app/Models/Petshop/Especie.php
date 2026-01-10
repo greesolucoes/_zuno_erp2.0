@@ -5,10 +5,12 @@ namespace App\Models\Petshop;
 use App\Models\Petshop\Raca;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Especie extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'animais_especies';
 
@@ -16,7 +18,7 @@ class Especie extends Model
         'nome', 'empresa_id'
     ];
     
-    protected function getUppercaseFields(): array
+    protected function getUppercaseFields()
     {
         return [
             'nome',

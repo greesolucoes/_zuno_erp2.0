@@ -4,7 +4,6 @@ namespace App\Models\Petshop;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PrescricaoCanal extends Model
 {
@@ -21,7 +20,7 @@ class PrescricaoCanal extends Model
         'prescricao_id' => 'integer',
     ];
 
-    public function prescricao(): BelongsTo
+    public function prescricao()
     {
         return $this->belongsTo(Prescricao::class, 'prescricao_id');
     }

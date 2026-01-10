@@ -5,11 +5,13 @@ namespace App\Models\Petshop;
 use App\Models\Empresa;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Pelagem extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'animais_pelagens';
 
@@ -17,7 +19,7 @@ class Pelagem extends Model
         'nome', 'empresa_id',
     ];
 
-    protected function getUppercaseFields(): array
+    protected function getUppercaseFields()
     {
         return [
             'nome',

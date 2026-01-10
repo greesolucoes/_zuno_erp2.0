@@ -4,7 +4,6 @@ namespace App\Models\Petshop;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VacinacaoDose extends Model
 {
@@ -40,12 +39,12 @@ class VacinacaoDose extends Model
         'alertas' => 'array',
     ];
 
-    public function vacinacao(): BelongsTo
+    public function vacinacao()
     {
         return $this->belongsTo(Vacinacao::class, 'vacinacao_id');
     }
 
-    public function vacina(): BelongsTo
+    public function vacina()
     {
         return $this->belongsTo(Vacina::class, 'vacina_id');
     }

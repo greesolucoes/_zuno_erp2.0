@@ -30,7 +30,7 @@ class Quarto extends Model
         'status',
     ];
 
-    protected function getUppercaseFields(): array
+    protected function getUppercaseFields()
     {
         return [
             'nome',
@@ -51,7 +51,7 @@ class Quarto extends Model
         });
     }
 
-    public static function statusList(): array
+    public static function statusList()
     {
         return [
             self::STATUS_DISPONIVEL => 'Disponível',

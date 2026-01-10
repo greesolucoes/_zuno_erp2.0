@@ -11,8 +11,6 @@ use App\Models\Petshop\SalaInternacao;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Internacao extends Model
@@ -66,7 +64,7 @@ class Internacao extends Model
         'risk_color',
     ];
 
-    public static function statusMeta(): array
+    public static function statusMeta()
     {
         return [
             self::STATUS_DRAFT => [
@@ -88,7 +86,7 @@ class Internacao extends Model
         ];
     }
 
-    public static function riskMeta(): array
+    public static function riskMeta()
     {
         return [
             self::RISK_LOW => [
@@ -106,7 +104,7 @@ class Internacao extends Model
         ];
     }
 
-    public static function statusOptions(): array
+    public static function statusOptions()
     {
         return array_map(
             fn ($meta) => $meta['label'],
@@ -114,7 +112,7 @@ class Internacao extends Model
         );
     }
 
-    public static function riskOptions(): array
+    public static function riskOptions()
     {
         return array_map(
             fn ($meta) => $meta['label'],
@@ -122,21 +120,21 @@ class Internacao extends Model
         );
     }
 
-    protected function statusLabel(): Attribute
+    protected function statusLabel()
     {
         return Attribute::make(
             get: fn () => self::statusMeta()[$this->status]['label'] ?? ucfirst((string) $this->status)
         );
     }
 
-    protected function statusColor(): Attribute
+    protected function statusColor()
     {
         return Attribute::make(
             get: fn () => self::statusMeta()[$this->status]['color'] ?? 'secondary'
         );
     }
 
-    protected function riskLabel(): Attribute
+    protected function riskLabel()
     {
         return Attribute::make(
             get: fn () => $this->nivel_risco
@@ -145,7 +143,7 @@ class Internacao extends Model
         );
     }
 
-    protected function riskColor(): Attribute
+    protected function riskColor()
     {
         return Attribute::make(
             get: fn () => $this->nivel_risco
@@ -154,32 +152,32 @@ class Internacao extends Model
         );
     }
 
-    public function animal(): BelongsTo
+    public function animal()
     {
         return $this->belongsTo(Animal::class, 'animal_id');
     }
 
-    public function tutor(): BelongsTo
+    public function tutor()
     {
         return $this->belongsTo(Cliente::class, 'tutor_id');
     }
 
-    public function attendance(): BelongsTo
+    public function attendance()
     {
         return $this->belongsTo(Atendimento::class, 'atendimento_id');
     }
 
-    public function veterinarian(): BelongsTo
+    public function veterinarian()
     {
         return $this->belongsTo(Medico::class, 'veterinario_id');
     }
 
-    public function room(): BelongsTo
+    public function room()
     {
         return $this->belongsTo(SalaInternacao::class, 'sala_internacao_id');
     }
 
-    public function statusUpdates(): HasMany
+    public function statusUpdates()
     {
         return $this->hasMany(InternacaoStatus::class, 'internacao_id');
     }

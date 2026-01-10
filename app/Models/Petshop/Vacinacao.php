@@ -5,12 +5,9 @@ namespace App\Models\Petshop;
 use App\Models\Cliente;
 use App\Models\Empresa;
 use App\Models\Petshop\Atendimento;
-use App\Models\Petshop\ProtocoloVacina;
 use App\Models\Petshop\SalaAtendimento;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Petshop\VacinacaoEvento;
 use App\Models\Petshop\VacinacaoSessao;
 use App\Models\User;
@@ -69,7 +66,7 @@ class Vacinacao extends Model
     public const STATUS_ATRASADO = 'atrasado';
     public const STATUS_CANCELADO = 'cancelado';
 
-    public static function statusOptions(): array
+    public static function statusOptions()
     {
         return [
             self::STATUS_AGENDADO => 'Agendado',
@@ -82,7 +79,7 @@ class Vacinacao extends Model
         ];
     }
 
-    public static function statusColor(string $status): string
+    public static function statusColor(string $status)
     {
         return [
             self::STATUS_AGENDADO => 'info',
@@ -95,7 +92,7 @@ class Vacinacao extends Model
         ][$status] ?? 'secondary';
     }
 
-    public static function reminderOptions(): array
+    public static function reminderOptions()
     {
         return [
             'email-48h' => 'Enviar lembrete por e-mail 48h antes',
@@ -105,7 +102,7 @@ class Vacinacao extends Model
         ];
     }
 
-    public static function checklistOptions(): array
+    public static function checklistOptions()
     {
         return [
             'check-carteira' => 'Verificar carteira de vacinação e doses anteriores',
@@ -115,57 +112,57 @@ class Vacinacao extends Model
         ];
     }
 
-    public function empresa(): BelongsTo
+    public function empresa()
     {
         return $this->belongsTo(Empresa::class, 'empresa_id');
     }
 
-    public function protocolo(): BelongsTo
+    public function protocolo()
     {
-        return $this->belongsTo(ProtocoloVacina::class, 'protocolo_id');
+        return $this->belongsTo(Vacina::class, 'protocolo_id');
     }
 
-    public function animal(): BelongsTo
+    public function animal()
     {
         return $this->belongsTo(Animal::class, 'animal_id');
     }
 
-    public function cliente(): BelongsTo
+    public function cliente()
     {
         return $this->belongsTo(Cliente::class, 'cliente_id');
     }
 
-    public function medico(): BelongsTo
+    public function medico()
     {
         return $this->belongsTo(Medico::class, 'medico_id');
     }
 
-    public function salaAtendimento(): BelongsTo
+    public function salaAtendimento()
     {
         return $this->belongsTo(SalaAtendimento::class, 'sala_atendimento_id');
     }
 
-    public function attendance(): BelongsTo
+    public function attendance()
     {
         return $this->belongsTo(Atendimento::class, 'attendance_id');
     }
 
-    public function doses(): HasMany
+    public function doses()
     {
         return $this->hasMany(VacinacaoDose::class, 'vacinacao_id');
     }
 
-    public function sessions(): HasMany
+    public function sessions()
     {
         return $this->hasMany(VacinacaoSessao::class, 'vacinacao_id');
     }
 
-    public function eventos(): HasMany
+    public function eventos()
     {
         return $this->hasMany(VacinacaoEvento::class, 'vacinacao_id');
     }
 
-    public function scheduledByUser(): BelongsTo
+    public function scheduledByUser()
     {
         return $this->belongsTo(User::class, 'scheduled_by');
     }

@@ -3,7 +3,6 @@
 namespace App\Models\Petshop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SalaInternacao extends Model
 {
@@ -32,7 +31,7 @@ class SalaInternacao extends Model
         'capacidade' => 'integer',
     ];
 
-    public function internacoes(): HasMany
+    public function internacoes()
     {
         return $this->hasMany(Internacao::class, 'sala_internacao_id');
     }

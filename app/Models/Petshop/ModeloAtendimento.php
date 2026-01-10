@@ -8,7 +8,6 @@ use App\Models\Empresa;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ModeloAtendimento extends Model
 {
@@ -34,7 +33,7 @@ class ModeloAtendimento extends Model
         'updated_by' => 'integer',
     ];
 
-    protected function getUppercaseFields(): array
+    protected function getUppercaseFields()
     {
         return [
             'title',
@@ -55,17 +54,17 @@ class ModeloAtendimento extends Model
         });
     }
 
-    public function empresa(): BelongsTo
+    public function empresa()
     {
         return $this->belongsTo(Empresa::class, 'empresa_id');
     }
 
-    public function criador(): BelongsTo
+    public function criador()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function atualizador(): BelongsTo
+    public function atualizador()
     {
         return $this->belongsTo(User::class, 'updated_by');
     }

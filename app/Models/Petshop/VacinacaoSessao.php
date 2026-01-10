@@ -5,8 +5,6 @@ namespace App\Models\Petshop;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class VacinacaoSessao extends Model
 {
@@ -38,7 +36,7 @@ class VacinacaoSessao extends Model
     public const STATUS_CONCLUIDA = 'concluida';
     public const STATUS_ABORTADA = 'abortada';
 
-    public static function statusLabels(): array
+    public static function statusLabels()
     {
         return [
             self::STATUS_EM_EXECUCAO => 'Em execução',
@@ -47,17 +45,17 @@ class VacinacaoSessao extends Model
         ];
     }
 
-    public function vacinacao(): BelongsTo
+    public function vacinacao()
     {
         return $this->belongsTo(Vacinacao::class, 'vacinacao_id');
     }
 
-    public function responsavel(): BelongsTo
+    public function responsavel()
     {
         return $this->belongsTo(User::class, 'responsavel_id');
     }
 
-    public function doses(): HasMany
+    public function doses()
     {
         return $this->hasMany(VacinacaoSessaoDose::class, 'sessao_id');
     }

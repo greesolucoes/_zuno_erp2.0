@@ -5,7 +5,6 @@ namespace App\Models\Petshop;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProntuarioEvolucao extends Model
 {
@@ -28,12 +27,12 @@ class ProntuarioEvolucao extends Model
         'dados' => 'array',
     ];
 
-    public function prontuario(): BelongsTo
+    public function prontuario()
     {
         return $this->belongsTo(Prontuario::class, 'prontuario_id');
     }
 
-    public function autor(): BelongsTo
+    public function autor()
     {
         return $this->belongsTo(User::class, 'registrado_por');
     }

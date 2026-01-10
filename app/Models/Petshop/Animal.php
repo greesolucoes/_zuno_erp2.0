@@ -11,13 +11,13 @@ use App\Models\Petshop\Vacinacao;
 use App\Traits\UppercaseFillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Animal extends Model
 {
     use HasFactory;
     use UppercaseFillable;
+    use SoftDeletes;
 
     protected $table = 'animais';
 
@@ -34,7 +34,7 @@ class Animal extends Model
         return $this->nome . " - Tutor: " . (isset($this->cliente) ? $this->cliente->razao_social : '--');
     }
 
-    protected function getUppercaseFields(): array
+    protected function getUppercaseFields()
     {
         return [
             'nome', 'peso', 'sexo', 'observacao','pedigree', 'porte', 'origem', 'cor'
@@ -70,19 +70,19 @@ class Animal extends Model
         return $this->belongsTo(Pelagem::class, 'pelagem_id');
     }
 
-    public function hospitalizations(): HasMany
+    public function hospitalizations()
     {
         return $this->hasMany(Internacao::class, 'animal_id');
     }
 
-    public function activeHospitalization(): HasOne
+    public function activeHospitalization()
     {
         return $this->hasOne(Internacao::class, 'animal_id')
             ->where('status', Internacao::STATUS_ACTIVE)
             ->latestOfMany('internado_em');
     }
 
-    public function vacinacoes(): HasMany
+    public function vacinacoes()
     {
         return $this->hasMany(Vacinacao::class, 'animal_id');
     }

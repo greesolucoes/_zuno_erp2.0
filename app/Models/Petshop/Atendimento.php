@@ -16,8 +16,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -70,7 +68,7 @@ class Atendimento extends Model
         'status_color',
     ];
 
-    protected function status(): Attribute
+    protected function status()
     {
         return Attribute::make(
             get: fn ($value) => match ($value) {
@@ -86,15 +84,15 @@ class Atendimento extends Model
         );
     }
 
-    protected static function booted(): void
+    protected static function booted()
     {
-        static::creating(function (self $atendimento): void {
+        static::creating(function (self $atendimento) {
             if (!filled($atendimento->codigo)) {
                 $atendimento->codigo = Str::upper(Str::random(12));
             }
         });
 
-        static::created(function (self $atendimento): void {
+        static::created(function (self $atendimento) {
             if (!Str::startsWith((string) $atendimento->codigo, 'ATD-')) {
                 $atendimento->forceFill([
                     'codigo' => self::generateCode($atendimento->id),
@@ -103,7 +101,7 @@ class Atendimento extends Model
         });
     }
 
-    public static function statusMeta(): array
+    public static function statusMeta()
     {
         return [
             self::STATUS_SCHEDULED => [
@@ -125,12 +123,12 @@ class Atendimento extends Model
         ];
     }
 
-    public static function statusOptions(): array
+    public static function statusOptions()
     {
         return Arr::mapWithKeys(self::statusMeta(), fn ($meta, $status) => [$status => $meta['label']]);
     }
 
-    public function empresaId(): int
+    public function empresaId()
     {
         return (int) $this->empresa_id;
     }
@@ -165,66 +163,66 @@ class Atendimento extends Model
         return $this->hasMany(AtendimentoAnexo::class, 'atendimento_id');
     }
 
-    public function vacinacoes(): HasMany
+    public function vacinacoes()
     {
         return $this->hasMany(Vacinacao::class, 'attendance_id');
     }
 
-    public function latestVaccination(): HasOne
+    public function latestVaccination()
     {
         return $this->hasOne(Vacinacao::class, 'attendance_id')->latestOfMany('scheduled_at');
     }
 
-    public function faturamento(): HasOne
+    public function faturamento()
     {
         return $this->hasOne(AtendimentoFaturamento::class, 'atendimento_id');
     }
 
-    public function prontuarios(): HasMany
+    public function prontuarios()
     {
         return $this->hasMany(Prontuario::class, 'atendimento_id');
     }
 
-    public function latestRecord(): HasOne
+    public function latestRecord()
     {
         return $this->hasOne(Prontuario::class, 'atendimento_id')->latestOfMany();
     }
 
-    public function prescriptions(): HasMany
+    public function prescriptions()
     {
         return $this->hasMany(Prescricao::class, 'atendimento_id');
     }
 
-    public function latestPrescription(): HasOne
+    public function latestPrescription()
     {
         return $this->hasOne(Prescricao::class, 'atendimento_id')->latestOfMany();
     }
 
-    public function examRequests(): HasMany
+    public function examRequests()
     {
         return $this->hasMany(VetExame::class, 'atendimento_id');
     }
 
-    public function latestExamRequest(): HasOne
+    public function latestExamRequest()
     {
         return $this->hasOne(VetExame::class, 'atendimento_id')->latestOfMany();
     }
 
-    protected function statusLabel(): Attribute
+    protected function statusLabel()
     {
         return Attribute::make(
             get: fn () => self::statusMeta()[$this->status]['label'] ?? '—',
         );
     }
 
-    protected function statusColor(): Attribute
+    protected function statusColor()
     {
         return Attribute::make(
             get: fn () => self::statusMeta()[$this->status]['color'] ?? 'primary',
         );
     }
 
-    public function getStartAtAttribute(): ?Carbon
+    public function getStartAtAttribute()
     {
         if (!$this->data_atendimento) {
             return null;
@@ -274,7 +272,7 @@ class Atendimento extends Model
         });
     }
 
-    public static function generateCode(int $sequence): string
+    public static function generateCode(int $sequence)
     {
         return 'ATD-' . str_pad((string) $sequence, 6, '0', STR_PAD_LEFT);
     }

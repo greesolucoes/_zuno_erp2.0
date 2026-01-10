@@ -5,7 +5,6 @@ namespace App\Models\Petshop;
 use App\Models\Servico;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AtendimentoFaturamentoServico extends Model
 {
@@ -27,17 +26,17 @@ class AtendimentoFaturamentoServico extends Model
         'valor' => 'decimal:2',
     ];
 
-    public function faturamento(): BelongsTo
+    public function faturamento()
     {
         return $this->belongsTo(AtendimentoFaturamento::class, 'faturamento_id');
     }
 
-    public function servico(): BelongsTo
+    public function servico()
     {
         return $this->belongsTo(Servico::class, 'servico_id');
     }
 
-    protected function valor(): Attribute
+    protected function valor()
     {
         return Attribute::make(
             set: fn ($value) => $value ?? 0,

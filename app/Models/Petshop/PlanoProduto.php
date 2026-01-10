@@ -25,7 +25,7 @@ class PlanoProduto extends Model
      */
     protected $appends = ['quantidade'];
 
-    public function getQuantidadeAttribute(): int
+    public function getQuantidadeAttribute()
     {
         return (int) ($this->qtd_por_ciclo ?? 0);
     }

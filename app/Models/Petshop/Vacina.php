@@ -7,8 +7,6 @@ use App\Models\Petshop\Especie;
 use App\Models\Produto;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Vacina extends Model
 {
@@ -144,77 +142,77 @@ class Vacina extends Model
         'orientacao_tutor' => 'Orientações impressas para o tutor',
     ];
 
-    public static function opcoesStatus(): array
+    public static function opcoesStatus()
     {
         return array_map(fn(array $dados) => $dados['label'], self::STATUS);
     }
 
-    public static function dadosStatus(string $status): array
+    public static function dadosStatus(string $status)
     {
         return self::STATUS[$status] ?? ['label' => ucfirst($status), 'color' => 'secondary'];
     }
 
-    public static function opcoesGrupos(): array
+    public static function opcoesGrupos()
     {
         return self::GRUPOS;
     }
 
-    public static function opcoesCategorias(): array
+    public static function opcoesCategorias()
     {
         return self::CATEGORIAS;
     }
 
-    public static function opcoesFabricantes(): array
+    public static function opcoesFabricantes()
     {
         return self::FABRICANTES;
     }
 
-    public static function opcoesApresentacoes(): array
+    public static function opcoesApresentacoes()
     {
         return self::APRESENTACOES;
     }
 
-    public static function opcoesViasAdministracao(): array
+    public static function opcoesViasAdministracao()
     {
         return self::VIAS_ADMINISTRACAO;
     }
 
-    public static function opcoesLocaisAplicacao(): array
+    public static function opcoesLocaisAplicacao()
     {
         return self::LOCAIS_APLICACAO;
     }
 
-    public static function opcoesIdadesMinimas(): array
+    public static function opcoesIdadesMinimas()
     {
         return self::IDADES_MINIMAS;
     }
 
-    public static function opcoesIntervalosReforco(): array
+    public static function opcoesIntervalosReforco()
     {
         return self::INTERVALOS_REFORCO;
     }
 
-    public static function opcoesCondicoesArmazenamento(): array
+    public static function opcoesCondicoesArmazenamento()
     {
         return self::CONDICOES_ARMAZENAMENTO;
     }
 
-    public static function opcoesDocumentos(): array
+    public static function opcoesDocumentos()
     {
         return self::DOCUMENTOS;
     }
 
-    public function empresa(): BelongsTo
+    public function empresa()
     {
         return $this->belongsTo(Empresa::class, 'empresa_id');
     }
 
-    public function produto(): BelongsTo
+    public function produto()
     {
         return $this->belongsTo(Produto::class, 'produto_id');
     }
 
-    public function especies(): BelongsToMany
+    public function especies()
     {
         return $this->belongsToMany(
             Especie::class,

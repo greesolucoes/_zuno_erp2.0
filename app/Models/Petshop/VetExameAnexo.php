@@ -4,7 +4,6 @@ namespace App\Models\Petshop;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VetExameAnexo extends Model
 {
@@ -33,7 +32,7 @@ class VetExameAnexo extends Model
         'size_in_bytes' => 'integer',
     ];
 
-    public function exam(): BelongsTo
+    public function exam()
     {
         return $this->belongsTo(VetExame::class, 'exame_id');
     }

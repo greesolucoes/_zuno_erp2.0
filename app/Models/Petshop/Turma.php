@@ -29,7 +29,7 @@ class Turma extends Model
         'status',
     ];
 
-    public static function statusList(): array
+    public static function statusList()
     {
         return [
             self::STATUS_DISPONIVEL => 'Disponível',

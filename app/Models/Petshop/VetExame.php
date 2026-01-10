@@ -5,11 +5,9 @@ namespace App\Models\Petshop;
 use App\Models\Petshop\Atendimento;
 use App\Models\Petshop\VetExameAnalise;
 use App\Models\Petshop\VetExameAnexo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class VetExame extends Model
@@ -63,12 +61,12 @@ class VetExame extends Model
         'data_conclusao' => 'datetime',
     ];
 
-    public function scopeForCompany(Builder $query, int $companyId): Builder
+    public function scopeForCompany(Builder $query, int $companyId)
     {
         return $query->where('empresa_id', $companyId);
     }
 
-    public static function statusLabels(): array
+    public static function statusLabels()
     {
         return [
             self::STATUS_RASCUNHO => 'Rascunho',
@@ -78,7 +76,7 @@ class VetExame extends Model
         ];
     }
 
-    public static function priorityOptions(): array
+    public static function priorityOptions()
     {
         return [
             self::PRIORIDADE_NORMAL => 'Normal',
@@ -87,72 +85,72 @@ class VetExame extends Model
         ];
     }
 
-    public static function pendingStatuses(): array
+    public static function pendingStatuses()
     {
         return self::PENDING_STATUSES;
     }
 
-    public static function completedStatuses(): array
+    public static function completedStatuses()
     {
         return self::COMPLETED_STATUSES;
     }
 
-    public function animal(): BelongsTo
+    public function animal()
     {
         return $this->belongsTo(Animal::class);
     }
 
-    public function medico(): BelongsTo
+    public function medico()
     {
         return $this->belongsTo(Medico::class);
     }
 
-    public function examType(): BelongsTo
+    public function examType()
     {
         return $this->belongsTo(Exame::class, 'exame_id');
     }
 
-    public function attendance(): BelongsTo
+    public function attendance()
     {
         return $this->belongsTo(Atendimento::class, 'atendimento_id');
     }
 
-    public function attachments(): HasMany
+    public function attachments()
     {
         return $this->hasMany(VetExameAnexo::class, 'exame_id');
     }
 
-    public function requestAttachments(): HasMany
+    public function requestAttachments()
     {
         return $this->attachments()->where('context', VetExameAnexo::CONTEXT_REQUEST);
     }
 
-    public function collectionAttachments(): HasMany
+    public function collectionAttachments()
     {
         return $this->attachments()->where('context', VetExameAnexo::CONTEXT_COLLECTION);
     }
 
-    public function analyses(): HasMany
+    public function analyses()
     {
         return $this->hasMany(VetExameAnalise::class, 'exame_id');
     }
 
-    public function scopePending(Builder $query): Builder
+    public function scopePending(Builder $query)
     {
         return $query->whereIn('status', self::PENDING_STATUSES);
     }
 
-    public function scopeCompleted(Builder $query): Builder
+    public function scopeCompleted(Builder $query)
     {
         return $query->whereIn('status', self::COMPLETED_STATUSES);
     }
 
-    public function isPending(): bool
+    public function isPending()
     {
         return in_array($this->status, self::PENDING_STATUSES, true);
     }
 
-    public function isCompleted(): bool
+    public function isCompleted()
     {
         return in_array($this->status, self::COMPLETED_STATUSES, true);
     }

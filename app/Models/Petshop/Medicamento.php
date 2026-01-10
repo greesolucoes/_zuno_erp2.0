@@ -7,8 +7,6 @@ use App\Models\Petshop\Especie;
 use App\Models\Produto;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Medicamento extends Model
 {
@@ -151,17 +149,17 @@ class Medicamento extends Model
         'Outra condição de armazenamento (descrever nas observações)',
     ];
 
-    public function empresa(): BelongsTo
+    public function empresa()
     {
         return $this->belongsTo(Empresa::class, 'empresa_id');
     }
 
-    public function produto(): BelongsTo
+    public function produto()
     {
         return $this->belongsTo(Produto::class, 'produto_id');
     }
 
-    public function especies(): BelongsToMany
+    public function especies()
     {
         return $this->belongsToMany(
             Especie::class,
@@ -171,37 +169,37 @@ class Medicamento extends Model
         )->withTimestamps();
     }
 
-    public static function opcoesCategoriasTerapeuticas(): array
+    public static function opcoesCategoriasTerapeuticas()
     {
         return self::formatarOpcoes(self::CATEGORIAS_TERAPEUTICAS);
     }
 
-    public static function opcoesViasAdministracao(): array
+    public static function opcoesViasAdministracao()
     {
         return self::formatarOpcoes(self::VIAS_ADMINISTRACAO);
     }
 
-    public static function opcoesApresentacoes(): array
+    public static function opcoesApresentacoes()
     {
         return self::formatarOpcoes(self::APRESENTACOES);
     }
 
-    public static function opcoesFormasDispensacao(): array
+    public static function opcoesFormasDispensacao()
     {
         return self::formatarOpcoes(self::FORMAS_DISPENSACAO);
     }
 
-    public static function opcoesRestricoesIdade(): array
+    public static function opcoesRestricoesIdade()
     {
         return self::formatarOpcoes(self::RESTRICOES_IDADE);
     }
 
-    public static function opcoesCondicoesArmazenamento(): array
+    public static function opcoesCondicoesArmazenamento()
     {
         return self::formatarOpcoes(self::CONDICOES_ARMAZENAMENTO);
     }
 
-    private static function formatarOpcoes(array $valores): array
+    private static function formatarOpcoes(array $valores)
     {
         $opcoes = array_combine($valores, $valores);
 

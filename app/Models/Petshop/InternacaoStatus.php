@@ -5,7 +5,6 @@ namespace App\Models\Petshop;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use App\Models\Petshop\Internacao;
 
@@ -32,7 +31,7 @@ class InternacaoStatus extends Model
         'evolucao_label',
     ];
 
-    public static function evolutionOptions(): array
+    public static function evolutionOptions()
     {
         return [
             'sim' => 'Sim',
@@ -41,14 +40,14 @@ class InternacaoStatus extends Model
         ];
     }
 
-    protected function evolucaoLabel(): Attribute
+    protected function evolucaoLabel()
     {
         return Attribute::make(
             get: fn () => self::evolutionOptions()[$this->evolucao] ?? ucfirst((string) $this->evolucao)
         );
     }
 
-    public function internacao(): BelongsTo
+    public function internacao()
     {
         return $this->belongsTo(Internacao::class, 'internacao_id');
     }

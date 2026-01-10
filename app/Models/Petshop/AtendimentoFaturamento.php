@@ -4,8 +4,6 @@ namespace App\Models\Petshop;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AtendimentoFaturamento extends Model
 {
@@ -26,36 +24,36 @@ class AtendimentoFaturamento extends Model
         'total_geral' => 'decimal:2',
     ];
 
-    public function atendimento(): BelongsTo
+    public function atendimento()
     {
         return $this->belongsTo(Atendimento::class, 'atendimento_id');
     }
 
-    public function servicos(): HasMany
+    public function servicos()
     {
         return $this->hasMany(AtendimentoFaturamentoServico::class, 'faturamento_id');
     }
 
-    public function produtos(): HasMany
+    public function produtos()
     {
         return $this->hasMany(AtendimentoFaturamentoProduto::class, 'faturamento_id');
     }
 
-    protected function totalServicos(): Attribute
+    protected function totalServicos()
     {
         return Attribute::make(
             set: fn ($value) => $value ?? 0,
         );
     }
 
-    protected function totalProdutos(): Attribute
+    protected function totalProdutos()
     {
         return Attribute::make(
             set: fn ($value) => $value ?? 0,
         );
     }
 
-    protected function totalGeral(): Attribute
+    protected function totalGeral()
     {
         return Attribute::make(
             set: fn ($value) => $value ?? 0,

@@ -5,7 +5,6 @@ namespace App\Models\Petshop;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VacinacaoSessaoDose extends Model
 {
@@ -42,7 +41,7 @@ class VacinacaoSessaoDose extends Model
     public const RESULT_REAGENDADA = 'reagendada';
     public const RESULT_NAO_APLICADA = 'nao_aplicada';
 
-    public static function resultLabels(): array
+    public static function resultLabels()
     {
         return [
             self::RESULT_APLICADA => 'Aplicada',
@@ -51,17 +50,17 @@ class VacinacaoSessaoDose extends Model
         ];
     }
 
-    public function sessao(): BelongsTo
+    public function sessao()
     {
         return $this->belongsTo(VacinacaoSessao::class, 'sessao_id');
     }
 
-    public function dosePlanejada(): BelongsTo
+    public function dosePlanejada()
     {
         return $this->belongsTo(VacinacaoDose::class, 'dose_planejada_id');
     }
 
-    public function responsavel(): BelongsTo
+    public function responsavel()
     {
         return $this->belongsTo(User::class, 'responsavel_id');
     }

@@ -4,7 +4,6 @@ namespace App\Models\Petshop;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Exame extends Model
@@ -29,7 +28,7 @@ class Exame extends Model
         return $query->where('empresa_id', $companyId);
     }
 
-    public function vetExams(): HasMany
+    public function vetExams()
     {
         return $this->hasMany(VetExame::class, 'exame_id');
     }

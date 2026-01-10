@@ -5,7 +5,6 @@ namespace App\Models\Petshop;
 use App\Models\Produto;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AtendimentoFaturamentoProduto extends Model
 {
@@ -27,31 +26,31 @@ class AtendimentoFaturamentoProduto extends Model
         'subtotal' => 'decimal:2',
     ];
 
-    public function faturamento(): BelongsTo
+    public function faturamento()
     {
         return $this->belongsTo(AtendimentoFaturamento::class, 'faturamento_id');
     }
 
-    public function produto(): BelongsTo
+    public function produto()
     {
         return $this->belongsTo(Produto::class, 'produto_id');
     }
 
-    protected function quantidade(): Attribute
+    protected function quantidade()
     {
         return Attribute::make(
             set: fn ($value) => $value ?? 0,
         );
     }
 
-    protected function valorUnitario(): Attribute
+    protected function valorUnitario()
     {
         return Attribute::make(
             set: fn ($value) => $value ?? 0,
         );
     }
 
-    protected function subtotal(): Attribute
+    protected function subtotal()
     {
         return Attribute::make(
             set: fn ($value) => $value ?? 0,

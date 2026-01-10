@@ -4,7 +4,6 @@ namespace App\Models\Petshop;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VetExameAnalise extends Model
 {
@@ -24,12 +23,12 @@ class VetExameAnalise extends Model
         'viewport_state' => 'array',
     ];
 
-    public function exam(): BelongsTo
+    public function exam()
     {
         return $this->belongsTo(VetExame::class, 'exame_id');
     }
 
-    public function attachment(): BelongsTo
+    public function attachment()
     {
         return $this->belongsTo(VetExameAnexo::class, 'attachment_id');
     }

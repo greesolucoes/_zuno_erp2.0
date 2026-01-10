@@ -5,7 +5,6 @@ namespace App\Models\Petshop;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VacinacaoEvento extends Model
 {
@@ -37,7 +36,7 @@ class VacinacaoEvento extends Model
     public const TIPO_REAGENDAMENTO = 'reagendamento';
     public const TIPO_OBSERVACAO = 'observacao_adicionada';
 
-    public static function tipoLabels(): array
+    public static function tipoLabels()
     {
         return [
             self::TIPO_AGENDAMENTO_CRIADO => 'Agendamento criado',
@@ -51,12 +50,12 @@ class VacinacaoEvento extends Model
         ];
     }
 
-    public function vacinacao(): BelongsTo
+    public function vacinacao()
     {
         return $this->belongsTo(Vacinacao::class, 'vacinacao_id');
     }
 
-    public function responsavel(): BelongsTo
+    public function responsavel()
     {
         return $this->belongsTo(User::class, 'registrado_por');
     }

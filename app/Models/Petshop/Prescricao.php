@@ -15,9 +15,6 @@ use App\Models\Petshop\Prontuario;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Prescricao extends Model
 {
@@ -58,62 +55,62 @@ class Prescricao extends Model
         'campos_personalizados' => 'array',
     ];
 
-    public function empresa(): BelongsTo
+    public function empresa()
     {
         return $this->belongsTo(Empresa::class, 'empresa_id');
     }
 
-    public function animal(): BelongsTo
+    public function animal()
     {
         return $this->belongsTo(Animal::class, 'animal_id');
     }
 
-    public function veterinario(): BelongsTo
+    public function veterinario()
     {
         return $this->belongsTo(Medico::class, 'veterinario_id');
     }
 
-    public function atendimento(): BelongsTo
+    public function atendimento()
     {
         return $this->belongsTo(Atendimento::class, 'atendimento_id');
     }
 
-    public function prontuario(): BelongsTo
+    public function prontuario()
     {
         return $this->belongsTo(Prontuario::class, 'prontuario_id');
     }
 
-    public function modelo(): BelongsTo
+    public function modelo()
     {
         return $this->belongsTo(ModeloPrescricao::class, 'modelo_prescricao_id');
     }
 
-    public function criador(): BelongsTo
+    public function criador()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function atualizador(): BelongsTo
+    public function atualizador()
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
 
-    public function medicamentos(): HasMany
+    public function medicamentos()
     {
         return $this->hasMany(PrescricaoMedicamento::class, 'prescricao_id');
     }
 
-    public function canais(): HasMany
+    public function canais()
     {
         return $this->hasMany(PrescricaoCanal::class, 'prescricao_id');
     }
 
-    public function alergias(): BelongsToMany
+    public function alergias()
     {
         return $this->belongsToMany(Alergia::class, 'petshop_vet_prescricao_alergia', 'prescricao_id', 'alergia_id')->withTimestamps();
     }
 
-    public function condicoes(): BelongsToMany
+    public function condicoes()
     {
         return $this->belongsToMany(CondicaoCronica::class, 'petshop_vet_prescricao_condicao_cronica', 'prescricao_id', 'condicao_cronica_id')->withTimestamps();
     }

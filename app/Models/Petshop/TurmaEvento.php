@@ -24,7 +24,7 @@ class TurmaEvento extends Model
         'descricao'
     ];
 
-    protected function getUppercaseFields(): array
+    protected function getUppercaseFields()
     {
         return [
             'descricao',
