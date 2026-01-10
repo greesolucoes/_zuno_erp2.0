@@ -70,9 +70,9 @@ Route::post('petshop/{empresa}/{filial}', [PublicClienteController::class, 'stor
 
 Route::get('vet/cartoes-vacinacao/{card}/imprimir', [VetVaccineCardsController::class, 'print'])
     ->name('vet.vaccine-cards.print')
-    ->withoutMiddleware(['authh', 'validaEmpresa']);
+    ->withoutMiddleware(['validaEmpresa', 'verificaEmpresa', 'validaAcesso', 'verificaContratoAssinado', 'limiteArmazenamento']);
 
-Route::middleware(['authh', 'validaEmpresa'])->group(function () {
+Route::middleware(['verificaEmpresa', 'validaAcesso', 'verificaContratoAssinado', 'limiteArmazenamento'])->group(function () {
   Route::prefix('animais')->group(function () {
     Route::prefix('pacientes')->group(function () {
       Route::get('', 'Petshop\\Animais\\AnimalPacienteController@index')->name('animais.pacientes.index');

@@ -34,7 +34,7 @@ class Animal extends Model
         return $this->nome . " - Tutor: " . (isset($this->cliente) ? $this->cliente->razao_social : '--');
     }
 
-    protected function getUppercaseFields()
+    protected function getUppercaseFields(): array
     {
         return [
             'nome', 'peso', 'sexo', 'observacao','pedigree', 'porte', 'origem', 'cor'
