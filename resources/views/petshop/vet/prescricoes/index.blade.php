@@ -14,16 +14,15 @@
         :modal_actions="false"
         :pagination="false"
     >
-        <x-slot name="title" class="text-color">Historico de Prescrições</x-slot>
+        <x-slot name="title">Prescrições</x-slot>
         <x-slot name="buttons">
-            <div class="d-flex flex-wrap align-items-center justify-content-end gap-2">             
-            </div>
+            
         </x-slot>
 
         <x-slot name="search_form">
             {!! Form::open()->fill(request()->all())->get() !!}
-                <div class="row g-2 align-items-end">
-                    <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-3">
                         {!! Form::text('search', 'Pesquisar prescrição')->placeholder('Paciente, tutor ou código')->attrs(['class' => 'ignore']) !!}
                     </div>
                     <div class="col-md-2">
@@ -60,15 +59,10 @@
                     <div class="col-md-2">
                         {!! Form::date('end_date', 'Data final')->attrs(['class' => 'ignore']) !!}
                     </div>
-                    <div class="col-md-3 d-flex align-items-end gap-1 mt-3">
-                        <button class="btn btn-primary" type="submit">
-                            <i class="ri-search-line"></i>
-                            Pesquisar
-                        </button>
-                        <a id="clear-filter" class="btn btn-danger" href="{{ route('vet.prescriptions.index') }}">
-                            <i class="ri-eraser-fill"></i>
-                            Limpar
-                        </a>
+                    <div class="col-md-3 text-left">
+                        <br>
+                        <button class="btn btn-primary" type="submit"><i class="bx bx-search"></i> Pesquisar</button>
+                        <a id="clear-filter" class="btn btn-danger" href="{{ route('vet.prescriptions.index') }}"><i class="bx bx-eraser"></i> Limpar</a>
                     </div>
                 </div>
             {!! Form::close() !!}

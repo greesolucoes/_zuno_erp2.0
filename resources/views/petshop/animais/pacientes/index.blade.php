@@ -22,32 +22,27 @@
     ]"
     :modal_actions="false"> {{-- Assumindo que você não precisa de ações em modal para pets --}}
 
-    <x-slot name="title" class="text-color">Gerenciar Pets</x-slot> {{-- Título atualizado para Pets --}}
+    <x-slot name="title">Pets</x-slot>
 
     <x-slot name="buttons">
-        <div class="d-flex align-items-center justify-content-end gap-2">
-            <a href="{{ route('animais.pacientes.create') }}" class="btn btn-success">
-                <i class="ri-add-circle-fill"></i>
-                Novo Pet
-            </a>
-            <a href="{{ route('animais.pacientes.import') }}" class="btn btn-info pull-right">
-                <i class="ri-file-upload-line"></i>
-                Upload
-            </a>
-        </div>
+        <a href="{{ route('animais.pacientes.import') }}" type="button" class="btn btn-warning">
+            <i class="bx bx-file"></i> Importar
+        </a>
+        <a href="{{ route('animais.pacientes.create') }}" type="button" class="btn btn-success">
+            <i class="bx bx-plus"></i> Novo pet
+        </a>
     </x-slot>
 
     <x-slot name="search_form">
         {!! Form::open()->fill(request()->all())->get() !!}
-        <div class="row g-2">
-            <div class="col-md-5"> {{-- Ajustado para col-md-5 como o campo de busca do hotel --}}
-                {!! Form::text('pesquisa', 'Pesquisar Pet: (Nome, Tutor)')->placeholder('Digite o dado')->attrs(['class' => 'ignore']) !!}
+        <div class="row">
+            <div class="col-md-3">
+                {!! Form::text('pesquisa', 'Pesquisar por nome')->placeholder('Nome do pet ou tutor')->attrs(['class' => 'ignore']) !!}
             </div>
-            {{-- Removi os campos de data, pois não estavam no seu formulário original de animais e para alinhar com a busca simplificada do hotel --}}
-            <div class="col-md-3 text-left d-flex align-items-end gap-1 mt-3">
-                <button class="btn btn-primary" type="submit"> <i class="ri-search-line"></i>Pesquisar</button>
-                <a id="clear-filter" class="btn btn-danger" href="{{ route('animais.pacientes.index') }}"><i
-                        class="ri-eraser-fill"></i>Limpar</a>
+            <div class="col-md-3 text-left">
+                <br>
+                <button class="btn btn-primary" type="submit"><i class="bx bx-search"></i> Pesquisar</button>
+                <a id="clear-filter" class="btn btn-danger" href="{{ route('animais.pacientes.index') }}"><i class="bx bx-eraser"></i> Limpar</a>
             </div>
         </div>
         {!! Form::close() !!}

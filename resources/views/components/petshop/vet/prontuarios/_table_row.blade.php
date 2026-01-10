@@ -7,33 +7,6 @@
 @endphp
 
 <tr>
-    <td>
-        <div class="d-flex gap-1">
-            <a
-                href="{{ route('vet.records.edit', $record['id']) }}"
-                class="btn btn-sm btn-outline-primary"
-                title="Editar prontuário"
-            >
-                <i class="ri-edit-2-line"></i>
-            </a>
-            <form
-                id="{{ $deleteFormId }}"
-                action="{{ route('vet.records.destroy', $record['id']) }}"
-                method="POST"
-                class="d-inline"
-            >
-                @csrf
-                @method('DELETE')
-                <button
-                    type="button"
-                    class="btn btn-sm btn-outline-danger btn-delete"
-                    title="Excluir prontuário"
-                >
-                    <i class="ri-delete-bin-line"></i>
-                </button>
-            </form>
-        </div>
-    </td>
     <td class="text-center">
         <div class="fw-semibold text-color">{{ $record['patient'] ?? '—' }}</div>
         <div class="text-muted small">
@@ -69,5 +42,19 @@
     <td class="text-start">
         <div class="fw-semibold text-color">{{ $record['updated_at'] ?? '—' }}</div>
         <div class="text-muted small">{{ $record['clinic_room'] ?? '—' }}</div>
+    </td>
+    <td>
+        <div class="d-flex gap-1">
+            <a href="{{ route('vet.records.edit', $record['id']) }}" class="btn btn-warning btn-sm text-white" title="Editar prontuário">
+                <i class="bx bx-edit"></i>
+            </a>
+            <form id="{{ $deleteFormId }}" action="{{ route('vet.records.destroy', $record['id']) }}" method="post" class="d-inline">
+                @method('delete')
+                @csrf
+                <button type="button" class="btn btn-delete btn-sm btn-danger" title="Excluir prontuário">
+                    <i class="bx bx-trash"></i>
+                </button>
+            </form>
+        </div>
     </td>
 </tr>

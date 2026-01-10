@@ -12,21 +12,18 @@
     ]"
     :modal_actions="false">
 
-    <x-slot name="title" class="text-color">Gerenciar Checklists</x-slot>
+    <x-slot name="title">Checklists</x-slot>
 
     <x-slot name="buttons">
-        <div class="d-flex align-items-center justify-content-end gap-2">
-            <a href="{{ route('vet.checklist.create') }}" class="btn btn-success">
-                <i class="ri-add-circle-fill"></i>
-                Novo Checklist
-            </a>
-        </div>
+        <a href="{{ route('vet.checklist.create') }}" type="button" class="btn btn-success">
+            <i class="bx bx-plus"></i> Novo checklist
+        </a>
     </x-slot>
 
     <x-slot name="search_form">
         {!! Form::open()->fill(request()->all())->get() !!}
-        <div class="row g-2">
-            <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-3">
                 {!! Form::text('search', 'Pesquisar')
                     ->placeholder('Buscar por título ou descrição')
                     ->attrs(['class' => 'ignore']) !!}
@@ -37,13 +34,10 @@
                     ->value(request('status'))
                     ->attrs(['class' => 'form-select select2 ignore']) !!}
             </div>
-            <div class="col-md-3 d-flex align-items-end gap-2 mt-3">
-                <button class="btn btn-primary" type="submit">
-                    <i class="ri-search-line"></i>Pesquisar
-                </button>
-                <a id="clear-filter" class="btn btn-danger" href="{{ route('vet.checklist.index') }}">
-                    <i class="ri-eraser-fill"></i>Limpar
-                </a>
+            <div class="col-md-3 text-left">
+                <br>
+                <button class="btn btn-primary" type="submit"><i class="bx bx-search"></i> Pesquisar</button>
+                <a id="clear-filter" class="btn btn-danger" href="{{ route('vet.checklist.index') }}"><i class="bx bx-eraser"></i> Limpar</a>
             </div>
         </div>
         {!! Form::close() !!}

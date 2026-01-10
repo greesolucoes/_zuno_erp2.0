@@ -15,44 +15,48 @@
     :modal_actions="false">
 
     <x-slot name="title" class="text-color">
-        Gerenciar Exames
+        Exames
     </x-slot>
 
     <x-slot name="buttons">
-        <div class="d-flex align-items-center justify-content-end gap-2">
-            <a href="{{ route('animais.exames.create') }}" class="btn btn-success">
-                <i class="ri-add-circle-fill"></i>
-                Novo Exame
-            </a>
-        </div>
+        <a href="{{ route('animais.exames.create') }}" type="button" class="btn btn-success">
+            <i class="bx bx-plus"></i> Novo exame
+        </a>
     </x-slot>
 
     <x-slot name="search_form">
-        {{-- Formulário de pesquisa para Exames --}}
         {!! Form::open()->fill(request()->all())->get() !!}
-        <div class="row g-2">
-            <div class="col-md-5">
-                {{-- Campo de texto para pesquisa de nome do exame --}}
-                {!! Form::text('pesquisa', 'Pesquisar Exame: (Nome)')->placeholder('Digite o nome do exame aqui...')->attrs(['class' => 'ignore']) !!}
+        <div class="row">
+            <div class="col-md-3">
+                {!! Form::text('pesquisa', 'Pesquisar por nome')->placeholder('Digite o nome do exame')->attrs(['class' => 'ignore']) !!}
             </div>
 
-            <div class="col-md-3 text-left d-flex align-items-end gap-1 mt-3">
-                <button class="btn btn-primary" type="submit"><i class="ri-search-line"></i>Pesquisar</button>
-                <a id="clear-filter" class="btn btn-danger" href="{{ route('animais.exames.index') }}"><i
-                        class="ri-eraser-fill"></i>Limpar</a>
+            <div class="col-md-3 text-left">
+                <br>
+                <button class="btn btn-primary" type="submit"><i class="bx bx-search"></i> Pesquisar</button>
+                <a id="clear-filter" class="btn btn-danger" href="{{ route('animais.exames.index') }}"><i class="bx bx-eraser"></i> Limpar</a>
             </div>
         </div>
         {!! Form::close() !!}
     </x-slot>
 
-    {{-- Conteúdo das linhas da tabela para Exames --}}
-    @forelse($data as $item)
-        @include('components.petshop.atendimentos.exame._table_row', ['item' => $item])
-    @empty
+    @foreach($data as $item)
         <tr>
-            <td colspan='2' class='text-center'>Nenhum registro encontrado</td> {{-- Ajustado colspan --}}
+            <td class="text-center">{{ $item->nome }}</td>
+            <td>
+                <form action="{{ route('animais.exames.destroy', $item->id) }}" method="post" id="form-{{ $item->id }}">
+                    @method('delete')
+                    <a href="{{ route('animais.exames.edit', [$item->id, 'page' => request()->query('page', 1)]) }}" class="btn btn-warning btn-sm text-white">
+                        <i class="bx bx-edit"></i>
+                    </a>
+                    @csrf
+                    <button type="button" class="btn btn-delete btn-sm btn-danger">
+                        <i class="bx bx-trash"></i>
+                    </button>
+                </form>
+            </td>
         </tr>
-    @endforelse
+    @endforeach
 </x-table>
 @endsection
 

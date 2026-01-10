@@ -143,14 +143,48 @@
 @endphp
 
 <tr>
+    <td class="text-start">
+        <div class="fw-semibold text-color">{{ $encounter['patient'] ?? '—' }}</div>
+        <div class="text-muted small">
+            {{ $encounter['species'] ?? '—' }}
+            @if(!empty($encounter['tutor']))
+                • Tutor: {{ $encounter['tutor'] }}
+            @endif
+        </div>
+        <div class="text-muted small">{{ $encounter['code'] ?? '—' }}</div>
+    </td>
+    <td class="text-start">
+        <div class="fw-semibold text-color">{{ $encounter['veterinarian'] ?? '—' }}</div>
+    </td>
+    <td class="text-center">
+        <div class="fw-semibold text-color">{{ $encounter['service'] ?? '—' }}</div>
+        @if(!empty($encounter['room']))
+            <div class="text-muted small">{{ $encounter['room'] }}</div>
+        @endif
+    </td>
+    <td>
+        <div class="fw-semibold text-color">
+            @if(!empty($encounter['start']))
+                {{ \Illuminate\Support\Carbon::parse($encounter['start'])->format('d/m/Y') }} <br>
+                <small>{{ \Illuminate\Support\Carbon::parse($encounter['start'])->format('H:i') }}</small>
+            @else
+                —-
+            @endif
+        </div>
+    </td>
+    <td class="text-center">
+        <span class="badge p-2 fw-semibold bg-{{ $encounter['status_color'] ?? 'primary' }} text-uppercase">
+            {{ $encounter['status'] ?? '—' }}
+        </span>
+    </td>
     <td style="min-width: max-content; width: auto; position: relative;">
         <button
             type="button"
-            class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-2 vet-encounter-actions-toggle"
+            class="btn btn-sm btn-primary d-inline-flex align-items-center gap-2 vet-encounter-actions-toggle"
             data-menu-id="{{ $actionsMenuId }}"
             title="Ações do atendimento"
         >
-            <i class="ri-menu-line"></i>
+            <i class="bx bx-menu"></i>
             Ações
         </button>
 
@@ -316,7 +350,7 @@
                         onsubmit="return confirm('Deseja realmente excluir este atendimento? Essa ação não poderá ser desfeita.');"
                     >
                         @csrf
-                        @method('DELETE')
+                        @method('delete')
                         <button
                             type="submit"
                             class="border-0 bg-transparent text-danger p-0 text-start"
@@ -328,39 +362,5 @@
                 </li>
             </ul>
         </nav>
-    </td>
-    <td class="text-start">
-        <div class="fw-semibold text-color">{{ $encounter['patient'] ?? '—' }}</div>
-        <div class="text-muted small">
-            {{ $encounter['species'] ?? '—' }}
-            @if(!empty($encounter['tutor']))
-                • Tutor: {{ $encounter['tutor'] }}
-            @endif
-        </div>
-        <div class="text-muted small">{{ $encounter['code'] ?? '—' }}</div>
-    </td>
-    <td class="text-start">
-        <div class="fw-semibold text-color">{{ $encounter['veterinarian'] ?? '—' }}</div>
-    </td>
-    <td class="text-center">
-        <div class="fw-semibold text-color">{{ $encounter['service'] ?? '—' }}</div>
-        @if(!empty($encounter['room']))
-            <div class="text-muted small">{{ $encounter['room'] }}</div>
-        @endif
-    </td>
-    <td>
-        <div class="fw-semibold text-color">
-            @if(!empty($encounter['start']))
-                {{ \Illuminate\Support\Carbon::parse($encounter['start'])->format('d/m/Y') }} <br>
-                <small>{{ \Illuminate\Support\Carbon::parse($encounter['start'])->format('H:i') }}</small>
-            @else
-                —-
-            @endif
-        </div>
-    </td>
-    <td class="text-center">
-        <span class="badge p-2 fw-semibold bg-{{ $encounter['status_color'] ?? 'primary' }} text-uppercase">
-            {{ $encounter['status'] ?? '—' }}
-        </span>
     </td>
 </tr>

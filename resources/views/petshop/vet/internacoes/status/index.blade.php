@@ -73,25 +73,15 @@
         ]"
         :modal_actions="false"
     >
-        <x-slot name="title" class="text-color">Status da internação</x-slot>
+        <x-slot name="title">Status da internação</x-slot>
 
         <x-slot name="buttons">
-            <div class="d-flex flex-wrap align-items-center justify-content-end gap-2">
-                <a
-                    href="{{ route('vet.hospitalizations.status.create', $internacao) }}"
-                    class="btn btn-success d-flex align-items-center gap-1"
-                >
-                    <i class="ri-add-circle-fill"></i>
-                    Novo status
-                </a>
-                <a
-                    href="{{ route('vet.hospitalizations.index') }}"
-                    class="btn btn-light d-flex align-items-center gap-1"
-                >
-                    <i class="ri-arrow-left-line"></i>
-                    Voltar para internações
-                </a>
-            </div>
+            <a href="{{ route('vet.hospitalizations.index') }}" type="button" class="btn btn-danger">
+                <i class="bx bx-arrow-back"></i> Voltar
+            </a>
+            <a href="{{ route('vet.hospitalizations.status.create', $internacao) }}" type="button" class="btn btn-success">
+                <i class="bx bx-plus"></i> Novo status
+            </a>
         </x-slot>
 
         @foreach ($statuses as $statusRecord)

@@ -5,43 +5,6 @@
 })
 
 <tr>
-    <td>
-        <form
-            class="d-flex align-items-center gap-1"
-            action="{{ route('vet.hospitalizations.status.destroy', [$internacao, $statusRecord]) }}"
-            method="post"
-        >
-            @csrf
-            @method('delete')
-
-            <button
-                type="submit"
-                class="border-0 m-0 p-0 bg-transparent text-color-back"
-                title="Excluir status"
-                onclick="return confirm('Deseja realmente remover este status da internação?')"
-            >
-                <img
-                    height="26"
-                    width="26"
-                    src="/assets/images/svg/icone excluir.svg"
-                    alt="Excluir status"
-                >
-            </button>
-
-            <a
-                class="border-0 m-0 p-0 bg-transparent text-color-back"
-                title="Editar status"
-                href="{{ route('vet.hospitalizations.status.edit', [$internacao, $statusRecord]) }}"
-            >
-                <img
-                    height="26"
-                    width="26"
-                    src="/assets/images/svg/icone editar nfe.svg"
-                    alt="Editar status"
-                >
-            </a>
-        </form>
-    </td>
     <td class="text-start">
         <div class="fw-semibold text-color">{{ $statusRecord->status }}</div>
     </td>
@@ -60,5 +23,17 @@
     <td>
         {{ optional($statusRecord->updated_at)->format('d/m/Y') ?? '—' }}<br>
         <small>{{ optional($statusRecord->updated_at)->format('H:i') ?? '—' }}</small>
+    </td>
+    <td>
+        <form action="{{ route('vet.hospitalizations.status.destroy', [$internacao, $statusRecord]) }}" method="post" id="form-{{ $statusRecord->id }}">
+            @method('delete')
+            <a href="{{ route('vet.hospitalizations.status.edit', [$internacao, $statusRecord]) }}" class="btn btn-warning btn-sm text-white" title="Editar status">
+                <i class="bx bx-edit"></i>
+            </a>
+            @csrf
+            <button type="button" class="btn btn-delete btn-sm btn-danger" title="Excluir status">
+                <i class="bx bx-trash"></i>
+            </button>
+        </form>
     </td>
 </tr>

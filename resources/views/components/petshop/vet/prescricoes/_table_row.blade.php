@@ -1,49 +1,4 @@
 <tr>
-    <td>
-        @php($modalTarget = $modalId ?? ('vet-prescription-modal-' . \Illuminate\Support\Str::slug(($prescription['code'] ?? 'prescricao') . '-' . ($prescription['id'] ?? uniqid()))))
-
-        @if (!empty($prescription['id']))
-            <form
-                class="d-flex align-items-center gap-1"
-                action="{{ route('vet.prescriptions.destroy', $prescription['id']) }}"
-                method="post"
-                id="form-{{ $prescription['id'] }}"
-            >
-                @csrf
-                @method('delete')
-
-                <button
-                    type="button"
-                    class="border-0 m-0 p-0 bg-transparent text-color-back btn-delete"
-                    title="Excluir prescrição"
-                >
-                    <img
-                        height="26"
-                        width="26"
-                        src="/assets/images/svg/icone excluir.svg"
-                        alt="Excluir prescrição"
-                    >
-                </button>
-
-                <a
-                    class="border-0 m-0 p-0 bg-transparent text-color-back"
-                    title="Editar prescrição"
-                    href="{{ route('vet.prescriptions.edit', [$prescription['id'], 'page' => request()->query('page', 1)]) }}"
-                >
-                    <img
-                        height="26"
-                        width="26"
-                        src="/assets/images/svg/icone editar nfe.svg"
-                        alt="Editar prescrição"
-                    >
-                </a>
-
-               
-            </form>
-        @else
-            <span class="text-muted">—</span>
-        @endif
-    </td>
     <td class="text-center align-middle">
         <p class="m-0 p-0 fw-semibold text-color">{{ $prescription['patient'] ?? '—' }}</p>
         <small class="text-muted d-block">
@@ -85,5 +40,21 @@
                 <i class="ri-repeat-line me-1"></i>{{ $prescription['refills'] ?? 0 }}
             </span>
         </div>
+    </td>
+    <td>
+        @if (!empty($prescription['id']))
+            <form action="{{ route('vet.prescriptions.destroy', $prescription['id']) }}" method="post" id="form-{{ $prescription['id'] }}">
+                @method('delete')
+                <a href="{{ route('vet.prescriptions.edit', [$prescription['id'], 'page' => request()->query('page', 1)]) }}" class="btn btn-warning btn-sm text-white" title="Editar prescrição">
+                    <i class="bx bx-edit"></i>
+                </a>
+                @csrf
+                <button type="button" class="btn btn-delete btn-sm btn-danger" title="Excluir prescrição">
+                    <i class="bx bx-trash"></i>
+                </button>
+            </form>
+        @else
+            <span class="text-muted">—</span>
+        @endif
     </td>
 </tr>

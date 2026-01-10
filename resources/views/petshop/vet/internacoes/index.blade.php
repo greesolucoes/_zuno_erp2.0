@@ -15,21 +15,18 @@
         :modal_actions="false"
         :pagination="false"
     >
-        <x-slot name="title" class="text-color">Gerenciar Internações</x-slot>
+        <x-slot name="title">Internações</x-slot>
 
         <x-slot name="buttons">
-            <div class="d-flex flex-wrap align-items-center justify-content-end gap-2">
-                <a href="{{ route('vet.hospitalizations.create') }}" class="btn btn-success d-flex align-items-center gap-1">
-                    <i class="ri-add-circle-fill"></i>
-                    Nova internação
-                </a>
-            </div>
+            <a href="{{ route('vet.hospitalizations.create') }}" type="button" class="btn btn-success">
+                <i class="bx bx-plus"></i> Nova internação
+            </a>
         </x-slot>
 
         <x-slot name="search_form">
             {!! Form::open()->fill(request()->all())->get() !!}
-                <div class="row g-2">
-                    <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-3">
                         {!! Form::text('pesquisa', 'Pesquisar paciente ou tutor')
                             ->placeholder('Digite o dado')
                             ->attrs(['class' => 'ignore']) !!}
@@ -61,15 +58,10 @@
                     <div class="col-md-2">
                         {!! Form::date('end_date', 'Data de admissão (fim)')->attrs(['class' => 'ignore']) !!}
                     </div>
-                    <div class="col-md-3 d-flex align-items-end gap-1 mt-3">
-                        <button class="btn btn-primary" type="submit">
-                            <i class="ri-search-line"></i>
-                            Pesquisar
-                        </button>
-                        <a id="clear-filter" class="btn btn-danger" href="{{ route('vet.hospitalizations.index') }}">
-                            <i class="ri-eraser-fill"></i>
-                            Limpar
-                        </a>
+                    <div class="col-md-3 text-left">
+                        <br>
+                        <button class="btn btn-primary" type="submit"><i class="bx bx-search"></i> Pesquisar</button>
+                        <a id="clear-filter" class="btn btn-danger" href="{{ route('vet.hospitalizations.index') }}"><i class="bx bx-eraser"></i> Limpar</a>
                     </div>
                 </div>
             {!! Form::close() !!}

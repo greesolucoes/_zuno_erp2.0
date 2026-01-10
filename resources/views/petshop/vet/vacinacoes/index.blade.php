@@ -244,13 +244,13 @@
         :modal_actions="false"
         :pagination="false"
     >
-        <x-slot name="title" class="text-color">{{ $tableTitle ?? 'Agenda de Vacinações' }}</x-slot>
+        <x-slot name="title">{{ $tableTitle ?? 'Agenda de Vacinações' }}</x-slot>
         <x-slot name="buttons">
         </x-slot>
 
         <x-slot name="search_form">
             {!! Form::open()->fill(request()->all())->get() !!}
-                <div class="row g-2 align-items-end vet-vacinacoes__filters">
+                <div class="row vet-vacinacoes__filters">
                     <div class="col-md-3">
                         {!! Form::text('pesquisa', 'Pesquisar paciente ou tutor')
                             ->placeholder('Digite o nome ou contato')
@@ -291,15 +291,10 @@
                             ['' => 'Qualquer'] + collect($filters['periods'])->pluck('label', 'value')->toArray()
                         )->attrs(['class' => 'form-select ignore']) !!}
                     </div>
-                    <div class="col-12 col-md-12 col-lg-12 d-flex gap-2 justify-content-start mt-2">
-                        <button class="btn btn-primary" type="submit">
-                            <i class="ri-search-line"></i>
-                            Pesquisar
-                        </button>
-                        <a id="clear-filter" class="btn btn-danger" href="{{ $clearFilterRoute }}">
-                            <i class="ri-eraser-fill"></i>
-                            Limpar
-                        </a>
+                    <div class="col-md-3 text-left">
+                        <br>
+                        <button class="btn btn-primary" type="submit"><i class="bx bx-search"></i> Pesquisar</button>
+                        <a id="clear-filter" class="btn btn-danger" href="{{ $clearFilterRoute }}"><i class="bx bx-eraser"></i> Limpar</a>
                     </div>
                 </div>
             {!! Form::close() !!}

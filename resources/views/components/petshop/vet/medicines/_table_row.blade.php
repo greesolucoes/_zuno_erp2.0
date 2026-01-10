@@ -18,44 +18,6 @@
 @endphp
 
 <tr>
-    <td>
-        <form
-            id="form-delete-medicine-{{ $medicine['id'] }}"
-            action="{{ route('vet.medicines.destroy', [$medicine['id'], 'page' => request()->query('page', 1)]) }}"
-            method="post"
-            class="d-flex align-items-center gap-1"
-        >
-            @csrf
-            @method('delete')
-
-            <button
-                type="button"
-                class="border-0 m-0 p-0 bg-transparent text-color-back btn-delete"
-                title="Excluir medicamento"
-            >
-                <img
-                    height="26"
-                    width="26"
-                    src="/assets/images/svg/icone excluir.svg"
-                    alt="Excluir medicamento"
-                >
-            </button>
-
-            <a
-                class="border-0 m-0 p-0 bg-transparent text-color-back"
-                title="Editar medicamento"
-                href="{{ route('vet.medicines.edit', [$medicine['id'], 'page' => request()->query('page', 1)]) }}"
-            >
-                <img
-                    height="26"
-                    width="26"
-                    src="/assets/images/svg/icone editar nfe.svg"
-                    alt="Editar medicamento"
-                >
-            </a>
-        </form>
-    </td>
-
     <td class="text-start">
         <div class="fw-semibold text-color">{{ $medicine['commercial_name'] ?? '--' }}</div>
 
@@ -104,5 +66,17 @@
         @if (!empty($medicine['control_category']))
             <div class="small text-muted mt-1">{{ $medicine['control_category'] }}</div>
         @endif
+    </td>
+    <td>
+        <form id="form-delete-medicine-{{ $medicine['id'] }}" action="{{ route('vet.medicines.destroy', [$medicine['id'], 'page' => request()->query('page', 1)]) }}" method="post">
+            @method('delete')
+            <a href="{{ route('vet.medicines.edit', [$medicine['id'], 'page' => request()->query('page', 1)]) }}" class="btn btn-warning btn-sm text-white">
+                <i class="bx bx-edit"></i>
+            </a>
+            @csrf
+            <button type="button" class="btn btn-delete btn-sm btn-danger" title="Excluir medicamento">
+                <i class="bx bx-trash"></i>
+            </button>
+        </form>
     </td>
 </tr>

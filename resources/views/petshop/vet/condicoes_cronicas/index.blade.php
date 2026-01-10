@@ -11,21 +11,18 @@
     ]"
     :modal_actions="false">
 
-    <x-slot name="title" class="text-color">Gerenciar condições crônicas</x-slot>
+    <x-slot name="title">Condições crônicas</x-slot>
 
     <x-slot name="buttons">
-        <div class="d-flex align-items-center justify-content-end gap-2">
-            <a href="{{ route('vet.chronic-conditions.create') }}" class="btn btn-success">
-                <i class="ri-add-circle-fill"></i>
-                Nova condição
-            </a>
-        </div>
+        <a href="{{ route('vet.chronic-conditions.create') }}" type="button" class="btn btn-success">
+            <i class="bx bx-plus"></i> Nova condição
+        </a>
     </x-slot>
 
     <x-slot name="search_form">
         {!! Form::open()->fill(request()->all())->get() !!}
-        <div class="row g-2">
-            <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-3">
                 {!! Form::text('search', 'Pesquisar')
                     ->placeholder('Buscar por nome, descrição ou planos de cuidado')
                     ->attrs(['class' => 'ignore']) !!}
@@ -36,28 +33,21 @@
                     ->value(request('status'))
                     ->attrs(['class' => 'form-select select2 ignore']) !!}
             </div>
-            <div class="col-md-3 d-flex align-items-end gap-2 mt-3">
-                <button class="btn btn-primary" type="submit">
-                    <i class="ri-search-line"></i>Pesquisar
-                </button>
-                <a id="clear-filter" class="btn btn-danger" href="{{ route('vet.chronic-conditions.index') }}">
-                    <i class="ri-eraser-fill"></i>Limpar
-                </a>
+            <div class="col-md-3 text-left">
+                <br>
+                <button class="btn btn-primary" type="submit"><i class="bx bx-search"></i> Pesquisar</button>
+                <a id="clear-filter" class="btn btn-danger" href="{{ route('vet.chronic-conditions.index') }}"><i class="bx bx-eraser"></i> Limpar</a>
             </div>
         </div>
         {!! Form::close() !!}
     </x-slot>
 
-    @forelse ($condicoes as $condicaoCronica)
+    @foreach ($condicoes as $condicaoCronica)
         @include('components.petshop.vet.condicoes_cronicas._table_row', [
             'item' => $condicaoCronica,
             'statusOptions' => $statusOptions,
         ])
-    @empty
-        <tr>
-            <td colspan="5" class="text-center py-4 text-muted">Nenhuma condição crônica cadastrada.</td>
-        </tr>
-    @endforelse
+    @endforeach
 </x-table>
 @endsection
 

@@ -15,43 +15,35 @@
         :pagination="false"
         :modal_actions="false"
     >
-        <x-slot name="title" class="text-color">Histórico de Exames</x-slot>
+        <x-slot name="title">Exames</x-slot>
 
         <x-slot name="buttons">
-            <div class="d-flex align-items-center justify-content-end gap-2">
-                <a href="{{ route('vet.exams.types') }}" class="btn btn-light">
-                    <i class="ri-file-list-3-line"></i>
-                    Tipos de Exame
-                </a>
-            </div>
+            <a href="{{ route('vet.exams.types') }}" type="button" class="btn btn-warning">
+                <i class="bx bx-file"></i> Tipos de exame
+            </a>
         </x-slot>
 
         <x-slot name="search_form">
             {!! Form::open()->fill(request()->all())->get() !!}
             <input type="hidden" name="attendance" value="{{ request('attendance') }}">
-            <div class="row g-2 align-items-end">
-                <div class="col-lg-4">
+            <div class="row">
+                <div class="col-md-3">
                     {!! Form::text('search', 'Buscar por paciente, tutor ou laboratório')
                         ->placeholder('Digite para pesquisar')
                         ->attrs(['class' => 'ignore']) !!}
                 </div>
-                <div class="col-sm-6 col-lg-3">
+                <div class="col-md-3">
                     {!! Form::select('status', 'Status', collect($filters['status'])->pluck('label', 'value')->toArray())
                         ->attrs(['class' => 'form-select ignore']) !!}
                 </div>
-                <div class="col-sm-6 col-lg-3">
+                <div class="col-md-3">
                     {!! Form::select('timeframe', 'Período', collect($filters['timeframes'])->pluck('label', 'value')->toArray())
                         ->attrs(['class' => 'form-select ignore']) !!}
                 </div>
-                <div class="col-sm-12 col-lg-2 d-flex align-items-end gap-2 mt-2 mt-lg-0 flex-wrap">
-                    <button class="btn btn-primary flex-fill" type="submit">
-                        <i class="ri-search-line"></i>
-                        Pesquisar
-                    </button>
-                    <a id="clear-filter" class="btn btn-danger flex-fill" href="{{ route('vet.exams.index') }}">
-                        <i class="ri-eraser-fill"></i>
-                        Limpar
-                    </a>
+                <div class="col-md-3 text-left">
+                    <br>
+                    <button class="btn btn-primary" type="submit"><i class="bx bx-search"></i> Pesquisar</button>
+                    <a id="clear-filter" class="btn btn-danger" href="{{ route('vet.exams.index') }}"><i class="bx bx-eraser"></i> Limpar</a>
                 </div>
             </div>
             {!! Form::close() !!}

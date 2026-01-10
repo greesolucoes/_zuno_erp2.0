@@ -273,7 +273,18 @@
         $exitFullscreenUrl = url()->current() . ($exitFullscreenQuery ? '?' . http_build_query($exitFullscreenQuery) : '');
     @endphp
 
-    <div class="vet-agenda__page {{ $isFullscreen ? 'vet-agenda__page--fullscreen' : '' }}">
+    <div class="page-content">
+        <div class="card">
+            <div class="card-body p-4">
+                <div class="page-breadcrumb d-sm-flex align-items-center mb-3">
+                    <div class="ms-auto"></div>
+                </div>
+
+                <div class="col">
+                    <h6 class="mb-0 text-uppercase">Agenda</h6>
+                    <hr/>
+
+                    <div class="vet-agenda__page {{ $isFullscreen ? 'vet-agenda__page--fullscreen' : '' }}">
         <div class="row g-4">
             <div class="col-12">
                 <div class="vet-agenda__header d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between gap-3">
@@ -530,6 +541,10 @@
                 </div>
             </div>
         @endunless
+    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 @endsection

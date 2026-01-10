@@ -172,7 +172,18 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid px-xxl-5 px-xl-4 px-lg-4 px-md-3 px-2 py-4">
+    <div class="page-content">
+        <div class="card">
+            <div class="card-body p-4">
+                <div class="page-breadcrumb d-sm-flex align-items-center mb-3">
+                    <div class="ms-auto"></div>
+                </div>
+
+                <div class="col">
+                    <h6 class="mb-0 text-uppercase">Cartões digitais de vacinação</h6>
+                    <hr/>
+
+                    <div class="container-fluid px-xxl-5 px-xl-4 px-lg-4 px-md-3 px-2 py-4">
         <div class="vaccine-card__hero mb-4">
             <div class="row align-items-center">
                 <div class="col-lg-7">
@@ -315,6 +326,10 @@
                     </div>
                 </div>
             @endforeach
+        </div>
+    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

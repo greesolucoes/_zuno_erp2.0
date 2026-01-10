@@ -4,38 +4,6 @@
 @php($canApply = $canApply ?? true)
 
 <tr>
-    <td>
-        <div class="d-flex align-items-center flex-wrap gap-1">
-            <button
-                type="button"
-                class="btn btn-sm btn-outline-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#{{ $modalId }}"
-                title="Visualizar detalhes da vacinação"
-            >
-                <i class="ri-eye-line"></i>
-            </button>
-            
-            @if($canApply && !empty($vaccination['id']))
-                <a
-                    href="{{ route('vet.vaccinations.apply', $vaccination['id']) }}"
-                    class="btn btn-sm btn-outline-success"
-                    title="Registrar aplicação"
-                >
-                    <i class="ri-syringe-line"></i>
-                </a>
-            @endif
-            @if(!empty(data_get($vaccination, 'attendance.url')))
-                <a
-                    href="{{ data_get($vaccination, 'attendance.url') }}"
-                    class="btn btn-sm btn-outline-info"
-                    title="Abrir atendimento vinculado"
-                >
-                    <i class="ri-calendar-check-line"></i>
-                </a>
-            @endif
-        </div>
-    </td>
     <td class="text-start">
         <div class="fw-semibold text-color">{{ $vaccination['patient'] ?? '—' }}</div>
         <div class="text-muted small">
@@ -68,6 +36,30 @@
         <div class="text-color fw-semibold">{{ $vaccination['next_due'] ?? '—' }}</div>
         <div class="text-muted small">
             {{ \Illuminate\Support\Str::limit($vaccination['observations'] ?? 'Sem observações adicionais.', 60) }}
+        </div>
+    </td>
+    <td>
+        <div class="d-flex align-items-center flex-wrap gap-1">
+            <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#{{ $modalId }}"
+                title="Visualizar detalhes da vacinação"
+            >
+                <i class="bx bx-show"></i>
+            </button>
+
+            @if($canApply && !empty($vaccination['id']))
+                <a href="{{ route('vet.vaccinations.apply', $vaccination['id']) }}" class="btn btn-success btn-sm" title="Registrar aplicação">
+                    <i class="bx bx-plus-medical"></i>
+                </a>
+            @endif
+            @if(!empty(data_get($vaccination, 'attendance.url')))
+                <a href="{{ data_get($vaccination, 'attendance.url') }}" class="btn btn-info btn-sm text-white" title="Abrir atendimento vinculado">
+                    <i class="bx bx-calendar-check"></i>
+                </a>
+            @endif
         </div>
     </td>
 </tr>

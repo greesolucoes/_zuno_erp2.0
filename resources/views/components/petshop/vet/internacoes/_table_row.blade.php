@@ -20,49 +20,6 @@
 @php($riskVariant = $colorMap[$hospitalization->risk_color] ?? 'secondary')
 
 <tr>
-    <td>
-        <div class="d-flex align-items-center gap-1">
-            <button
-                type="button"
-                class="border-0 m-0 p-0 bg-transparent text-color-back"
-                data-bs-toggle="modal"
-                data-bs-target="#{{ $modalId }}"
-                title="Visualizar internação"
-            >
-                <img
-                    height="26"
-                    width="26"
-                    src="/assets/images/svg/icone visualizacao.svg"
-                    alt="Visualizar internação"
-                >
-            </button>
-            
-            <a
-                href="{{ route('vet.hospitalizations.edit', $hospitalization) }}"
-                class="border-0 m-0 p-0 bg-transparent text-color-back d-inline-flex"
-                title="Editar internação"
-            >
-                <img
-                    height="26"
-                    width="26"
-                    src="/assets/images/svg/icone editar nfe.svg"
-                    alt="Editar internação"
-                >
-            </a>
-             <a
-                href="{{ route('vet.hospitalizations.status.index', $hospitalization) }}"
-                class="border-0 m-0 p-0 bg-transparent text-color-back d-inline-flex"
-                title="Status da internação"
-            >
-                <img
-                    height="26"
-                    width="26"
-                    src="/assets/images/svg/new_orcamento.svg"
-                    alt="Status da internação"
-                >
-            </a>
-        </div>
-    </td>
     <td class="text-start">
         <div class="fw-semibold text-color">{{ $patient?->nome ?? '—' }}</div>
         <div class="text-muted small">
@@ -118,5 +75,18 @@
     <td class="text-start">
         {{ optional($hospitalization->previsao_alta_em)->format('d/m/Y') ?? '—' }}<br>
         {{ optional($hospitalization->previsao_alta_em)->format('H:i') ?? '—' }}
+    </td>
+    <td>
+        <div class="d-flex gap-1">
+            <button type="button" class="btn btn-info btn-sm text-white" data-bs-toggle="modal" data-bs-target="#{{ $modalId }}" title="Visualizar internação">
+                <i class="bx bx-show"></i>
+            </button>
+            <a href="{{ route('vet.hospitalizations.edit', $hospitalization) }}" class="btn btn-warning btn-sm text-white" title="Editar internação">
+                <i class="bx bx-edit"></i>
+            </a>
+            <a href="{{ route('vet.hospitalizations.status.index', $hospitalization) }}" class="btn btn-primary btn-sm" title="Status da internação">
+                <i class="bx bx-list-check"></i>
+            </a>
+        </div>
     </td>
 </tr>
