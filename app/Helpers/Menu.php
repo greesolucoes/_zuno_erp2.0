@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Usuario;
 use App\Models\Tributacao;
+use Illuminate\Support\Facades\Route;
 
 class Menu
 {
@@ -212,6 +213,237 @@ class Menu
 				]
 			],
 			[
+				'titulo' => 'Pet Shop',
+				'icone' => 'bx bxs-bone',
+				'subs' => [
+					[
+						'nome' => 'Pets',
+						'rota' => $this->safeRoute('animais.pacientes.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Espécies',
+						'rota' => $this->safeRoute('animais.especies.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Raças',
+						'rota' => $this->safeRoute('animais.racas.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Pelagens',
+						'rota' => $this->safeRoute('animais.pelagens.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Usuários Plano',
+						'rota' => $this->safeRoute('petshop.planos.usuario.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Usuário Avulso',
+						'rota' => $this->safeRoute('petshop.planos.usuarios-avulso.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Gerenciar Planos',
+						'rota' => $this->safeRoute('petshop.gerenciar.planos'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Médicos',
+						'rota' => $this->safeRoute('vet.medicos.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Salas de Atendimento',
+						'rota' => $this->safeRoute('vet.salas-atendimento.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Salas de Internação',
+						'rota' => $this->safeRoute('vet.salas-internacao.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Checklist',
+						'rota' => $this->safeRoute('vet.checklist.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Alergias',
+						'rota' => $this->safeRoute('vet.allergies.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Condições crônicas',
+						'rota' => $this->safeRoute('vet.chronic-conditions.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Medicamentos',
+						'rota' => $this->safeRoute('vet.medicines.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Vacinas',
+						'rota' => $this->safeRoute('vacina.vacinas.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Modelo de Atendimento',
+						'rota' => $this->safeRoute('vet.modelos-atendimento.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Modelo de Avaliação',
+						'rota' => $this->safeRoute('vet.assessment-models.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Modelo de Prescrição',
+						'rota' => $this->safeRoute('vet.prescription-models.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Atendimentos',
+						'rota' => $this->safeRoute('vet.atendimentos.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Prontuários (Fila)',
+						'rota' => $this->safeRoute('vet.records.queue'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Prontuários (Histórico)',
+						'rota' => $this->safeRoute('vet.records.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Exames',
+						'rota' => $this->safeRoute('vet.exams.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Prescrições',
+						'rota' => $this->safeRoute('vet.prescriptions.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Vacinações (Painel)',
+						'rota' => $this->safeRoute('vet.vaccinations.panel'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Vacinações (Histórico)',
+						'rota' => $this->safeRoute('vet.vaccinations.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Aplicar Vacinação',
+						'rota' => $this->safeRoute('vet.vaccinations.scheduled'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Internações (Histórico)',
+						'rota' => $this->safeRoute('vet.hospitalizations.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Ocupação de Leitos',
+						'rota' => $this->safeRoute('vet.hospitalizations.occupancy'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Tele-entregas',
+						'rota' => $this->safeRoute('tele_entregas.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Tele-entregas - Tipos',
+						'rota' => $this->safeRoute('tipos_tele_entregas.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Hotel - Reservas',
+						'rota' => $this->safeRoute('hoteis.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Hotel - Quartos',
+						'rota' => $this->safeRoute('quartos.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Hotel - Eventos de Quarto',
+						'rota' => $this->safeRoute('quartos.eventos.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Hotel - Monitoramento (Hotel)',
+						'rota' => $this->safeRoute('hotel.monitoramento.hotel'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Hotel - Monitoramento (Quartos)',
+						'rota' => $this->safeRoute('hotel.monitoramento.quartos'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Creche - Reservas',
+						'rota' => $this->safeRoute('creches.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Creche - Turmas',
+						'rota' => $this->safeRoute('turmas.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Creche - Eventos de Turma',
+						'rota' => $this->safeRoute('turmas.eventos.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Creche - Monitoramento (Creche)',
+						'rota' => $this->safeRoute('creche.monitoramento.creche'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Creche - Monitoramento (Salas)',
+						'rota' => $this->safeRoute('creche.monitoramento.salas'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Estética - Gerenciar',
+						'rota' => $this->safeRoute('esteticas.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Estética - Pendentes',
+						'rota' => $this->safeRoute('petshop.esteticista.agendamentos.pendente'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Estética - Pendentes (Avulso)',
+						'rota' => $this->safeRoute('petshop.esteticista.agendamentos.pendente-avulso'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Agenda',
+						'rota' => $this->safeRoute('agendamentos.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Configurações Pet Shop',
+						'rota' => $this->safeRoute('petshop.config.index'),
+						'mostrar_sempre' => true,
+					],
+				]
+			],
+			[
 				'titulo' => 'Financeiro',
 				'icone' => 'bx bx-dollar',
 				'subs' => [
@@ -370,6 +602,11 @@ class Menu
 			],
 
 		];
+	}
+
+	private function safeRoute($routeName)
+	{
+		return Route::has($routeName) ? route($routeName) : '';
 	}
 
 	public function getMenu()

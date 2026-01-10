@@ -13,10 +13,22 @@ $menu = $menu->preparaMenu();
 	</a>
 	<ul>	
 		@foreach($m['subs'] as $i)
-		@if(!isset($i['rota_ativa']) && $i['rota'] != '')
-		<li><a @isset($i['target']) target="_blank" @endisset href="{{$i['rota']}}">
-			<i class="bx bx-circle" style="font-size: 10px;"></i>{{$i['nome']}}</a>
-		</li>
+		@php
+			$mostrarSempre = $i['mostrar_sempre'] ?? false;
+			$disabled = isset($i['rota_ativa']) && $i['rota_ativa'] === false;
+		@endphp
+		@if($i['rota'] != '' && (!isset($i['rota_ativa']) || $mostrarSempre))
+			<li>
+				@if($disabled)
+					<a class="text-muted" href="javascript:;" style="pointer-events:none;opacity:.6">
+						<i class="bx bx-circle" style="font-size: 10px;"></i>{{$i['nome']}}
+					</a>
+				@else
+					<a @isset($i['target']) target="_blank" @endisset href="{{$i['rota']}}">
+						<i class="bx bx-circle" style="font-size: 10px;"></i>{{$i['nome']}}
+					</a>
+				@endif
+			</li>
 		@endif
 		@endforeach
 	</ul>
