@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => $pageTitle ?? 'Vacinações Veterinárias'])
+@extends('default.layout', ['title' => $pageTitle ?? 'Vacinações Veterinárias'])
 
 @section('css')
     <style>

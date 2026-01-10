@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Atualizar exame'])
+@extends('default.layout', ['title' => 'Atualizar exame'])
 
 @section('content')
   <div class="card">

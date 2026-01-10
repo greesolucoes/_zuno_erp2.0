@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Configurações Pet Shop'])
+@extends('default.layout', ['title' => 'Configurações Pet Shop'])
 
 @section('content')
     <div class="card">

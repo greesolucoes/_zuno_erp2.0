@@ -85,7 +85,7 @@ class HotelController extends Controller
         $request->validate([
             // Dados da reserva
 
-            'animal_id' => 'required|exists:animais,id',
+            'animal_id' => 'required|exists:petshop_animais,id',
             'quarto_id' => 'required|exists:quartos,id',
             'colaborador_id' => 'nullable|exists:funcionarios,id',
             'checkin' => 'required|date',
@@ -369,7 +369,7 @@ class HotelController extends Controller
         $request->validate([
             // Dados da reserva
 
-            'animal_id' => 'required|exists:animais,id',
+            'animal_id' => 'required|exists:petshop_animais,id',
             'quarto_id' => 'required|exists:quartos,id',
             'colaborador_id' => 'nullable|exists:funcionarios,id',
             'checkin' => 'required|date',

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Petshop\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Empresa;
-use App\Models\Localizacao;
+use App\Models\Filial;
 use App\Models\Cliente;
 use App\Models\PortalUser;
 use App\Models\Petshop\Animal;
@@ -25,10 +25,13 @@ class ClienteController extends Controller
         $empresaModel = Empresa::all()->first(fn ($e) => Str::slug($e->nome) === $empresa);
         abort_if(!$empresaModel, 404);
 
-        $localModel = Localizacao::where('empresa_id', $empresaModel->id)
+        $filialModel = Filial::where('empresa_id', $empresaModel->id)
             ->get()
-            ->first(fn ($l) => Str::slug($l->nome) === $filial);
-        abort_if(!$localModel, 404);
+            ->first(function ($item) use ($filial) {
+                $nome = $item->descricao ?? $item->nome_fantasia ?? $item->razao_social ?? '';
+                return Str::slug($nome) === $filial;
+            });
+        abort_if(!$filialModel, 404);
 
         $pelagens = Pelagem::where('empresa_id', $empresaModel->id)->get();
         $especies = Especie::where('empresa_id', $empresaModel->id)->get();
@@ -36,9 +39,9 @@ class ClienteController extends Controller
 
         return view('public.petshop.cliente_form', [
             'empresa' => $empresaModel->nome,
-            'filial' => $localModel->nome,
+            'filial' => $filialModel->descricao ?? $filialModel->nome_fantasia ?? $filialModel->razao_social,
             'empresaId' => $empresaModel->id,
-            'localId' => $localModel->id,
+            'localId' => $filialModel->id,
             'pelagens' => $pelagens,
             'especies' => $especies,
             'racas' => $racas,
@@ -50,10 +53,13 @@ class ClienteController extends Controller
         $empresaModel = Empresa::all()->first(fn ($e) => Str::slug($e->nome) === $empresa);
         abort_if(!$empresaModel, 404);
 
-        $localModel = Localizacao::where('empresa_id', $empresaModel->id)
+        $filialModel = Filial::where('empresa_id', $empresaModel->id)
             ->get()
-            ->first(fn ($l) => Str::slug($l->nome) === $filial);
-        abort_if(!$localModel, 404);
+            ->first(function ($item) use ($filial) {
+                $nome = $item->descricao ?? $item->nome_fantasia ?? $item->razao_social ?? '';
+                return Str::slug($nome) === $filial;
+            });
+        abort_if(!$filialModel, 404);
 
         $request->merge([
             'status' => 1,
@@ -81,7 +87,7 @@ class ClienteController extends Controller
         $user = null;
 
         try {
-            DB::transaction(function () use ($data, $request, $empresaModel, $localModel, $password, &$user) {
+            DB::transaction(function () use ($data, $request, $empresaModel, $filialModel, $password, &$user) {
                 $cliente = Cliente::create([
                     'empresa_id' => $empresaModel->id,
                     'razao_social' => $data['nome'],
@@ -108,7 +114,7 @@ class ClienteController extends Controller
                     'password' => Hash::make($password),
                     'cliente_id' => $cliente->id,
                     'empresa_id' => $empresaModel->id,
-                    'local_id' => $localModel->id,
+                    'local_id' => $filialModel->id,
                 ]);
 
                 Animal::create([
@@ -121,7 +127,7 @@ class ClienteController extends Controller
                     'peso' => $request->input('pet_peso'),
                     'porte' => $request->input('pet_porte'),
                     'data_nascimento' => $request->input('pet_nascimento'),
-                    'tem_pedigree' => $request->boolean('pet_tem_pedigree') ? 'S' : 'N',
+                    'tem_pedigree' => $request->boolean('pet_tem_pedigree'),
                     'pedigree' => $request->input('pet_pedigree', ''),
                     'observacao' => $request->input('pet_observacoes'),
                     'empresa_id' => $empresaModel->id,

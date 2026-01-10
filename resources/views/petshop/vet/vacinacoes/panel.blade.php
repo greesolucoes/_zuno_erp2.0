@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Painel de vacinação veterinária'])
+@extends('default.layout', ['title' => 'Painel de vacinação veterinária'])
 
 @php
     use Illuminate\Support\Str;

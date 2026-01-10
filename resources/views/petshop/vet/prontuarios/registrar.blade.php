@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Registrar prontuário'])
+@extends('default.layout', ['title' => 'Registrar prontuário'])
 
 @section('css')
     <style>

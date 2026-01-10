@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Petshop\Public;
 
 use App\Http\Controllers\Controller;
-use App\Models\Localizacao;
+use App\Models\Filial;
 use App\Models\Petshop\Animal;
 use App\Models\Petshop\Estetica;
 use App\Models\Petshop\EsteticaServico;
@@ -101,7 +101,7 @@ class AgendamentosController extends Controller
         if ($user && $user->cliente && $user->cliente->empresa) {
             $empresa = $user->cliente->empresa;
 
-            $filiais = Localizacao::where('empresa_id', $empresa->id)->get();
+            $filiais = Filial::where('empresa_id', $empresa->id)->get();
 
             if ($filialId) {
                 $filialAtual = $filiais->firstWhere('id', $filialId);
@@ -187,7 +187,7 @@ class AgendamentosController extends Controller
         $fim = $inicio->copy()->addMinutes($duracao);
 
         $config = Configuracao::with('horarios')
-            ->where('localizacao_id', $request->local_id)
+            ->where('filial_id', $request->local_id)
             ->first();
 
         $diaSemana = Carbon::parse($request->data)->dayOfWeek;

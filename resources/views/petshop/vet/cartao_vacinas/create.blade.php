@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Novo Cartão Digital de Vacinação'])
+@extends('default.layout', ['title' => 'Novo Cartão Digital de Vacinação'])
 
 @section('css')
     <style>

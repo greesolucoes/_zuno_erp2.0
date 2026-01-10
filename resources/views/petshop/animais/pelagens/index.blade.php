@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Pelagens'])
+@extends('default.layout', ['title' => 'Pelagens'])
 
 @section('css')
     <style type="text/css">

@@ -13,7 +13,7 @@ class Consulta extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'animais_consultas';
+    protected $table = 'petshop_animais_consultas';
 
     protected $fillable = [
         'animal_id', 'diagnostico_id', 'exame_id',

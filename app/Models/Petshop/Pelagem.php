@@ -13,7 +13,7 @@ class Pelagem extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = 'animais_pelagens';
+    protected $table = 'petshop_animais_pelagens';
 
     protected $fillable = [
         'nome', 'empresa_id',

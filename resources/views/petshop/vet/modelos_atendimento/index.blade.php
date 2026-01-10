@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Modelos de Atendimento'])
+@extends('default.layout', ['title' => 'Modelos de Atendimento'])
 
 @section('content')
     @php

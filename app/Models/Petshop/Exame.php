@@ -11,7 +11,7 @@ class Exame extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = 'animais_exames';
+    protected $table = 'petshop_animais_exames';
 
     protected $fillable = [
         'empresa_id',

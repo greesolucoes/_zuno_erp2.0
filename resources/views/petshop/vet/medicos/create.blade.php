@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Cadastrar médico veterinário'])
+@extends('default.layout', ['title' => 'Cadastrar médico veterinário'])
 
 @section('content')
     <div class="card">

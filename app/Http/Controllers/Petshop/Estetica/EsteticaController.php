@@ -102,7 +102,7 @@ class EsteticaController extends Controller
         }
 
         $request->validate([
-            'animal_id'              => 'required|exists:animais,id',
+            'animal_id'              => 'required|exists:petshop_animais,id',
             'colaborador_id'      => 'nullable|exists:funcionarios,id',
             'servico_id'          => 'required|array|min:1',
             'servico_id.*'        => 'exists:servicos,id',
@@ -262,7 +262,7 @@ class EsteticaController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'animal_id'              => 'required|exists:animais,id',
+            'animal_id'              => 'required|exists:petshop_animais,id',
             'colaborador_id'      => 'nullable|exists:funcionarios,id',
             'servico_id'          => 'required|array|min:1',
             'servico_id.*'        => 'exists:servicos,id',

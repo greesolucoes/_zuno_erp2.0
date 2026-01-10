@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Nova condição crônica'])
+@extends('default.layout', ['title' => 'Nova condição crônica'])
 
 @section('content')
 <div class="card">

@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Agendar vacinação'])
+@extends('default.layout', ['title' => 'Agendar vacinação'])
 
 @section('css')
     <style>

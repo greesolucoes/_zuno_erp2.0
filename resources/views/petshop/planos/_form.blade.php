@@ -47,7 +47,7 @@
             <div class="tab-pane fade show active" id="dados" role="tabpanel" data-label="Plano">
                 <div class="row g-3 mt-3">
                     <input type="hidden" name="empresa_id" value="{{ data_get($planoData ?? [], 'empresa_id', request()->empresa_id) }}">
-                    <input type="hidden" name="local_id" value="{{ data_get($planoData ?? [], 'local_id', optional(__getLocalAtivo())->id) }}">
+                    <input type="hidden" name="filial_id" value="{{ data_get($planoData ?? [], 'filial_id', optional(__getLocalAtivo())->id) }}">
                     <div class="col-md-4">
                         {!! Form::text('slug', 'Slug')->attrs(['class' => 'text-uppercase'])->required() !!}
                     </div>

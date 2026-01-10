@@ -50,7 +50,7 @@ class CrecheController extends Controller
             ->with(['animal', 'cliente', 'turma'])
             ->when($pesquisa, function ($q) use ($pesquisa) {
                 $q->where(function ($sub) use ($pesquisa) {
-                    $sub->whereHas('animal', fn($q) => $q->where('animais.nome', 'like', "%{$pesquisa}%"))
+                    $sub->whereHas('animal', fn($q) => $q->where('petshop_animais.nome', 'like', "%{$pesquisa}%"))
                         ->orWhereHas('cliente', fn($q) => $q->where('clientes.razao_social', 'like', "%{$pesquisa}%"));
                 });
             })
@@ -589,7 +589,7 @@ class CrecheController extends Controller
         $request->validate([
             // Dados da reserva
 
-            'animal_id' => 'required|exists:animais,id',
+            'animal_id' => 'required|exists:petshop_animais,id',
             'turma_id' => 'required|exists:turmas,id',
             'colaborador_id' => 'nullable|exists:funcionarios,id',
             'data_entrada' => 'required|date',

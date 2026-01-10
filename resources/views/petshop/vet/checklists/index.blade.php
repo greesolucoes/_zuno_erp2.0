@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Checklists'])
+@extends('default.layout', ['title' => 'Checklists'])
 
 @section('content')
 <x-table

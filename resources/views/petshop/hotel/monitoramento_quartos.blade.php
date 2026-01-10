@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Monitoramento Quartos'])
+@extends('default.layout', ['title' => 'Monitoramento Quartos'])
 
 @section('content')
 <div class="container-fluid">

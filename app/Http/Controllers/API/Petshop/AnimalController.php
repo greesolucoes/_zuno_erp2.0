@@ -52,7 +52,7 @@ class AnimalController extends Controller
 
     public function storeEspecie(Request $request)
     {
-        $request->validate(['nome' => ['required', Rule::unique('animais_especies')->where('empresa_id', $request->empresa_id),],], ['nome.unique' => 'Já existe uma espécie com este nome.',]);
+        $request->validate(['nome' => ['required', Rule::unique('petshop_animais_especies')->where('empresa_id', $request->empresa_id),],], ['nome.unique' => 'Já existe uma espécie com este nome.',]);
         try {
             $item = Especie::create(['empresa_id' => $request->empresa_id, 'nome' => $request->nome]);
 
@@ -78,7 +78,7 @@ class AnimalController extends Controller
 
     public function storePelagem(Request $request)
     {
-        $request->validate(['nome' => ['required', Rule::unique('animais_pelagens')->where('empresa_id', $request->empresa_id),],], ['nome.unique' => 'Já existe uma pelagem com este nome.',]);
+        $request->validate(['nome' => ['required', Rule::unique('petshop_animais_pelagens')->where('empresa_id', $request->empresa_id),],], ['nome.unique' => 'Já existe uma pelagem com este nome.',]);
         try {
             $item = Pelagem::create(['empresa_id' => $request->empresa_id, 'nome' => $request->nome]);
 
@@ -105,7 +105,7 @@ class AnimalController extends Controller
 
     public function storeRaca(Request $request)
     {
-        $request->validate(['nome' => ['required', Rule::unique('animais_racas')->where('empresa_id', $request->empresa_id),],], ['nome.unique' => 'Já existe uma raça com este nome.',]);
+        $request->validate(['nome' => ['required', Rule::unique('petshop_animais_racas')->where('empresa_id', $request->empresa_id),],], ['nome.unique' => 'Já existe uma raça com este nome.',]);
         try {
             $item = Raca::create(['empresa_id' => $request->empresa_id, 'nome' => $request->nome, 'especie_id' => $request->especie_id ?? null]);
 

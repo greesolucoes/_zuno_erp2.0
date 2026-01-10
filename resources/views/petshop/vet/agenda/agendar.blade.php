@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Agendar atendimento médico'])
+@extends('default.layout', ['title' => 'Agendar atendimento médico'])
 
 @section('css')
     <style>

@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Emitir prescrição veterinária'])
+@extends('default.layout', ['title' => 'Emitir prescrição veterinária'])
 
 @section('css')
     <style>

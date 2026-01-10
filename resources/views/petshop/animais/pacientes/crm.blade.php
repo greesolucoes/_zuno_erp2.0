@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'CRM do Pet'])
+@extends('default.layout', ['title' => 'CRM do Pet'])
 
 @section('css')
     @parent

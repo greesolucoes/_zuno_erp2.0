@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Emitir laudo'])
+@extends('default.layout', ['title' => 'Emitir laudo'])
 
 @php
     $statusLabel = \App\Models\Petshop\VetExame::statusLabels()[$exam->status] ?? ucwords(str_replace('_', ' ', (string) $exam->status));

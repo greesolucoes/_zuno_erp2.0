@@ -19,7 +19,7 @@ class Plano extends Model
         'descricao',
         'ativo',
         'empresa_id',
-        'local_id',
+        'filial_id',
         'periodo',
         'frequencia_tipo',
         'frequencia_qtd',
@@ -45,9 +45,14 @@ class Plano extends Model
         return $this->belongsTo(\App\Models\Empresa::class, 'empresa_id');
     }
 
+    public function filial()
+    {
+        return $this->belongsTo(Filial::class, 'filial_id');
+    }
+
     public function local()
     {
-        return $this->belongsTo(Filial::class, 'local_id');
+        return $this->filial();
     }
 
     public function esteticas()

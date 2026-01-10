@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Atendimentos Veterinários'])
+@extends('default.layout', ['title' => 'Atendimentos Veterinários'])
 
 @section('content')
     @php

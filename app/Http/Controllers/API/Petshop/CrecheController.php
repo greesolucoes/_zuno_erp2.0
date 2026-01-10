@@ -81,7 +81,7 @@ class CrecheController extends Controller
         $request->validate([
             // Dados da reserva
 
-            'animal_id' => 'required|exists:animais,id',
+            'animal_id' => 'required|exists:petshop_animais,id',
             'turma_id' => 'required|exists:turmas,id',
             'colaborador_id' => 'nullable|exists:funcionarios,id',
             'data_entrada' => 'required|date',

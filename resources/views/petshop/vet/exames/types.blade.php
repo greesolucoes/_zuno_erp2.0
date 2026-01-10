@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Tipos de Exames'])
+@extends('default.layout', ['title' => 'Tipos de Exames'])
 
 @section('css')
     <style>

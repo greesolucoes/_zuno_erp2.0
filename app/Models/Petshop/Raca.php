@@ -12,7 +12,7 @@ class Raca extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = 'animais_racas';
+    protected $table = 'petshop_animais_racas';
 
     protected $fillable = [
         'nome', 'especie_id', 'empresa_id'

@@ -1,9 +1,9 @@
+@extends('default.layout', ['title' => $pageTitle ?? ($isEdit ?? false ? 'Editar internação' : 'Registrar internação')])
+
 @php
     $isEdit = $isEdit ?? false;
     $pageTitle = $pageTitle ?? ($isEdit ? 'Editar internação' : 'Registrar internação');
 @endphp
-
-@extends('layouts.app', ['title' => $pageTitle])
 
 @section('css')
     <style>

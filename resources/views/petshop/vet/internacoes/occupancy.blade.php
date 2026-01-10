@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Ocupação de Leitos'])
+@extends('default.layout', ['title' => 'Ocupação de Leitos'])
 
 @section('css')
     <style>

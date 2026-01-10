@@ -189,7 +189,7 @@ class PlanoController extends Controller
 
         $data = array_merge($validated, [
             'empresa_id' => request()->empresa_id,
-            'local_id' => optional(__getLocalAtivo())->id,
+            'filial_id' => optional(__getLocalAtivo())->id,
             'versoes' => $versoes,
         ]);
 
@@ -307,7 +307,7 @@ class PlanoController extends Controller
 
         $data = array_merge($validated, [
             'empresa_id' => request()->empresa_id,
-            'local_id' => optional(__getLocalAtivo())->id,
+            'filial_id' => optional(__getLocalAtivo())->id,
             'versoes' => $versoes,
         ]);
 

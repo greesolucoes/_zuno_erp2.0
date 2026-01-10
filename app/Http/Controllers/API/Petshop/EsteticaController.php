@@ -58,13 +58,13 @@ class EsteticaController extends Controller
         }
 
         $jornada_empresa_config = Configuracao::with('horarios')
-            ->where('localizacao_id', $request->empresa_id)
+            ->where('filial_id', $request->empresa_id)
             ->first();
 
         if (!$jornada_empresa_config) {
             $jornada_empresa_config = Configuracao::with('horarios')
                 ->where('empresa_id', $request->empresa_id)
-                ->whereNull('localizacao_id')
+                ->whereNull('filial_id')
                 ->first();
         }
 
@@ -145,7 +145,7 @@ class EsteticaController extends Controller
         }
 
         $request->validate([
-            'animal_id'           => 'required|exists:animais,id',
+            'animal_id'           => 'required|exists:petshop_animais,id',
             'colaborador_id'      => 'nullable|exists:funcionarios,id',
             'servico_id'          => 'required|array|min:1',
             'servico_id.*'        => 'exists:servicos,id',
@@ -252,7 +252,7 @@ class EsteticaController extends Controller
     public function updateEstetica(Request $request, $id)
     {
         $request->validate([
-            'animal_id'      => 'required|exists:animais,id',
+            'animal_id'      => 'required|exists:petshop_animais,id',
             'servico_id'    => 'required|exists:servicos,id',
             'colaborador_id' => 'nullable|exists:funcionarios,id',
             'entrada'        => 'required|date_format:Y-m-d',

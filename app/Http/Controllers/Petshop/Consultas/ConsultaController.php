@@ -20,7 +20,7 @@ class ConsultaController extends Controller
       ->with('animal')
       ->paginate(env("PAGINACAO"));
 
-      return view('animais.consultas.index', compact('data'));
+      return view('petshop.animais.consultas.index', compact('data'));
     }
 
     public function create()
@@ -31,7 +31,7 @@ class ConsultaController extends Controller
       $diagnosticos = Diagnostico::where('empresa_id', $empresa_id)->get();
       $exames = Exame::where('empresa_id', $empresa_id)->get();
 
-      return view('animais.consultas.create', compact( 'animais', "diagnosticos", "exames"));
+      return view('petshop.animais.consultas.create', compact( 'animais', "diagnosticos", "exames"));
     }
 
     public function store(Request $request)
@@ -78,7 +78,7 @@ class ConsultaController extends Controller
 
       $item->datahora_consulta = date('Y-m-d h:i', strtotime($item->datahora_consulta));
 
-      return view('animais.consultas.edit', compact('item', 'animais', 'diagnosticos', "exames"));
+      return view('petshop.animais.consultas.edit', compact('item', 'animais', 'diagnosticos', "exames"));
     }
 
     public function update(Request $request, $id)

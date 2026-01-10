@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Agenda Médica Veterinária'])
+@extends('default.layout', ['title' => 'Agenda Médica Veterinária'])
 
 @section('css')
     <link rel="stylesheet" href="/assets/vendor/fullcalendar/main.min.css">

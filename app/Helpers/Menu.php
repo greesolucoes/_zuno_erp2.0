@@ -214,7 +214,7 @@ class Menu
 			],
 			[
 				'titulo' => 'Pet Shop',
-				'icone' => 'bx bxs-bone',
+				'icone' => 'bx bx-bone',
 				'subs' => [
 					[
 						'nome' => 'Pets',

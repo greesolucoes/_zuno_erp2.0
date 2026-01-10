@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Fila de atendimento veterinário'])
+@extends('default.layout', ['title' => 'Fila de atendimento veterinário'])
 
 @php
     use Illuminate\Support\Str;

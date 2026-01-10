@@ -12,7 +12,7 @@ class Diagnostico extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = 'animais_diagnosticos';
+    protected $table = 'petshop_animais_diagnosticos';
 
     protected $fillable = [
         'empresa_id',
@@ -39,4 +39,3 @@ class Diagnostico extends Model
         return $this->belongsTo(Funcionario::class, 'funcionario_id');
     }
 }
-

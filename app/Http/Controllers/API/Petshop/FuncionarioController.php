@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API\Petshop;
 
 use App\Http\Controllers\Controller;
 use App\Models\Funcionario;
-use App\Models\Localizacao;
+use App\Models\Filial;
 use Illuminate\Http\Request;
 
 class FuncionarioController extends Controller
@@ -17,7 +17,7 @@ class FuncionarioController extends Controller
             return response()->json([]);
         }
 
-        $local = Localizacao::select('empresa_id')->find($localId);
+        $local = Filial::select('empresa_id')->find($localId);
         if (!$local) {
             return response()->json([]);
         }

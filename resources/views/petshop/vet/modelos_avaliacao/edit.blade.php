@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Editar Modelo de Avaliação'])
+@extends('default.layout', ['title' => 'Editar Modelo de Avaliação'])
 
 @section('content')
     <div class="card">

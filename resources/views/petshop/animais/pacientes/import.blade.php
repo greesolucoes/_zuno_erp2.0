@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Importar Pets'])
+@extends('default.layout', ['title' => 'Importar Pets'])
 
 @section('css')
     <style type="text/css">

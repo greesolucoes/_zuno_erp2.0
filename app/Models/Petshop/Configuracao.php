@@ -13,7 +13,7 @@ class Configuracao extends Model
 
     protected $fillable = [
         'empresa_id',
-        'localizacao_id',
+        'filial_id',
         'usar_agendamento_alternativo',
     ];
 

@@ -50,7 +50,7 @@ class HotelController extends Controller
         $query = Hotel::where('empresa_id', $empresa_id)
             ->when($pesquisa, function ($q) use ($pesquisa) {
                 $q->where(function ($sub) use ($pesquisa) {
-                    $sub->whereHas('animal', fn($q) => $q->where('animais.nome', 'like', "%{$pesquisa}%"))
+                    $sub->whereHas('animal', fn($q) => $q->where('petshop_animais.nome', 'like', "%{$pesquisa}%"))
                         ->orWhereHas('cliente', fn($q) => $q->where('clientes.razao_social', 'like', "%{$pesquisa}%"));
                 });
             })
@@ -167,7 +167,7 @@ class HotelController extends Controller
         $request->validate([
             // Dados da reserva
 
-            'animal_id' => 'required|exists:animais,id',
+            'animal_id' => 'required|exists:petshop_animais,id',
             'quarto_id' => 'required|exists:quartos,id',
             'colaborador_id' => 'nullable|exists:funcionarios,id',
             'checkin' => 'required|date',
@@ -539,7 +539,7 @@ class HotelController extends Controller
         $request->validate([
             // Dados da reserva
 
-            'animal_id' => 'required|exists:animais,id',
+            'animal_id' => 'required|exists:petshop_animais,id',
             'quarto_id' => 'required|exists:quartos,id',
             'colaborador_id' => 'nullable|exists:funcionarios,id',
             'checkin' => 'required|date',

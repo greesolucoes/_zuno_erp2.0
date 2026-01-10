@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Modelos de Avaliação'])
+@extends('default.layout', ['title' => 'Modelos de Avaliação'])
 
 @section('content')
     @php

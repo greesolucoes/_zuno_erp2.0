@@ -59,13 +59,13 @@ class AgendaEsteticaController extends Controller
 
         // Busca configuração da filial; se não existir, tenta configuração geral da empresa
         $config = Configuracao::with('horarios')
-            ->where('localizacao_id', $empresa_id)
+            ->where('filial_id', $empresa_id)
             ->first();
 
         if (!$config) {
             $config = Configuracao::with('horarios')
                 ->where('empresa_id', $empresa_id)
-                ->whereNull('localizacao_id')
+                ->whereNull('filial_id')
                 ->first();
         }
 
@@ -73,13 +73,13 @@ class AgendaEsteticaController extends Controller
         // Se ainda não encontrou configuração, tenta usar a empresa do colaborador
         if (!$config && $funcionario) {
             $config = Configuracao::with('horarios')
-                ->where('localizacao_id', $funcionario->empresa_id)
+                ->where('filial_id', $funcionario->empresa_id)
                 ->first();
 
             if (!$config) {
                 $config = Configuracao::with('horarios')
                     ->where('empresa_id', $funcionario->empresa_id)
-                    ->whereNull('localizacao_id')
+                    ->whereNull('filial_id')
                     ->first();
             }
         }

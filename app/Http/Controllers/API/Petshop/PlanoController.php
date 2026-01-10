@@ -22,8 +22,8 @@ class PlanoController extends Controller
             ->where('empresa_id', $empresaId)
             ->when($localId, function ($query) use ($localId) {
                 $query->where(function ($q) use ($localId) {
-                    $q->whereNull('local_id')
-                        ->orWhere('local_id', $localId);
+                    $q->whereNull('filial_id')
+                        ->orWhere('filial_id', $localId);
                 });
             })
             ->get();
@@ -46,8 +46,8 @@ class PlanoController extends Controller
             ->where('empresa_id', $empresaId)
             ->when($localId, function ($query) use ($localId) {
                 $query->where(function ($q) use ($localId) {
-                    $q->whereNull('local_id')
-                        ->orWhere('local_id', $localId);
+                    $q->whereNull('filial_id')
+                        ->orWhere('filial_id', $localId);
                 });
             })
             ->findOrFail($id);
@@ -90,8 +90,8 @@ class PlanoController extends Controller
             ->where('empresa_id', $empresaId)
             ->when($localId, function ($query) use ($localId) {
                 $query->where(function ($q) use ($localId) {
-                    $q->whereNull('local_id')
-                        ->orWhere('local_id', $localId);
+                    $q->whereNull('filial_id')
+                        ->orWhere('filial_id', $localId);
                 });
             })
             ->when($request->filled('pesquisa'), function ($query) use ($request) {

@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Consultas Veterinárias'])
+@extends('default.layout', ['title' => 'Consultas Veterinárias'])
 
 @section('css')
     <style>

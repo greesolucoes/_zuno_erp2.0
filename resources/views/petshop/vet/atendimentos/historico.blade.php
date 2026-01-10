@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Histórico do atendimento'])
+@extends('default.layout', ['title' => 'Histórico do atendimento'])
 
 @section('css')
     @parent

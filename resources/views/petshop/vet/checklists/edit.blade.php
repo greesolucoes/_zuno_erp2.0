@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Editar checklist'])
+@extends('default.layout', ['title' => 'Editar checklist'])
 
 @section('content')
 <div class="card">

@@ -16,7 +16,7 @@ class ConfiguracaoController extends Controller
             return response()->json(['usar_agendamento_alternativo' => false]);
         }
 
-        $config = Configuracao::where('localizacao_id', $localId)->first();
+        $config = Configuracao::where('filial_id', $localId)->first();
 
         return response()->json([
             'usar_agendamento_alternativo' => (bool) optional($config)->usar_agendamento_alternativo,

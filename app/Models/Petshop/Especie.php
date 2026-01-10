@@ -12,7 +12,7 @@ class Especie extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = 'animais_especies';
+    protected $table = 'petshop_animais_especies';
 
     protected $fillable = [
         'nome', 'empresa_id'

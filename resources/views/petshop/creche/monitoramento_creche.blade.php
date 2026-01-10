@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Monitoramento Creche'])
+@extends('default.layout', ['title' => 'Monitoramento Creche'])
 
 @section('content')
 <div class="mb-3">

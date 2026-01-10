@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Novo status da internação'])
+@extends('default.layout', ['title' => 'Novo status da internação'])
 
 @php($patient = $internacao->animal)
 

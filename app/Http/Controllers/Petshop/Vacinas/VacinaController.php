@@ -50,7 +50,7 @@ class VacinaController extends Controller
         $speciesFilter = $this->normalizarFiltroSpecies($request->input('species'));
 
         if (! empty($speciesFilter)) {
-            $query->whereHas('especies', fn($q) => $q->whereIn('animais_especies.id', $speciesFilter));
+            $query->whereHas('especies', fn($q) => $q->whereIn('petshop_animais_especies.id', $speciesFilter));
         }
 
         $vacinas = $query

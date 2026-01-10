@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Registrar atendimento'])
+@extends('default.layout', ['title' => 'Registrar atendimento'])
 
 @section('css')
     <style>

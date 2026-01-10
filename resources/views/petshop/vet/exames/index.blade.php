@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Histórico de Exames'])
+@extends('default.layout', ['title' => 'Histórico de Exames'])
 
 @section('content')
     <x-table

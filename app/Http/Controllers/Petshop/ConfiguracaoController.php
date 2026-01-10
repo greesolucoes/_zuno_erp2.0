@@ -12,18 +12,20 @@ class ConfiguracaoController extends Controller
 {
    public function index()
     {
-        $empresa = Auth::user()->empresa->empresa ?? null;
-        $local = Auth::user()->locais->first()->localizacao ?? null;
+        $usuario = Auth::user();
+        $empresa = $usuario?->empresa ?? null;
+        $filial = $usuario?->filial ?? null;
 
         $empresaSlug = $empresa ? Str::slug($empresa->nome) : 'empresa';
-        $localSlug = $local ? Str::slug($local->nome) : 'filial';
+        $filialLabel = $filial?->descricao ?? $filial?->nome_fantasia ?? $filial?->razao_social ?? 'filial';
+        $filialSlug = $filial ? Str::slug($filialLabel) : 'filial';
 
-        $link = url("petshop/{$empresaSlug}/{$localSlug}");
+        $link = url("petshop/{$empresaSlug}/{$filialSlug}");
 
         $config = Configuracao::firstOrCreate(
             [
-                'empresa_id' => $empresa->id ?? null,
-                'localizacao_id' => $local->id ?? null,
+                'empresa_id' => $empresa?->id,
+                'filial_id' => $filial?->id,
             ]
         );
 
@@ -34,13 +36,14 @@ class ConfiguracaoController extends Controller
 
     public function store(Request $request)
     {
-        $empresa = Auth::user()->empresa->empresa ?? null;
-        $local = Auth::user()->locais->first()->localizacao ?? null;
+        $usuario = Auth::user();
+        $empresa = $usuario?->empresa ?? null;
+        $filial = $usuario?->filial ?? null;
 
         $config = Configuracao::firstOrCreate(
             [
-                'empresa_id' => $empresa->id ?? null,
-                'localizacao_id' => $local->id ?? null,
+                'empresa_id' => $empresa?->id,
+                'filial_id' => $filial?->id,
             ]
         );
 

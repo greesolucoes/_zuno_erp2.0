@@ -39,7 +39,7 @@ class AnimalEspecieController extends Controller
     $request->validate([
       'nome' => [
         'required',
-        Rule::unique('animais_especies')
+        Rule::unique('petshop_animais_especies')
           ->where(function ($query) use ($request) {
             return $query->where('empresa_id', Auth::user()?->empresa?->empresa_id)
               ->whereRaw('LOWER(nome) = ?', [strtolower($request->nome)]);
@@ -77,7 +77,7 @@ class AnimalEspecieController extends Controller
     $request->validate([
       'nome' => [
         'required',
-        Rule::unique('animais_especies')
+        Rule::unique('petshop_animais_especies')
           ->where(function ($query) use ($request) {
             return $query->where('empresa_id', Auth::user()?->empresa?->empresa_id)
               ->whereRaw('LOWER(nome) = ?', [strtolower($request->nome)]);

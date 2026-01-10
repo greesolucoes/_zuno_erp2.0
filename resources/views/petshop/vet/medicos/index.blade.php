@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Médicos Veterinários'])
+@extends('default.layout', ['title' => 'Médicos Veterinários'])
 
 @section('content')
     <x-table

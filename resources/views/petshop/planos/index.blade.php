@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Planos Petshop'])
+@extends('default.layout', ['title' => 'Planos Petshop'])
 
 @section('content')
 <x-table

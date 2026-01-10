@@ -19,7 +19,7 @@ class Animal extends Model
     use UppercaseFillable;
     use SoftDeletes;
 
-    protected $table = 'animais';
+    protected $table = 'petshop_animais';
 
     protected $fillable = [
       'cliente_id',  'especie_id', 'raca_id', 'pelagem_id', 'cor', 'nome',
