@@ -19,11 +19,10 @@
             ->multipart()
             !!}
             <div class="pl-lg-4">
-                @include('animais.pelagens._forms')
+                @include('petshop.animais.pelagens._forms')
             </div>
             {!!Form::close()!!}
         </div>
     </div>
 @endsection
-
 
