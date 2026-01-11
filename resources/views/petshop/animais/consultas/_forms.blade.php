@@ -3,12 +3,12 @@
     <div class="col-md-4 col-12">
       @isset($item)
         {!!Form::select('animal_id', 'Pet', [$item->animal->id => $item->animal->nome] + $animais->pluck('nome', 'id')->all())
-        ->attrs(['class' => 'form-select'])
+        ->attrs(['class' => 'form-select select2'])
         ->required()
         !!}
       @else
         {!!Form::select('animal_id', 'Pet', ['' => 'Selecione'] + $animais->pluck('nome', 'id')->all())
-        ->attrs(['class' => 'form-select'])
+        ->attrs(['class' => 'form-select select2'])
         ->required()
         !!}
       @endif
@@ -19,12 +19,12 @@
     <div class="col-md-4 col-12">
         @isset($item)
         {!!Form::select('exame_id', 'Exame', $exames->pluck('nome', 'id')->all())
-        ->attrs(['class' => 'form-select'])
+        ->attrs(['class' => 'form-select select2'])
         ->required()
         !!}
         @else
         {!!Form::select('exame_id', 'Exame', ['' => 'Selecione'] + $exames->pluck('nome', 'id')->all())
-        ->attrs(['class' => 'form-select'])
+        ->attrs(['class' => 'form-select select2'])
         ->required()
         !!}
         @endif
@@ -34,7 +34,7 @@
   @if(isset($diagnosticos))
     <div class="col-md-4 col-12">
         {!!Form::select('diagnostico_id', 'Diagnóstico', ['' => 'Selecione'] + $diagnosticos->pluck('nome', 'id')->all())
-        ->attrs(['class' => 'form-select'])
+        ->attrs(['class' => 'form-select select2'])
         !!}
     </div>
   @endif
@@ -42,7 +42,7 @@
   <div class="col-md-4 col-12">
     {!!Form::select('status', 'Status', ['' => 'Selecione o status', 'pendente' => 'Em andamento', 'finalizado' => 'Finalizado', 'cancelado' => 'Cancelado'])
     ->required()
-    ->attrs(['class' => 'form-select'])
+    ->attrs(['class' => 'form-select select2'])
     !!}
   </div>
 
@@ -54,10 +54,8 @@
     {!!Form::textarea('observacao', 'Observações')->placeholder('Digite as observações aqui...')!!}
   </div>
 
-  <div class="mt-4 col-12 d-flex align-items-center justify-content-center gap-2">
-    <a href="{{ route('animais.consultas.index') }}" class="btn btn-secondary px-5">Cancelar</a>
-
-    <button type="submit" class="btn btn-success px-5" id="btn-store">Salvar</button>
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary px-5" id="btn-store">Salvar</button>
   </div>
 </div>
 

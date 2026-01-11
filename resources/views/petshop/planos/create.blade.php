@@ -1,21 +1,28 @@
 @extends('default.layout', ['title' => 'Novo Plano Petshop'])
 
 @section('content')
-    <div class="card">
-        <div class="card-header d-flex align-items-center justify-content-between">
-            <h3 class="text-color">Novo Plano</h3>
-            <a href="{{ route('petshop.gerenciar.planos', ['page' => request()->query('page', 1)]) }}" class="btn btn-danger btn-sm px-3">
-                <i class="ri-arrow-left-double-fill"></i>Voltar
-            </a>
-        </div>
-        <div class="card-body">
-            {!! Form::open()->post()->route('petshop.planos.store')->id('main-form')->fill($planoData ?? []) !!}
-                <div class="pl-lg-4">
-                    @include('petshop.planos._form', ['servicos' => $servicos ?? null, 'produtos' => $produtos ?? null, 'planoData' => $planoData ?? null])
-                </div>
-            {!! Form::close() !!}
-        </div>
-    </div>
+<div class="page-content">
+	<div class="card border-top border-0 border-4 border-primary">
+		<div class="card-body p-5">
+			<div class="page-breadcrumb d-sm-flex align-items-center mb-3">
+				<div class="ms-auto">
+					<a href="{{ route('petshop.gerenciar.planos', ['page' => request()->query('page', 1)]) }}" type="button" class="btn btn-light btn-sm">
+						<i class="bx bx-arrow-back"></i> Voltar
+					</a>
+				</div>
+			</div>
+			<div class="card-title d-flex align-items-center">
+				<h5 class="mb-0 text-primary">Novo Plano</h5>
+			</div>
+			<hr>
+			{!! Form::open()->post()->route('petshop.planos.store')->id('main-form')->fill($planoData ?? []) !!}
+			<div class="pl-lg-4">
+				@include('petshop.planos._form', ['servicos' => $servicos ?? null, 'produtos' => $produtos ?? null, 'planoData' => $planoData ?? null])
+			</div>
+			{!! Form::close() !!}
+		</div>
+	</div>
+</div>
 @endsection
 
 @section('js')

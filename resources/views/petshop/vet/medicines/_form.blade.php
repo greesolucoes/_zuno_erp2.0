@@ -542,7 +542,7 @@
 </div>
 
 <div class="d-flex justify-content-end gap-2 mt-4">
-    <button type="submit" class="btn btn-success px-5">
+    <button type="submit" class="btn btn-primary px-5">
         <i class="ri-save-3-fill"></i>
         Salvar
     </button>

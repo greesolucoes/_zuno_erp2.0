@@ -2,14 +2,17 @@
 
 @section('content')
     <div class="page-content">
-        <div class="card">
-            <div class="card-body p-4">
+        <div class="card border-top border-0 border-4 border-primary">
+            <div class="card-body p-5">
                 <div class="page-breadcrumb d-sm-flex align-items-center mb-3">
                     <div class="ms-auto"></div>
                 </div>
 
                 <div class="col">
-                    <h6 class="mb-0 text-uppercase">Configurações do Pet Shop</h6>
+                    <div class="card-title d-flex align-items-center">
+                        <h5 class="mb-0 text-primary">Configurações do Pet Shop</h5>
+                    </div>
+                    <hr>
 
                     <p class="mt-3 mb-1">Link público para o formulário do cliente:</p>
                     <p class="mb-3"><a href="{{ $link }}" target="_blank">{{ $link }}</a></p>
@@ -56,7 +59,7 @@
                         </div>
 
                         <div class="mt-4">
-                            <button type="submit" class="btn btn-success px-5">Salvar</button>
+                            <button type="submit" class="btn btn-primary px-5">Salvar</button>
                         </div>
                     {!! Form::close() !!}
                 </div>

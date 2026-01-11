@@ -169,5 +169,5 @@
 </div>
 
 <div class="mt-4 col-12" style="text-align: right;">
-    <button id="submit-btn" type="submit" class="btn btn-success px-5">Salvar</button>
+    <button id="submit-btn" type="submit" class="btn btn-primary px-5">Salvar</button>
 </div>

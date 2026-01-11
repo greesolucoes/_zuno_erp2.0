@@ -33,7 +33,7 @@
     </div>
 
     <div class="col-12 mt-4 d-flex align-items-center justify-content-end gap-2">
-        <button type="submit" class="btn btn-success px-5">
+        <button type="submit" class="btn btn-primary px-5">
             {{ isset($currentAllergy) ? 'Atualizar' : 'Salvar' }}
         </button>
     </div>

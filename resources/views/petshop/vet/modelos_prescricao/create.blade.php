@@ -22,17 +22,19 @@
         }
     @endphp
 
-    <div class="card">
+    <div class="page-content">
+    <div class="card border-top border-0 border-4 border-primary">
         <div class="card-header d-flex align-items-center justify-content-between">
-            <h3 class="text-color mb-0">Criar Modelo de Prescrição</h3>
+            <h5 class="mb-0 text-primary">Criar Modelo de Prescrição</h5>
 
             <a href="{{ route('vet.prescription-models.index', ['page' => request()->query('page', 1)]) }}"
-               class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-2">
-                <i class="ri-arrow-left-double-fill"></i>Voltar
+               type="button"
+               class="btn btn-light btn-sm d-flex align-items-center gap-1 px-2">
+                <i class="bx bx-arrow-back"></i> Voltar
             </a>
         </div>
 
-        <div class="card-body">
+        <div class="card-body p-5">
             {!! Form::open()->post()->id('form-modelos-prescricao')->route('vet.prescription-models.store')->attrs(['autocomplete' => 'off']) !!}
                 <div class="pl-lg-4">
                     <div class="row g-3">
@@ -217,12 +219,12 @@
                             Cancelar
                         </a>
 
-                        <button type="button" class="btn btn-success px-4 btn-preview-form">
+                        <button type="button" class="btn btn-dark px-4 btn-preview-form">
                             <i class="ri-eye-line me-1"></i>
                             Visualizar simulação
                         </button>
 
-                        <button type="submit" class="btn btn-success px-4">
+                        <button type="submit" class="btn btn-primary px-4">
                             Salvar Modelo
                         </button>
                     </div>
@@ -447,6 +449,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 @endsection
 

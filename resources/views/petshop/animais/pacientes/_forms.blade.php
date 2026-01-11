@@ -10,12 +10,12 @@
     <div class="w-100">
       @isset($item)
       {!!Form::select('cliente_id', 'Cliente', [$item->cliente->id => $item->cliente->razao_social] + $clientes->pluck('razao_social', 'id')->all())
-      ->attrs(['class' => 'form-select'])
+      ->attrs(['class' => 'form-select select2'])
       ->required()
       !!}
       @else
       {!!Form::select('cliente_id', 'Cliente', ['' => 'Selecione'] + $clientes->pluck('razao_social', 'id')->all())
-      ->attrs(['class' => 'form-select'])
+      ->attrs(['class' => 'form-select select2'])
       ->required()
       !!}
       @endif
@@ -34,7 +34,7 @@
     <div class="w-100">
       {!!Form::select('especie_id', 'Espécie', ['' => 'Selecione a espécie'] + $especies->pluck('nome', 'id')->all())
         ->required()
-        ->attrs(['class' => 'form-select'])
+        ->attrs(['class' => 'form-select select2'])
         !!}
       </div>
       <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modal_especie" type="button">
@@ -49,7 +49,7 @@
       {!!Form::select('raca_id', 'Raça', ['' => 'Selecione a raça'] + $racas->pluck('nome', 'id')->all())
         ->required()
         ->disabled()
-        ->attrs(['class' => 'form-select'])
+        ->attrs(['class' => 'form-select select2'])
         !!}
       </div>
       <button 
@@ -64,7 +64,7 @@
       <div class="w-100">
         {!!Form::select('pelagem_id', 'Pelagem', ['' => 'Selecione a pelagem'] + $pelagens->pluck('nome', 'id')
           ->all())
-          ->attrs(['class' => 'form-select'])
+          ->attrs(['class' => 'form-select select2'])
         !!}
       </div>
       <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modal_pelagem"
@@ -77,7 +77,7 @@
         <div class="w-100">
         {!! Form::text('cor', 'Cor')
           ->value(isset($item) ? $item->cor : '')
-          ->attrs(['class' => 'form-control text-uppercase'])
+          ->attrs(['class' => 'text-uppercase'])
           ->placeholder('Digite a Cor')
         !!}
         </div>
@@ -87,7 +87,7 @@
   <div class="col-md-2 col-6">
     {!!Form::select('sexo', 'Sexo', ['' => 'Selecione', 'M' => 'Macho', 'F' => 'Fêmea', 'I' => 'Indefinido'])
     ->required()
-    ->attrs(['class' => 'form-select'])
+    ->attrs(['class' => 'form-select select2'])
     !!}
   </div>
 
@@ -128,7 +128,7 @@
   <div class="col-md-2 col-6">
     {!!Form::select('tem_pedigree', 'Possui pedigree?', ['' => 'Selecione', 'S' => 'Sim', 'N' => 'Não'])
     ->required()
-    ->attrs(['class' => 'form-select'])
+    ->attrs(['class' => 'form-select select2'])
     !!}
   </div>
 
@@ -145,18 +145,14 @@
     ->placeholder('Digite as observações')!!}
   </div>
 
-  <div class="mt-4 col-12 d-flex align-items-center justify-content-end gap-2">
-    <button type="submit" class="btn btn-success px-5" id="btn-store">Salvar</button>
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary px-5" id="btn-store">Salvar</button>
   </div>
 </div>
 
 @section('js')
 <script type="text/javascript" src="/js/novo_pet.js"></script>
 <script type="text/javascript" src="/js/novo_cliente.js"></script>
-@endsection
-
-
-@section('js')
 <script type="text/javascript">
   function ageCalculator(inputAge) {
     //collect input from HTML form and convert into date format

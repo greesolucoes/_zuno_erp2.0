@@ -201,7 +201,7 @@
 </div>
 
 <div class="col-12 text-end mt-5">
-    <button type="submit" class="btn btn-success" id="btn-store">Salvar</button>
+    <button type="submit" class="btn btn-primary px-5" id="btn-store">Salvar</button>
 </div>
 
 @section('js')

@@ -10,12 +10,8 @@
     !!}
   </div>
 
-  <div class="mt-4 col-12 d-flex align-items-center justify-content-center gap-2">
-    <a href="{{ route('animais.exames.index') }}" class="btn btn-secondary px-5">Cancelar</a>
-
-    <button type="submit" class="btn btn-success px-5" id="btn-store">
-      Salvar
-    </button>
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary px-5" id="btn-store">Salvar</button>
   </div>
 </div>
 

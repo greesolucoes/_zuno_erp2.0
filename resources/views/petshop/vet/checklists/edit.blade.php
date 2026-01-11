@@ -1,25 +1,32 @@
 @extends('default.layout', ['title' => 'Editar checklist'])
 
 @section('content')
-<div class="card">
-    <div class="card-header d-flex align-items-center justify-content-between">
-        <h3 class="text-color">Editar checklist</h3>
+<div class="page-content">
+	<div class="card border-top border-0 border-4 border-primary">
+		<div class="card-body p-5">
+			<div class="page-breadcrumb d-sm-flex align-items-center mb-3">
+				<div class="ms-auto">
+					<a href="{{ route('vet.checklist.index', ['page' => request()->query('page', 1)]) }}" type="button" class="btn btn-light btn-sm">
+						<i class="bx bx-arrow-back"></i> Voltar
+					</a>
+				</div>
+			</div>
 
-        <a href="{{ route('vet.checklist.index', ['page' => request()->query('page', 1)]) }}" class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-2">
-            <i class="ri-arrow-left-double-fill"></i>Voltar
-        </a>
-    </div>
+			<div class="card-title d-flex align-items-center">
+				<h5 class="mb-0 text-primary">Editar checklist</h5>
+			</div>
+			<hr>
 
-    <div class="card-body">
-        {!! Form::open()
-            ->fill($checklist)
-            ->put()
-            ->id('form-checklists')
-            ->route('vet.checklist.update', [$checklist->id]) !!}
-        <div class="pl-lg-4">
-            @include('petshop.vet.checklists._form', ['checklist' => $checklist])
-        </div>
-        {!! Form::close() !!}
-    </div>
+			{!! Form::open()
+			->fill($checklist)
+			->put()
+			->id('form-checklists')
+			->route('vet.checklist.update', [$checklist->id]) !!}
+			<div class="pl-lg-4">
+				@include('petshop.vet.checklists._form', ['checklist' => $checklist])
+			</div>
+			{!! Form::close() !!}
+		</div>
+	</div>
 </div>
 @endsection

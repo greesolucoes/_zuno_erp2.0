@@ -27,15 +27,21 @@
 @endsection
 
 @section('content')
-    <div class="card">
-        <div class="card-body">
-            <div class="mb-3 d-flex align-items-center justify-content-between">
-                <h3 class="text-color">Importar Pets</h3>
-
-                <a href="{{ route('animais.pacientes.index', ['page' => request()->query('page', 1)]) }}" class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-2">
-                    <i class="ri-arrow-left-double-fill"></i>Voltar
-                </a>
+<div class="page-content">
+    <div class="card border-top border-0 border-4 border-primary">
+        <div class="card-body p-5">
+            <div class="page-breadcrumb d-sm-flex align-items-center mb-3">
+                <div class="ms-auto">
+                    <a href="{{ route('animais.pacientes.index', ['page' => request()->query('page', 1)]) }}" type="button" class="btn btn-light btn-sm">
+                        <i class="bx bx-arrow-back"></i> Voltar
+                    </a>
+                </div>
             </div>
+
+            <div class="card-title d-flex align-items-center">
+                <h5 class="mb-0 text-primary">Importar Pets</h5>
+            </div>
+            <hr>
 
             <p>Campos com <span class="text-danger">*</span> são obrigatórios</p>
 
@@ -115,7 +121,7 @@
                 @csrf
                 <div>
                     <h4 class="mb-3 text-color">Importar planilha <small>(Somente arquivos .xls ou .xlsx)</small></h4>
-                    <span class="btn btn-success btn-file">
+                    <span class="btn btn-primary btn-file">
                         <i class="ri-file-search-line"></i>
                         Procurar arquivo
                     </span>
@@ -127,7 +133,7 @@
                         <span style="margin-left: 10px" class="text-danger" id="filename"></span>
                     </h5>
                     <div class="d-flex gap-2 mt-3 new-colors">
-                        <button class="btn btn-success" id="cancel-btn" type="button">
+                        <button class="btn btn-light" id="cancel-btn" type="button">
                             Cancelar
                         </button>
                         <button class="btn btn-primary" type="submit">
@@ -138,6 +144,7 @@
             {!! Form::close() !!}
         </div>
     </div>
+</div>
 @endsection
 
 @section('js')

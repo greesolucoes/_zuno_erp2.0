@@ -3,29 +3,32 @@
 @php($patient = $internacao->animal)
 
 @section('content')
-    <div class="card">
-        <div class="card-header d-flex align-items-center justify-content-between">
-            <div>
-                <h3 class="text-color mb-0">Novo status para {{ $patient?->nome ?? 'paciente' }}</h3>
-                <span class="text-muted small">Internação #{{ $internacao->id }}</span>
-            </div>
-            <a
-                href="{{ route('vet.hospitalizations.status.index', $internacao) }}"
-                class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-2"
-            >
-                <i class="ri-arrow-left-double-fill"></i>Voltar
-            </a>
-        </div>
+<div class="page-content">
+	<div class="card border-top border-0 border-4 border-primary">
+		<div class="card-body p-5">
+			<div class="page-breadcrumb d-sm-flex align-items-center mb-3">
+				<div class="ms-auto">
+					<a href="{{ route('vet.hospitalizations.status.index', $internacao) }}" type="button" class="btn btn-light btn-sm">
+						<i class="bx bx-arrow-back"></i> Voltar
+					</a>
+				</div>
+			</div>
 
-        <div class="card-body">
-            {!! Form::open()->post()->route('vet.hospitalizations.status.store', ['internacao' => $internacao->id]) !!}
-                <div class="pl-lg-4">
-                    @include('petshop.vet.internacoes.status._form', [
-                        'statusRecord' => null,
-                        'evolutionOptions' => $evolutionOptions,
-                    ])
-                </div>
-            {!! Form::close() !!}
-        </div>
-    </div>
+			<div class="card-title">
+				<h5 class="mb-0 text-primary">Novo status para {{ $patient?->nome ?? 'paciente' }}</h5>
+				<span class="text-muted small">Internação #{{ $internacao->id }}</span>
+			</div>
+			<hr>
+
+			{!! Form::open()->post()->route('vet.hospitalizations.status.store', ['internacao' => $internacao->id]) !!}
+			<div class="pl-lg-4">
+				@include('petshop.vet.internacoes.status._form', [
+					'statusRecord' => null,
+					'evolutionOptions' => $evolutionOptions,
+				])
+			</div>
+			{!! Form::close() !!}
+		</div>
+	</div>
+</div>
 @endsection

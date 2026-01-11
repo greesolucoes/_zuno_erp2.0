@@ -1,27 +1,33 @@
 @extends('default.layout', ['title' => 'Nova consulta'])
 
 @section('content')
-  <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h4 class="text-color">Nova consulta</h4>
+<div class="page-content">
+	<div class="card border-top border-0 border-4 border-primary">
+		<div class="card-body p-5">
+			<div class="page-breadcrumb d-sm-flex align-items-center mb-3">
+				<div class="ms-auto">
+					<a href="{{ route('animais.consultas.index', ['page' => request()->query('page', 1)]) }}" type="button" class="btn btn-light btn-sm">
+						<i class="bx bx-arrow-back"></i> Voltar
+					</a>
+				</div>
+			</div>
 
-        <a href="{{ route('animais.consultas.index', ['page' => request()->query('page', 1)]) }}" class="btn btn-danger btn-sm px-3">
-            <i class="ri-arrow-left-double-fill"></i>Voltar
-        </a>
-      </div>
+			<div class="card-title d-flex align-items-center">
+				<h5 class="mb-0 text-primary">Nova consulta</h5>
+			</div>
+			<hr>
 
-      <div class="card-body">
-          {!!Form::open()
-          ->post()
-          ->id('form-consultas')
-          ->route('animais.consultas.store')
-          ->multipart()
-          !!}
-            <div class="pl-lg-4">
-                @include('petshop.animais.consultas._forms')
-            </div>
-          {!!Form::close()!!}
-      </div>
-  </div>
+			{!!Form::open()
+			->post()
+			->id('form-consultas')
+			->route('animais.consultas.store')
+			->multipart()
+			!!}
+			<div class="pl-lg-4">
+				@include('petshop.animais.consultas._forms')
+			</div>
+			{!!Form::close()!!}
+		</div>
+	</div>
+</div>
 @endsection
-
