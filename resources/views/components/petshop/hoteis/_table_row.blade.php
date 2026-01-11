@@ -1,63 +1,5 @@
 <tr>
-    <td>
-        <form class='d-flex align-items-center gap-1' action="{{ route('hoteis.destroy', $item->id) }}" method="post"
-            id="form-{{ $item->id }}">
-            @method('delete')
-            @csrf
-
-            <button
-                type="button"
-                class="border-0 m-0 p-0 bg-transparent text-color-back btn-delete"
-                title="Excluir Reserva">
-                <img
-                    height="26"
-                    width="26"
-                    src="/assets/images/svg/icone excluir.svg"
-                    alt="Excluir Reserva">
-            </button>
-            <a
-                class="border-0 m-0 p-0 bg-transparent text-color-back"
-                title="Editar Reserva"
-                href="{{ route('hoteis.edit', [$item->id, 'page' => request()->query('page', 1)]) }}">
-                <img
-                    height="26"
-                    width="26"
-                    src="/assets/images/svg/icone editar nfe.svg"
-                    alt="Editar Reserva">
-            </a>
-
-
-            <div class="dropdown">
-                <a href="#" id="dropdownChecklist{{ $item->id }}" data-bs-toggle="dropdown" aria-expanded="false"
-                title="{{ $item->situacao_checklist ? 'Ver checklist' : 'Realizar checklist' }}">
-                    <img height="26" width="26" src="/assets/images/svg/icon_checklist.svg"
-                        alt="Checklist">
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownChecklist{{ $item->id }}">
-                    <li><a class="dropdown-item" href="{{ route('hoteis.checklist.create', [$item->id, 'tipo' => 'entrada']) }}">Check-in</a></li>
-                    <li><a class="dropdown-item" href="{{ route('hoteis.checklist.create', [$item->id, 'tipo' => 'saida']) }}">Check-out</a></li>
-                </ul>
-            </div>
-
-            @if (isset($item->hotelClienteEndereco))
-                <a
-                    class="border-0 m-0 p-0 bg-transparent text-color-back"
-                    title="Imprimir cupom de entrega"
-                    href="{{ route('hoteis.endereco_entrega', $item->id) }}"
-                    target="_blank"
-                >
-                    <img
-                        height="26"
-                        width="26"
-                        src="/assets/images/svg/icone cupom entrega.svg"
-                        alt="Imprimir cupom de entrega"
-                    >
-                </a>
-            @endif
-
-        </form>
-    </td>
-     <td class="text-center">
+    <td class="text-center">
         @if($item->ordem_servico_id)
             <a href="{{ route('ordem-servico.show', $item->ordemServico->id) }}">#{{ $item->ordemServico->codigo_sequencial }}</a>
         @else
@@ -119,6 +61,37 @@
         <b class="m-0 p-0 text-green">
             R$ {{ __moedaInput($item->valor) }}
         </b>
+    </td>
+    <td>
+        <form action="{{ route('hoteis.destroy', $item->id) }}" method="post" id="form-{{ $item->id }}">
+            @method('delete')
+            @csrf
+
+            <a href="{{ route('hoteis.edit', [$item->id, 'page' => request()->query('page', 1)]) }}" class="btn btn-warning btn-sm text-white" title="Editar">
+                <i class="bx bx-edit"></i>
+            </a>
+
+            <button type="button" class="btn btn-delete btn-sm btn-danger" title="Excluir">
+                <i class="bx bx-trash"></i>
+            </button>
+
+            <div class="dropdown d-inline-block">
+                <button type="button" class="btn btn-secondary btn-sm" id="dropdownChecklist{{ $item->id }}" data-bs-toggle="dropdown" aria-expanded="false"
+                    title="{{ $item->situacao_checklist ? 'Ver checklist' : 'Realizar checklist' }}">
+                    <i class="bx bx-check-square"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownChecklist{{ $item->id }}">
+                    <li><a class="dropdown-item" href="{{ route('hoteis.checklist.create', [$item->id, 'tipo' => 'entrada']) }}">Check-in</a></li>
+                    <li><a class="dropdown-item" href="{{ route('hoteis.checklist.create', [$item->id, 'tipo' => 'saida']) }}">Check-out</a></li>
+                </ul>
+            </div>
+
+            @if (isset($item->hotelClienteEndereco))
+                <a href="{{ route('hoteis.endereco_entrega', $item->id) }}" class="btn btn-primary btn-sm" title="Imprimir cupom" target="_blank">
+                    <i class="bx bx-printer"></i>
+                </a>
+            @endif
+        </form>
     </td>
 </tr>
 

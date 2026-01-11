@@ -1,67 +1,4 @@
 <tr>
-    <td>
-        <form class='d-flex align-items-center gap-1' action="{{ route('esteticas.destroy', $item->id) }}" method="post"
-            id="form-{{ $item->id }}">
-            @method('delete')
-            @csrf
-
-            @can('clientes_delete')
-            <button
-                type="button"
-                class="border-0 m-0 p-0 bg-transparent text-color-back btn-delete"
-                title="Excluir Cliente">
-                <img
-                    height="26"
-                    width="26"
-                    src="/assets/images/svg/icone excluir.svg"
-                    alt="Excluir Cliente">
-            </button>
-            @else
-            <img
-                height="26"
-                width="26"
-                src="/assets/images/svg/icone excluir.svg"
-                alt="Exclusão desabilitada"
-                title="Exclusão Desabilitada"
-                style="cursor: not-allowed; filter: grayscale(1);">
-            @endcan
-            @can('clientes_edit')
-            <a
-                class="border-0 m-0 p-0 bg-transparent text-color-back"
-                title="Editar Cliente"
-                href="{{ route('esteticas.edit', [$item->id, 'page' => request()->query('page', 1)]) }}">
-                <img
-                    height="26"
-                    width="26"
-                    src="/assets/images/svg/icone editar nfe.svg"
-                    alt="Editar Cliente">
-            </a>
-            @else
-            <img
-                height="26"
-                width="26"
-                src="/assets/images/svg/icone editar nfe.svg"
-                alt="Edição desabilitada"
-                style="cursor: not-allowed; filter: grayscale(1);">
-            @endcan
-
-            @if (isset($item->esteticaClienteEndereco))
-                <a
-                    class="border-0 m-0 p-0 bg-transparent text-color-back"
-                    title="Imprimir cupom de entrega"
-                    href="{{ route('esteticas.endereco_entrega', $item->id) }}"
-                    target="_blank"
-                >
-                    <img
-                        height="26"
-                        width="26"
-                        src="/assets/images/svg/icone cupom entrega.svg"
-                        alt="Imprimir cupom de entrega"
-                    >
-                </a>
-            @endif
-        </form>
-    </td>
     <td class="text-center">
         <p class="p-0 m-0">
 
@@ -139,6 +76,38 @@
     @endphp
     <td class="text-center">
         <p class="m-0 p-0">{{ __moedaInput($total) }}</p>
+    </td>
+    <td>
+        <form action="{{ route('esteticas.destroy', $item->id) }}" method="post" id="form-{{ $item->id }}">
+            @method('delete')
+            @csrf
+
+            @can('clientes_edit')
+                <a href="{{ route('esteticas.edit', [$item->id, 'page' => request()->query('page', 1)]) }}" class="btn btn-warning btn-sm text-white" title="Editar">
+                    <i class="bx bx-edit"></i>
+                </a>
+            @else
+                <button type="button" class="btn btn-warning btn-sm text-white" title="Edição desabilitada" disabled>
+                    <i class="bx bx-edit"></i>
+                </button>
+            @endcan
+
+            @can('clientes_delete')
+                <button type="button" class="btn btn-delete btn-sm btn-danger" title="Excluir">
+                    <i class="bx bx-trash"></i>
+                </button>
+            @else
+                <button type="button" class="btn btn-danger btn-sm" title="Exclusão desabilitada" disabled>
+                    <i class="bx bx-trash"></i>
+                </button>
+            @endcan
+
+            @if (isset($item->esteticaClienteEndereco))
+                <a href="{{ route('esteticas.endereco_entrega', $item->id) }}" class="btn btn-primary btn-sm" title="Imprimir cupom" target="_blank">
+                    <i class="bx bx-printer"></i>
+                </a>
+            @endif
+        </form>
     </td>
 </tr>
 
