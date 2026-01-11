@@ -34,7 +34,7 @@ class TurmaController extends Controller
                                 ->where('data_saida', '>', $request->data_entrada);
                         });
                     }])
-                    ->havingRaw('reservas_ativas < turmas.capacidade');
+                    ->havingRaw('reservas_ativas < petshop_turmas.capacidade');
                 })
                 ->where('status', 'disponivel')
                 ->get();

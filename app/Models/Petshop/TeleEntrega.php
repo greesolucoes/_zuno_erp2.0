@@ -12,7 +12,7 @@ class TeleEntrega extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'tele_entregas';
+    protected $table = 'petshop_tele_entregas';
 
     protected $fillable = [
         'empresa_id',  'cliente_id', 'tipo_id', 'datahora_entrega', 'valor', 'status', 'observacao', 'rua',

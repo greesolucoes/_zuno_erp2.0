@@ -12,7 +12,7 @@ class TurmaEvento extends Model
 {
     use HasFactory;
 
-    protected $table = 'turma_eventos';
+    protected $table = 'petshop_turma_eventos';
 
     protected $fillable = [
         'turma_id',

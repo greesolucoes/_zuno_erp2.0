@@ -17,7 +17,7 @@ class Turma extends Model
     public const STATUS_EM_LIMPEZA = 'em_limpeza';
     public const STATUS_MANUTENCAO = 'manutencao';
 
-    protected $table = 'turmas';
+    protected $table = 'petshop_turmas';
 
     protected $fillable = [
         'empresa_id',

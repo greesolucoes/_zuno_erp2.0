@@ -591,7 +591,7 @@ class CrecheController extends Controller
             // Dados da reserva
 
             'animal_id' => 'required|exists:petshop_animais,id',
-            'turma_id' => 'required|exists:turmas,id',
+            'turma_id' => 'required|exists:petshop_turmas,id',
             'colaborador_id' => 'nullable|exists:funcionarios,id',
             'data_entrada' => 'required|date',
             'horario_entrada' => ['required', 'regex:/^\\d{2}:\\d{2}(:\\d{2})?$/'],

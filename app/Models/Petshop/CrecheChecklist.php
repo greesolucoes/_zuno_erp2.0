@@ -9,7 +9,7 @@ class CrecheChecklist extends Model
 {
     use HasFactory;
 
-    protected $table = 'creche_checklists';
+    protected $table = 'petshop_creche_checklists';
 
     protected $fillable = [
         'creche_id',

@@ -11,7 +11,7 @@ class CrecheClienteEndereco extends Model
 {
     use HasFactory;
 
-    protected $table = 'creches_clientes_enderecos';
+    protected $table = 'petshop_creches_clientes_enderecos';
 
     protected $fillable = [
         'creche_id',
