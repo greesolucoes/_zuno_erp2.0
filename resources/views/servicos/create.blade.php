@@ -18,6 +18,7 @@
 			{!!Form::open()
 			->post()
 			->autocomplete('off')
+			->id('main-form')
 			->route('servicos.store')
 			->multipart()!!}
 			<div class="pl-lg-4">
@@ -27,4 +28,8 @@
 		</div>
 	</div>
 </div>
+@endsection
+
+@section('js')
+<script src="/js/servicos_form.js"></script>
 @endsection
