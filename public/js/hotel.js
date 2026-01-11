@@ -87,7 +87,7 @@ function select2Defaults(options = {}) {
 function setAnimalSelect2() {
     const parent_modal = $('#modal_novo_agendamento_hotel');
     
-    $(parent_modal ? parent_modal : $('body')).find('select[name="animal_id"]').each(function () {
+    $(parent_modal.length > 0 ? parent_modal : $('body')).find('select[name="animal_id"]').each(function () {
         $(this).select2(select2Defaults({
             placeholder: 'Digite para buscar o animal (pet)',
             dropdownParent: parent_modal.length > 0 ? parent_modal : null,      
@@ -143,7 +143,7 @@ setAnimalSelect2();
 function setColaboradorSelect2() {
     const parent_modal = $('#modal_novo_agendamento_hotel');
 
-    $(parent_modal ? parent_modal : $('body')).find('select[name="colaborador_id"]').each(function () {
+    $(parent_modal.length > 0 ? parent_modal : $('body')).find('select[name="colaborador_id"]').each(function () {
         $(this).select2(select2Defaults({
             placeholder: 'Digite para buscar o colaborador',
             dropdownParent: parent_modal.length > 0 ? parent_modal : null,

@@ -95,7 +95,7 @@ $(document).ready(function () {
     function getFuncionariosForCrecheSelect2() {
         const parent_modal = $('#modal_novo_agendamento_creche');
 
-        $(parent_modal ? parent_modal : $('body')).find('select[name="colaborador_id"]').each(function () {
+        $(parent_modal.length > 0 ? parent_modal : $('body')).find('select[name="colaborador_id"]').each(function () {
             $(this).select2(select2Defaults({
                 placeholder: 'Digite para buscar o colaborador',
                 dropdownParent: parent_modal.length > 0 ? parent_modal : null,

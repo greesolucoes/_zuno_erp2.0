@@ -410,6 +410,8 @@
 
 </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 @if(session('user_contador'))
 @include('modals._empresa_contador', ['not_submit' => true])
 @endif
