@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="512" height="512">
+<g>
+	<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="272" y1="137" x2="120" y2="137"/>
+	<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="262.888" y1="197" x2="120" y2="197"/>
+	<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="302" y1="257" x2="120" y2="257"/>
+	<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="302" y1="317" x2="120" y2="317"/>
+	<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="262.893" y1="377" x2="120" y2="377"/>
+	<circle style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" cx="317" cy="287" r="105"/>
+	<path style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" d="M366.956,379.382l78.831,78.831&#10;&#9;&#9;c11.716,11.716,30.711,11.716,42.426,0c11.716-11.716,11.716-30.711,0-42.426l-78.831-78.831"/>
+	<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="60" y1="137" x2="90" y2="137"/>
+	<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="60" y1="197" x2="90" y2="197"/>
+	<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="60" y1="257" x2="90" y2="257"/>
+	<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="60" y1="317" x2="90" y2="317"/>
+	<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="60" y1="377" x2="90" y2="377"/>
+	<polyline style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" points="317,392 317,467 15,467 15,45 317,45 &#10;&#9;&#9;317,182 &#9;"/>
+	<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="347" y1="186.351" x2="347" y2="387.649"/>
+</g>
+</svg>

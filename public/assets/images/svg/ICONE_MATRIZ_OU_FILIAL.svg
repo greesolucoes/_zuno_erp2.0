@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Camada_1" data-name="Camada 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120.47 203.02">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        stroke: #fff;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    </style>
+  </defs>
+  <path class="cls-1" d="M119.97,62.77c0,34.39-59.74,139.75-59.74,139.75,0,0-59.74-105.36-59.74-139.75S27.25.5,60.24.5s59.74,27.88,59.74,62.27Z"/>
+  <ellipse class="cls-1" cx="60.24" cy="65.34" rx="31.85" ry="33.2"/>
+</svg>

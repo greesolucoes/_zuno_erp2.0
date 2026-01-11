@@ -1,7 +1,7 @@
 @extends('default.layout', ['title' => 'Agenda Médica Veterinária'])
 
 @section('css')
-    <link rel="stylesheet" href="/assets/vendor/fullcalendar/main.min.css">
+    <link rel="stylesheet" href="/fullcalendar/main.min.css">
     <style>
         .vet-agenda__page {
             display: flex;

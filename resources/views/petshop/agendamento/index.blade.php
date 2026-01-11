@@ -1,14 +1,17 @@
 @extends('default.layout', ['title' => 'Agendamentos'])
 
 @section('css')
-  <link href="/css/agenda.css" rel="stylesheet" type="text/css"/>
+  <link href="/assets/css/agenda/agenda.css" rel="stylesheet" type="text/css"/>
+  <link href="/assets/vendor/fullcalendar/main.min.css" rel="stylesheet" type="text/css"/>
+  <link href="/assets/css/agenda/icons.min.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="/assets/css/agenda/main.css">
 @endsection
 
 @section('content')
   <input type="hidden" id="agendamentos" value="{{ json_encode($agendamentos) }}">
   <div class="row">
-    <div class="card">
-      <div class="card-body">
+    <div class="page-content">
+      <div class="card-body p-4">
         <div class="d-flex align-items-start mb-4">
           <div class="d-flex flex-column" style="flex: 1">
 	            <h3 class="text-gold mb-4">
@@ -211,8 +214,8 @@
   @include('modals._novo_servico', ['back_modal' => '#event-modal'])
 
   @section('js')
-    <script src="/assets/vendor/fullcalendar/main.min.js"></script>
-    <script src="/tinymce/tinymce.min.js"></script>
+    <script src="/fullcalendar/main.min.js"></script>
+    <script src="/js/tinymce/tinymce.min.js"></script>
 
     <script src="/js/novo_cliente.js"></script>
     <script src="/js/servicos_produtos_input_line.js"></script>

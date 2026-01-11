@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 118.97 113.94">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ef771f;
+      }
+
+      .cls-1, .cls-2 {
+        stroke-width: 0px;
+      }
+
+      .cls-3 {
+        font-family: Montserrat-Black, Montserrat;
+        font-size: 9px;
+        font-weight: 800;
+      }
+
+      .cls-3, .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-4 {
+        letter-spacing: .1em;
+      }
+
+      .cls-5 {
+        isolation: isolate;
+      }
+
+      .cls-6 {
+        letter-spacing: .1em;
+      }
+
+      .cls-7 {
+        letter-spacing: .07em;
+      }
+
+      .cls-8 {
+        letter-spacing: .09em;
+      }
+
+      .cls-9 {
+        letter-spacing: .1em;
+      }
+
+      .cls-10 {
+        fill: url(#Gradiente_sem_nome_34);
+        mix-blend-mode: soft-light;
+        stroke: #fff;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-11 {
+        letter-spacing: .11em;
+      }
+    </style>
+    <linearGradient id="Gradiente_sem_nome_34" data-name="Gradiente sem nome 34" x1=".5" y1="56.97" x2="118.47" y2="56.97" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3a1e4a"/>
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset=".03" stop-color="#e7e3e9"/>
+      <stop offset=".07" stop-color="#c3bac8"/>
+      <stop offset=".12" stop-color="#a295a9"/>
+      <stop offset=".18" stop-color="#85748f"/>
+      <stop offset=".24" stop-color="#6e5979"/>
+      <stop offset=".31" stop-color="#5a4368"/>
+      <stop offset=".38" stop-color="#4b325a"/>
+      <stop offset=".48" stop-color="#412650"/>
+      <stop offset=".62" stop-color="#3b1f4b"/>
+      <stop offset="1" stop-color="#3a1e4a"/>
+    </linearGradient>
+  </defs>
+  <g class="cls-5">
+    <g id="Camada_1" data-name="Camada 1">
+      <g>
+        <rect class="cls-10" x=".5" y=".5" width="117.97" height="112.94" rx="6.45" ry="6.45"/>
+        <rect class="cls-2" x="42.12" y="40.51" width="15.47" height="15.47"/>
+        <path class="cls-1" d="M114.47,87.76c0,2.63-.5,5.1-1.51,7.42-1.01,2.32-2.37,4.34-4.08,6.05-1.71,1.71-3.73,3.07-6.05,4.08-2.32,1.01-4.8,1.51-7.42,1.51h-53.61v-28.13l12.74.32v15.07h40.87c1.77,0,3.27-.62,4.49-1.87,1.22-1.25,1.83-2.76,1.83-4.52v-25.32c0-1.83-.43-3.2-1.28-4.11-.86-.91-1.92-1.54-3.21-1.87-1.28-.34-2.66-.49-4.12-.46-1.47.03-2.84.05,15.64.05h-40.78l-.36-12.74h27.78c2.63,0,5.1.5,7.42,1.51,2.32,1.01,4.34,2.38,6.05,4.12,1.71,1.74,3.07,3.77,4.08,6.09,1.01,2.32,1.51,4.8,1.51,7.42v25.38Z"/>
+        <rect class="cls-2" x="24.72" y="54.56" width="11.43" height="11.43" transform="translate(-24.63 21.19) rotate(-27.84)"/>
+        <rect class="cls-2" x="19.17" y="33.89" width="12.45" height="12.45" transform="translate(35.8 -6.21) rotate(45)"/>
+        <rect class="cls-2" x="5.14" y="49.53" width="7.82" height="7.82" transform="translate(47.73 15.47) rotate(55.14)"/>
+        <rect class="cls-2" x="41.76" y="62.92" width="10.32" height="10.32"/>
+        <text class="cls-3" transform="translate(15.25 14.69)"><tspan class="cls-8" x="0" y="0">P</tspan><tspan class="cls-7" x="7.5" y="0">D</tspan><tspan class="cls-9" x="15.61" y="0">V DI</tspan><tspan class="cls-8" x="39.56" y="0">P</tspan><tspan class="cls-4" x="47.06" y="0">ROSO</tspan><tspan class="cls-11" x="78.54" y="0">F</tspan><tspan class="cls-6" x="85.28" y="0">T</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>

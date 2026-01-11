@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Camada_1" data-name="Camada 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76.56 73.15">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #010101;
+        font-family: Poppins-Medium, Poppins;
+        font-size: 21.85px;
+        font-weight: 500;
+      }
+
+      .cls-2 {
+        fill: #f7b547;
+      }
+
+      .cls-2, .cls-3, .cls-4 {
+        stroke-width: 0px;
+      }
+
+      .cls-3 {
+        fill: #f1f2f2;
+      }
+
+      .cls-4 {
+        fill: #fed14b;
+      }
+    </style>
+  </defs>
+  <path class="cls-3" d="M66.58,29.96l-28.3,18.31L9.99,29.96V1.66C9.97.76,10.68.02,11.58,0c.02,0,.05,0,.07,0h53.26c.9-.02,1.64.69,1.66,1.59,0,.02,0,.05,0,.07v28.3Z"/>
+  <g>
+    <path class="cls-2" d="M9.99,26.55L0,19.89l9.99-9.99v16.64Z"/>
+    <path class="cls-2" d="M76.56,19.89l-9.99,6.66V9.91l9.99,9.99Z"/>
+  </g>
+  <path class="cls-4" d="M66.58,26.4l9.99-6.51v46.6c0,1.77-.7,3.46-1.95,4.71l-11.37-11.37-18.31-18.31-.47-.72,22.1-14.41Z"/>
+  <path class="cls-2" d="M63.25,59.84l11.37,11.37c-1.25,1.24-2.94,1.94-4.71,1.95H6.66c-1.77,0-3.46-.7-4.71-1.95l11.37-11.37,18.31-18.31.47-.72,6.19,4.04,6.19-4.04.47.72,18.31,18.31Z"/>
+  <path class="cls-4" d="M32.09,40.81l-.47.72-18.31,18.31-11.37,11.37C.7,69.95,0,68.26,0,66.5V19.89l32.09,20.92Z"/>
+  <text class="cls-1" transform="translate(29.42 25.33)"><tspan x="0" y="0">2</tspan></text>
+  <text class="cls-1" transform="translate(14.31 25.33)"><tspan x="0" y="0">1</tspan></text>
+  <text class="cls-1" transform="translate(49.53 25.11)"><tspan x="0" y="0">3</tspan></text>
+</svg>
