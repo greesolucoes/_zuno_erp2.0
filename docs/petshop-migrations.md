@@ -174,6 +174,17 @@ Cadastros Vet:
 - `petshop_vet_modelos_avaliacao` (FKs: `empresa_id` → `empresas.id`, `created_by/updated_by` → `users.id`)
 - `petshop_vet_modelos_prescricao` (FKs: `empresa_id` → `empresas.id`, `created_by/updated_by` → `users.id`)
 
+### 4.6) Domínio “Hotel” (quartos e agenda de quarto)
+Cadastros e eventos base do módulo Hotel:
+- `quartos`
+  - FKs: `empresa_id` → `empresas.id`
+  - FKs: `colaborador_id` → `funcionarios.id` (nullable)
+  - Campos: `nome`, `descricao`, `tipo`, `capacidade`, `status`
+- `quarto_eventos`
+  - FKs: `quarto_id` → `quartos.id`
+  - FKs opcionais: `servico_id` → `servicos.id`, `prestador_id` → `funcionarios.id`, `fornecedor_id` → `fornecedores.id`
+  - Campos: `inicio`, `fim`, `descricao`
+
 ## 5) Sequência de migrations (o “como vamos implementar”)
 Pré-requisito:
 - Fechar decisão de “Filial” (item 3.1).
