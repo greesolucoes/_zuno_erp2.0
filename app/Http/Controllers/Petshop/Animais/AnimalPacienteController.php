@@ -16,7 +16,7 @@ use App\Services\Petshop\Vet\HistoricoMedicoPacienteService;
 use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AnimalPacienteController extends Controller
@@ -24,7 +24,7 @@ class AnimalPacienteController extends Controller
   public function index(Request $request)
   {
 
-    $empresaId = Auth::user()?->empresa?->empresa_id;
+    $empresaId = request()->empresa_id;
 
     $pesquisa = $request->input('pesquisa');
 
@@ -51,7 +51,7 @@ class AnimalPacienteController extends Controller
 
   public function crm(Request $request, HistoricoMedicoPacienteService $historyService, $id)
   {
-    $empresaId = Auth::user()?->empresa?->empresa_id;
+    $empresaId = request()->empresa_id;
 
     $animal = Animal::with(['cliente', 'especie', 'raca'])
       ->where('empresa_id', $empresaId)
@@ -75,12 +75,12 @@ class AnimalPacienteController extends Controller
 
   public function create()
   {
-    $empresa_id = Auth::user()?->empresa?->empresa_id;
+    $empresaId = request()->empresa_id;
 
-    $pelagens = Pelagem::where('empresa_id', $empresa_id)->get();
-    $especies = Especie::where('empresa_id', $empresa_id)->get();
-    $racas    = Raca::where('empresa_id', $empresa_id)->get();
-    $clientes = Cliente::where('empresa_id', $empresa_id)->get();
+    $pelagens = Pelagem::where('empresa_id', $empresaId)->get();
+    $especies = Especie::where('empresa_id', $empresaId)->get();
+    $racas    = Raca::where('empresa_id', $empresaId)->get();
+    $clientes = Cliente::where('empresa_id', $empresaId)->get();
 
 
     return view('petshop.animais.pacientes.create', compact('pelagens', 'especies', 'racas', 'clientes'));
@@ -88,43 +88,36 @@ class AnimalPacienteController extends Controller
 
   public function store(Request $request)
   {
-    $empresa_id = Auth::user()?->empresa?->empresa_id;
-
-
-    $request->validate([
-      'cliente_id'      => 'required',
-      'especie_id'      => 'required',
-      'raca_id'         => 'required',
-      'nome'            => 'required',
-      'sexo'            => 'required',
-      'tem_pedigree'    => 'required',
-      'porte'           => 'required',
-    ]);
+    $empresaId = request()->empresa_id;
+    $this->_validate($request);
 
     try {
-      Animal::create([
-        'cliente_id'      => $request->cliente_id,
-        'especie_id'      => $request->especie_id,
-        'raca_id'         => $request->raca_id,
-        'pelagem_id'      => $request->pelagem_id,
-        'cor'             => $request->cor,
-        'nome'            => $request->nome,
-        'data_nascimento' => $request->data_nascimento_pet,
-        'peso'            => $request->peso,
-        'sexo'            => $request->sexo,
-        'idade'           => Carbon::parse($request->data_nascimento_pet)->age,
-        'tem_pedigree'    => $request->tem_pedigree === 'S' ? true : false,
-        'porte'           => $request->porte,
-        'chip'            => $request->chip,
-        'pedigree'        => $request->pedigree,
-        'origem'          => $request->origem,
-        'observacao'      => $request->observacao,
-        'empresa_id'      => $empresa_id,
-      ]);
+      DB::transaction(function () use ($request, $empresaId) {
+        Animal::create([
+          'cliente_id'      => $request->cliente_id,
+          'especie_id'      => $request->especie_id,
+          'raca_id'         => $request->raca_id,
+          'pelagem_id'      => $request->pelagem_id,
+          'cor'             => $request->cor,
+          'nome'            => $request->nome,
+          'data_nascimento' => $request->data_nascimento_pet,
+          'peso'            => $request->peso,
+          'sexo'            => $request->sexo,
+          'idade'           => Carbon::parse($request->data_nascimento_pet)->age,
+          'tem_pedigree'    => $request->tem_pedigree === 'S' ? true : false,
+          'porte'           => $request->porte,
+          'chip'            => $request->chip,
+          'pedigree'        => $request->pedigree,
+          'origem'          => $request->origem,
+          'observacao'      => $request->observacao,
+          'empresa_id'      => $empresaId,
+        ]);
+      });
 
-      session()->flash("flash_success", "Paciente cadastrado com sucesso!");
+      session()->flash("flash_sucesso", "Paciente cadastrado com sucesso!");
     } catch (\Exception $e) {
-      session()->flash("flash_error", "Algo deu errado: " . $e->getMessage());
+      session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+      __saveLogError($e, request()->empresa_id);
     }
 
     return redirect()->route('animais.pacientes.index');
@@ -132,29 +125,29 @@ class AnimalPacienteController extends Controller
 
   public function edit($id)
   {
-    $empresa_id = Auth::user()?->empresa?->empresa_id;
+    $empresaId = request()->empresa_id;
 
     $item = Animal::findOrFail($id);
     __validaObjetoEmpresa($item);
 
-    $pelagens = Pelagem::where('empresa_id', $empresa_id)->get();
-    $especies = Especie::where('empresa_id', $empresa_id)->get();
-    $racas = Raca::where('empresa_id', $empresa_id)->get();
-    $clientes = Cliente::where('empresa_id', $empresa_id)->get();
+    $pelagens = Pelagem::where('empresa_id', $empresaId)->get();
+    $especies = Especie::where('empresa_id', $empresaId)->get();
+    $racas = Raca::where('empresa_id', $empresaId)->get();
+    $clientes = Cliente::where('empresa_id', $empresaId)->get();
 
     $item->tem_pedigree = $item->tem_pedigree ? 'S' : 'N';
 
-    $data = Vacinacao::where('empresa_id', $empresa_id)
+    $data = Vacinacao::where('empresa_id', $empresaId)
       ->where('animal_id', $id)
       ->with('animal')
       ->paginate(env("PAGINACAO"));
 
-    $consultas = Consulta::where('empresa_id', $empresa_id)
+    $consultas = Consulta::where('empresa_id', $empresaId)
       ->where('animal_id', $id)
       ->with('animal')
       ->paginate(env("PAGINACAO"));
 
-    $agendamentos = Agendamento::where('empresa_id', $empresa_id)
+    $agendamentos = Agendamento::where('empresa_id', $empresaId)
       ->where('animal_id', $id)
       ->with('animal')
       ->paginate(env("PAGINACAO"));
@@ -164,43 +157,37 @@ class AnimalPacienteController extends Controller
 
   public function update(Request $request, $id)
   {
-
-    $request->validate([
-      'cliente_id'      => 'required',
-      'especie_id'      => 'required',
-      'raca_id'         => 'required',
-      'nome'            => 'required',
-      'sexo'            => 'required',
-      'tem_pedigree'    => 'required',
-      'porte'           => 'required',
-    ]);
+    $this->_validate($request);
 
     try {
       $item = Animal::findOrFail($id);
       __validaObjetoEmpresa($item);
 
-      $item->update([
-        'cliente_id'      => $request->cliente_id,
-        'especie_id'      => $request->especie_id,
-        'raca_id'         => $request->raca_id,
-        'pelagem_id'      => $request->pelagem_id,
-        'cor'             => $request->cor,
-        'nome'            => $request->nome,
-        'data_nascimento' => $request->data_nascimento_pet,
-        'peso'            => $request->peso,
-        'sexo'            => $request->sexo,
-        'idade'           => $request->idade,
-        'tem_pedigree'    => $request->tem_pedigree === 'S' ? true : false,
-        'porte'           => $request->porte,
-        'chip'            => $request->chip,
-        'pedigree'        => $request->pedigree,
-        'origem'          => $request->origem,
-        'observacao'      => $request->observacao,
-      ]);
+      DB::transaction(function () use ($request, $item) {
+        $item->update([
+          'cliente_id'      => $request->cliente_id,
+          'especie_id'      => $request->especie_id,
+          'raca_id'         => $request->raca_id,
+          'pelagem_id'      => $request->pelagem_id,
+          'cor'             => $request->cor,
+          'nome'            => $request->nome,
+          'data_nascimento' => $request->data_nascimento_pet,
+          'peso'            => $request->peso,
+          'sexo'            => $request->sexo,
+          'idade'           => $request->idade,
+          'tem_pedigree'    => $request->tem_pedigree === 'S' ? true : false,
+          'porte'           => $request->porte,
+          'chip'            => $request->chip,
+          'pedigree'        => $request->pedigree,
+          'origem'          => $request->origem,
+          'observacao'      => $request->observacao,
+        ]);
+      });
 
-      session()->flash("flash_success", "Paciente atualizado com sucesso!");
+      session()->flash("flash_sucesso", "Paciente atualizado com sucesso!");
     } catch (\Exception $e) {
-      session()->flash("flash_error", "Algo deu errado: " . $e->getMessage());
+      session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+      __saveLogError($e, request()->empresa_id);
     }
 
     return redirect()->route('animais.pacientes.index');
@@ -235,7 +222,7 @@ class AnimalPacienteController extends Controller
       $duplicated_count = 0;
 
       if ($validation_errors) {
-        session()->flash('flash_error', $validation_errors);
+        session()->flash('flash_erro', $validation_errors);
         return redirect()->route('animais.pacientes.import');
       }
 
@@ -260,22 +247,25 @@ class AnimalPacienteController extends Controller
               continue;
             } else {
               try {
-                Animal::create($data);
+                DB::transaction(function () use ($data) {
+                  Animal::create($data);
+                });
 
                 $imported_count++;
               } catch (\Exception $e) {
                 LogService::logMessage($e->getMessage(), 'ERROR');
                 __createLog(request()->empresa_id, 'Importar Pets', 'importar pet', $e->getMessage());
+                __saveLogError($e, request()->empresa_id);
 
                 if ($imported_count > 0) {
-                  session()->flash('flash_success', 'Total de animais importados: ' . $imported_count);
+                  session()->flash('flash_sucesso', 'Total de animais importados: ' . $imported_count);
                 }
 
                 if ($duplicated_count > 0) {
                   session()->flash('flash_warning', 'Total de animais duplicados: ' . $duplicated_count);
                 }
 
-                session()->flash('flash_error', 'Algo deu errado ao importar o animal da linha: ' . $key . '.');
+                session()->flash('flash_erro', 'Algo deu errado ao importar o animal da linha: ' . $key . '.');
 
                 return redirect()->route('animais.pacientes.import');
               }
@@ -283,7 +273,7 @@ class AnimalPacienteController extends Controller
           }
         }
 
-        session()->flash('flash_success', 'Total de animais importados: ' . $imported_count);
+        session()->flash('flash_sucesso', 'Total de animais importados: ' . $imported_count);
         if ($duplicated_count > 0) {
           session()->flash('flash_warning', 'Total de animais duplicados: ' . $duplicated_count);
         }
@@ -499,41 +489,62 @@ class AnimalPacienteController extends Controller
       $item = Animal::findOrFail($id);
       __validaObjetoEmpresa($item);
 
-     $item->delete();
+     DB::transaction(function () use ($item) {
+        $item->delete();
+     });
 
-      session()->flash("flash_success", "Pet excluído com sucesso!");
+      session()->flash("flash_sucesso", "Pet excluído com sucesso!");
     } catch (\Exception $e) {
         $erro_msg = $e->getMessage();
 
     if ($e->getCode() == '23000') {
         switch (true) {
             case str_contains($erro_msg, 'ordem_servicos_animal_id_foreign'):
-                session()->flash("flash_error", "Não foi possível excluir este Pet, pois o mesmo está vinculado a uma ordem de serviço.");
+                session()->flash("flash_erro", "Não foi possível excluir este Pet, pois o mesmo está vinculado a uma ordem de serviço.");
                 break;
 
             case str_contains($erro_msg, 'agendamentos_animal_id_foreign'):
-                session()->flash("flash_error", "Não foi possível excluir este Pet, pois o mesmo está vinculado a um agendamento.");
+                session()->flash("flash_erro", "Não foi possível excluir este Pet, pois o mesmo está vinculado a um agendamento.");
                 break;
 
             case str_contains($erro_msg, 'creches_animal_id_foreign'):
-                session()->flash("flash_error", "Não foi possível excluir este Pet, pois o mesmo está vinculado a um serviço de creche.");
+                session()->flash("flash_erro", "Não foi possível excluir este Pet, pois o mesmo está vinculado a um serviço de creche.");
                 break;
 
             case str_contains($erro_msg, 'hoteis_animal_id_foreign'):
-                session()->flash("flash_error", "Não foi possível excluir este Pet, pois o mesmo está vinculado a um serviço de hotel.");
+                session()->flash("flash_erro", "Não foi possível excluir este Pet, pois o mesmo está vinculado a um serviço de hotel.");
                 break;
 
             default:
-                session()->flash("flash_error", "Erro de integridade referencial (código 23000).");
+                session()->flash("flash_erro", "Erro de integridade referencial (código 23000).");
                 break;
     }
 
         return redirect()->route('animais.pacientes.index');
     }
 
-      session()->flash("flash_error", "Algo deu errado: " . $e->getMessage());
+      session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+      __saveLogError($e, request()->empresa_id);
     }
 
     return redirect()->route('animais.pacientes.index');
+  }
+
+  private function _validate(Request $request)
+  {
+    $rules = [
+      'cliente_id'      => 'required',
+      'especie_id'      => 'required',
+      'raca_id'         => 'required',
+      'nome'            => 'required',
+      'sexo'            => 'required',
+      'tem_pedigree'    => 'required',
+      'porte'           => 'required',
+    ];
+    $messages = [
+      'cliente_id.required' => 'O cliente é obrigatório.',
+      'nome.required' => 'O nome é obrigatório.',
+    ];
+    $this->validate($request, $rules, $messages);
   }
 }

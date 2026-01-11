@@ -65,7 +65,8 @@ class PlanoUserController extends Controller
 
         PlanoUser::create($data);
 
-        return redirect()->route('petshop.planos.login')->with('flash_success', 'Usuário do plano criado com sucesso!');
+        session()->flash('flash_sucesso', 'Usuário do plano criado com sucesso!');
+        return redirect()->route('petshop.planos.login');
     }
 
     public function createInterno()
@@ -178,7 +179,8 @@ class PlanoUserController extends Controller
             'status' => 'aberta',
         ]);
 
-        return redirect()->route('petshop.planos.usuario.index')->with('flash_success', 'Usuário do plano criado com sucesso!');
+        session()->flash('flash_sucesso', 'Usuário do plano criado com sucesso!');
+        return redirect()->route('petshop.planos.usuario.index');
     }
 
     public function edit(PlanoUser $planoUser)
@@ -236,7 +238,8 @@ class PlanoUserController extends Controller
             'email' => $cliente->email,
         ]);
 
-        return redirect()->route('petshop.planos.usuario.index')->with('flash_success', 'Usuário do plano atualizado com sucesso!');
+        session()->flash('flash_sucesso', 'Usuário do plano atualizado com sucesso!');
+        return redirect()->route('petshop.planos.usuario.index');
     }
 
     public function cancelarPlano(Request $request)
@@ -412,7 +415,8 @@ class PlanoUserController extends Controller
     {
         $planoUser->delete();
 
-        return redirect()->route('petshop.planos.usuario.index')->with('flash_success', 'Usuário do plano removido com sucesso!');
+        session()->flash('flash_sucesso', 'Usuário do plano removido com sucesso!');
+        return redirect()->route('petshop.planos.usuario.index');
     }
     public function reenviarCredenciais(Request $request)
     {

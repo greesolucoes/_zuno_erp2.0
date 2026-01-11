@@ -5,16 +5,16 @@ namespace App\Http\Controllers\Petshop\TeleEntrega;
 use App\Http\Controllers\Controller;
 use App\Models\Petshop\TipoTeleEntrega;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TipoTeleEntregaController extends Controller
 {
 
     public function index(Request $request)
     {
-      $empresa_id = Auth::user()?->empresa?->empresa_id;
+      $empresaId = request()->empresa_id;
 
-      $data = TipoTeleEntrega::where('empresa_id', $empresa_id)
+      $data = TipoTeleEntrega::where('empresa_id', $empresaId)
       ->paginate(env("PAGINACAO"));
 
       return view('tele_entregas.tipos.index', compact('data'));
@@ -27,13 +27,12 @@ class TipoTeleEntregaController extends Controller
 
     public function store(Request $request)
     {
-      $empresa_id = Auth::user()?->empresa?->empresa_id;
+      $empresaId = request()->empresa_id;
+      $this->_validate($request);
 
-      $request->validate([
-        'nome' => 'required',
-      ]);
-
-      $hasAnotherTipeTeleEntrega = TipoTeleEntrega::where('empresa_id', $empresa_id)->where('nome', $request->nome)->first();
+      $hasAnotherTipeTeleEntrega = TipoTeleEntrega::where('empresa_id', $empresaId)
+        ->where('nome', $request->nome)
+        ->first();
 
       if ($hasAnotherTipeTeleEntrega) {
         \session()->flash("flash_warning", "Já existe um tipo de tele-entrega com este nome!");
@@ -41,14 +40,17 @@ class TipoTeleEntregaController extends Controller
       }
 
       try {
-        TipoTeleEntrega::create([
-          'nome' => $request->nome,
-          'empresa_id' => $empresa_id,
-        ]);
+        DB::transaction(function () use ($request, $empresaId) {
+          TipoTeleEntrega::create([
+            'nome' => $request->nome,
+            'empresa_id' => $empresaId,
+          ]);
+        });
 
-        session()->flash("flash_success", "Tipo de tele-entrega cadastrada com sucesso!");
+        session()->flash("flash_sucesso", "Tipo de tele-entrega cadastrada com sucesso!");
       } catch (\Exception $e) {
-        session()->flash("flash_error", "Algo deu errado: " . $e->getMessage());
+        session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+        __saveLogError($e, request()->empresa_id);
       }
 
       return redirect()->route('tipos_tele_entregas.index');
@@ -64,9 +66,8 @@ class TipoTeleEntregaController extends Controller
 
     public function update(Request $request, $id)
     {
-      $request->validate([
-        'nome' => 'required',
-      ]);
+      $empresaId = request()->empresa_id;
+      $this->_validate($request);
 
       try {
         $item = TipoTeleEntrega::findOrFail($id);
@@ -77,20 +78,25 @@ class TipoTeleEntregaController extends Controller
           return redirect()->route('tipos_tele_entregas.index');
         }
 
-        $hasAnotherTipeTeleEntrega = TipoTeleEntrega::where('empresa_id', $request->empresa_id)->where('nome', $request->nome)->first();
+        $hasAnotherTipeTeleEntrega = TipoTeleEntrega::where('empresa_id', $empresaId)
+          ->where('nome', $request->nome)
+          ->first();
 
         if ($hasAnotherTipeTeleEntrega) {
           \session()->flash("flash_warning", "Já existe um tipo de tele-entrega com este nome!");
           return redirect()->route('tipos_tele_entregas.edit', [$id])->withInput();
         }
 
-        $item->update([
-          'nome' => $request->nome,
-        ]);
+        DB::transaction(function () use ($request, $item) {
+          $item->update([
+            'nome' => $request->nome,
+          ]);
+        });
 
-        session()->flash("flash_success", "Tipo de tele-entrega atualizada com sucesso!");
+        session()->flash("flash_sucesso", "Tipo de tele-entrega atualizada com sucesso!");
       } catch (\Exception $e) {
-        session()->flash("flash_error", "Algo deu errado: " . $e->getMessage());
+        session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+        __saveLogError($e, request()->empresa_id);
       }
 
       return redirect()->route('tipos_tele_entregas.index');
@@ -102,14 +108,28 @@ class TipoTeleEntregaController extends Controller
         $item = TipoTeleEntrega::findOrFail($id);
         __validaObjetoEmpresa($item);
 
-        $item->delete();
+        DB::transaction(function () use ($item) {
+          $item->delete();
+        });
 
-        session()->flash("flash_success", "Tipo de tele-entrega excluída com sucesso!");
+        session()->flash("flash_sucesso", "Tipo de tele-entrega excluída com sucesso!");
       } catch (\Exception $e) {
-        session()->flash("flash_error", "Algo deu errado: " . $e->getMessage());
+        session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+        __saveLogError($e, request()->empresa_id);
       }
 
       return redirect()->route('tipos_tele_entregas.index');
+    }
+
+    private function _validate(Request $request)
+    {
+      $rules = [
+        'nome' => 'required|max:255',
+      ];
+      $messages = [
+        'nome.required' => 'O nome é obrigatório.',
+      ];
+      $this->validate($request, $rules, $messages);
     }
 
 }

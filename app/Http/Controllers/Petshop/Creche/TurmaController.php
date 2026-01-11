@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Funcionario;
 use App\Models\Petshop\Turma;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Petshop\Creche;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +14,7 @@ class TurmaController extends Controller
 {
     public function index(Request $request)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = request()->empresa_id;
         $pesquisa = $request->input('pesquisa');
         $startDate = $request->input('start_date');
 
@@ -39,7 +38,7 @@ class TurmaController extends Controller
 
     public function create()
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = request()->empresa_id;
         $funcionarios = Funcionario::where('empresa_id', $empresa_id)->get();
         $turma = new Turma();
         return view('turmas.create', compact('funcionarios', 'turma'));
@@ -47,31 +46,26 @@ class TurmaController extends Controller
 
     public function store(Request $request)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
-
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'descricao' => 'nullable|string|max:1000',
-            'tipo' => 'required|string|in:pequeno,grande,individual,coletivo',
-            'capacidade' => 'required|integer|min:1',
-            'status' => 'required|string|in:disponivel,ocupado,em_limpeza,manutencao',
-            'colaborador_id' => 'nullable|exists:funcionarios,id',
-        ]);
+        $empresa_id = request()->empresa_id;
+        $this->_validate($request);
 
         try {
-            Turma::create([
-                'nome' => $request->nome,
-                'descricao' => $request->descricao,
-                'tipo' => $request->tipo,
-                'capacidade' => $request->capacidade,
-                'status' => $request->status,
-                'colaborador_id' => $request->colaborador_id,
-                'empresa_id' => $empresa_id,
-            ]);
+            DB::transaction(function () use ($request, $empresa_id) {
+                Turma::create([
+                    'nome' => $request->nome,
+                    'descricao' => $request->descricao,
+                    'tipo' => $request->tipo,
+                    'capacidade' => $request->capacidade,
+                    'status' => $request->status,
+                    'colaborador_id' => $request->colaborador_id,
+                    'empresa_id' => $empresa_id,
+                ]);
+            });
 
-            session()->flash('flash_success', 'Turma cadastrada com sucesso!');
+            session()->flash('flash_sucesso', 'Turma cadastrada com sucesso!');
         } catch (\Exception $e) {
-            session()->flash('flash_error', 'Algo deu errado: ' . $e->getMessage());
+            session()->flash('flash_erro', 'Algo deu errado: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('turmas.index');
@@ -84,7 +78,7 @@ class TurmaController extends Controller
 
     public function edit(string $id)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = request()->empresa_id;
         $turma = Turma::where('empresa_id', $empresa_id)->findOrFail($id);
         $funcionarios = Funcionario::where('empresa_id', $empresa_id)->get();
         $reservasAtivas = Creche::where('turma_id', $turma->id)
@@ -97,16 +91,8 @@ class TurmaController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
-
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'descricao' => 'nullable|string|max:1000',
-            'tipo' => 'required|string|in:pequeno,grande,individual,coletivo',
-            'capacidade' => 'required|integer|min:1',
-            'status' => 'required|string|in:disponivel,ocupado,em_limpeza,manutencao',
-            'colaborador_id' => 'nullable|exists:funcionarios,id',
-        ]);
+        $empresa_id = request()->empresa_id;
+        $this->_validate($request);
 
         try {
             $turma = Turma::where('empresa_id', $empresa_id)->findOrFail($id);
@@ -116,23 +102,25 @@ class TurmaController extends Controller
                 ->count();
 
             if ($request->capacidade < $reservasAtivas) {
-                session()->flash('flash_error', 'Não é possível reduzir a capacidade para menos do que o número de reservas já existentes.');
+                session()->flash('flash_erro', 'Não é possível reduzir a capacidade para menos do que o número de reservas já existentes.');
                 return redirect()->back()->withInput();
             }
 
-            $turma->update([
-                'nome' => $request->nome,
-                'descricao' => $request->descricao,
-                'tipo' => $request->tipo,
-                'capacidade' => $request->capacidade,
-                'status' => $request->status,
-                'colaborador_id' => $request->colaborador_id,
-                'empresa_id' => $empresa_id,
-            ]);
+            DB::transaction(function () use ($request, $turma) {
+                $turma->update([
+                    'nome' => $request->nome,
+                    'descricao' => $request->descricao,
+                    'tipo' => $request->tipo,
+                    'capacidade' => $request->capacidade,
+                    'status' => $request->status,
+                    'colaborador_id' => $request->colaborador_id,
+                ]);
+            });
 
-            session()->flash('flash_success', 'Turma atualizada com sucesso!');
+            session()->flash('flash_sucesso', 'Turma atualizada com sucesso!');
         } catch (\Exception $e) {
-            session()->flash('flash_error', 'Erro ao atualizar turma: ' . $e->getMessage());
+            session()->flash('flash_erro', 'Erro ao atualizar turma: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('turmas.index');
@@ -141,14 +129,33 @@ class TurmaController extends Controller
     public function destroy(string $id)
     {
         try {
-            $empresa_id = Auth::user()?->empresa?->empresa_id;
+            $empresa_id = request()->empresa_id;
             $turma = Turma::where('empresa_id', $empresa_id)->findOrFail($id);
-            $turma->delete();
-            session()->flash('flash_success', 'Turma excluída com sucesso!');
+            DB::transaction(function () use ($turma) {
+                $turma->delete();
+            });
+            session()->flash('flash_sucesso', 'Turma excluída com sucesso!');
         } catch (\Exception $e) {
-            session()->flash('flash_error', 'Erro ao excluir turma: ' . $e->getMessage());
+            session()->flash('flash_erro', 'Erro ao excluir turma: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('turmas.index');
+    }
+
+    private function _validate(Request $request)
+    {
+        $rules = [
+            'nome' => 'required|string|max:255',
+            'descricao' => 'nullable|string|max:1000',
+            'tipo' => 'required|string|in:pequeno,grande,individual,coletivo',
+            'capacidade' => 'required|integer|min:1',
+            'status' => 'required|string|in:disponivel,ocupado,em_limpeza,manutencao',
+            'colaborador_id' => 'nullable|exists:funcionarios,id',
+        ];
+        $messages = [
+            'nome.required' => 'O nome é obrigatório.',
+        ];
+        $this->validate($request, $rules, $messages);
     }
 }

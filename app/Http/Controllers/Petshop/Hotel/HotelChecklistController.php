@@ -11,6 +11,7 @@ use App\Models\Petshop\Especie;
 use App\Models\Petshop\Raca;
 use App\Utils\UploadUtil;
 use Dompdf\Dompdf;
+use Illuminate\Support\Facades\DB;
 
 class HotelChecklistController extends Controller
 {
@@ -39,58 +40,69 @@ class HotelChecklistController extends Controller
 
     public function store(Request $request, $hotelId)
     {
-        $hotel = Hotel::findOrFail($hotelId);
+        $this->_validate($request);
 
-$data = $request->except('_token', 'anexos', 'anexos_to_remove', 'anexos_url', 'tipo');
-        $tipo = $request->get('tipo', 'entrada');
-        $anexos = $request->input('anexos_url', []);
+        try {
+            $hotel = Hotel::findOrFail($hotelId);
 
-        if ($request->filled('anexos_to_remove')) {
-            $anexos = array_filter($anexos, function ($anexo) use ($request) {
-                return !in_array($anexo, $request->anexos_to_remove);
+            $data = $request->except('_token', 'anexos', 'anexos_to_remove', 'anexos_url', 'tipo');
+            $tipo = $request->get('tipo', 'entrada');
+            $anexos = $request->input('anexos_url', []);
+
+            if ($request->filled('anexos_to_remove')) {
+                $anexos = array_filter($anexos, function ($anexo) use ($request) {
+                    return !in_array($anexo, $request->anexos_to_remove);
+                });
+
+                foreach ($request->anexos_to_remove as $removeUrl) {
+                    $path = ltrim(parse_url($removeUrl, PHP_URL_PATH), '/');
+                    $this->uploadUtil->unlinkImageByPath($path);
+                }
+            }
+
+            if ($request->hasFile('anexos')) {
+                foreach ($request->file('anexos') as $file) {
+                    $newAnexo = $this->uploadUtil->uploadFile($file, '/hotel_checklist');
+                    $anexos[] = env('AWS_URL') . '/uploads/hotel_checklist/' . $newAnexo;
+                }
+            }
+
+            if (count($anexos) > 0) {
+                $data['anexos'] = $anexos;
+            }
+
+            DB::transaction(function () use ($hotel, $tipo, $data) {
+                HotelChecklist::updateOrCreate(
+                    ['hotel_id' => $hotel->id, 'tipo' => $tipo],
+                    [
+                        'empresa_id' => auth()->user()->empresa->empresa_id ?? null,
+                        'checklist' => $data,
+                    ]
+                );
+
+                $estado = $hotel->estado;
+                if ($tipo === 'entrada') {
+                    $estado = 'em_andamento';
+                } elseif ($tipo === 'saida') {
+                    $estado = 'concluido';
+                }
+
+                $hotel->update([
+                    'situacao_checklist' => true,
+                    'estado' => $estado,
+                ]);
             });
 
-            foreach ($request->anexos_to_remove as $removeUrl) {
-                $path = ltrim(parse_url($removeUrl, PHP_URL_PATH), '/');
-                $this->uploadUtil->unlinkImageByPath($path);
+            if (!$request->imprimir) {
+                session()->flash('flash_sucesso', 'Checklist salvo com sucesso!');
+                return redirect()->route('hoteis.index');
             }
-        }
 
-        if ($request->hasFile('anexos')) {
-            foreach ($request->file('anexos') as $file) {
-                $newAnexo = $this->uploadUtil->uploadFile($file, '/hotel_checklist');
-                $anexos[] = env('AWS_URL') . '/uploads/hotel_checklist/' . $newAnexo;
-            }
-        }
-
-        if (count($anexos) > 0) {
-            $data['anexos'] = $anexos;
-        }
-
-        HotelChecklist::updateOrCreate(
-            ['hotel_id' => $hotel->id, 'tipo' => $tipo],
-            [
-                'empresa_id' => auth()->user()->empresa->empresa_id ?? null,
-                'checklist' => $data,
-            ]
-        );
-
-        $estado = $hotel->estado;
-        if ($tipo === 'entrada') {
-            $estado = 'em_andamento';
-        } elseif ($tipo === 'saida') {
-            $estado = 'concluido';
-        }
-
-        $hotel->update([
-            'situacao_checklist' => true,
-            'estado' => $estado,
-        ]);
-
-        if (!$request->imprimir) {
-            return redirect()->route('hoteis.index')->with('flash_success', 'Checklist salvo com sucesso!');
-        } else {
             return $this->imprimir($request, $hotelId);
+        } catch (\Exception $e) {
+            session()->flash('flash_erro', 'Algo deu errado: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
+            return redirect()->back()->withInput();
         }
     }
 
@@ -116,5 +128,15 @@ $data = $request->except('_token', 'anexos', 'anexos_to_remove', 'anexos_url', '
             Checklist" . $request->tipo == 'entrada' ? ' de Entrada' : ' de Saída' . " animal.pdf",
             ["Attachment" => false]
         );
+    }
+
+    private function _validate(Request $request)
+    {
+        $rules = [
+            'tipo' => 'nullable|in:entrada,saida',
+            'anexos' => 'nullable',
+        ];
+        $messages = [];
+        $this->validate($request, $rules, $messages);
     }
 }

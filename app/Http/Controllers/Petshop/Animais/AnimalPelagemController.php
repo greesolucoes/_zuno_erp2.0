@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Petshop\Animais;
 use App\Http\Controllers\Controller;
 use App\Models\Petshop\Pelagem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AnimalPelagemController extends Controller
 {
 
   public function index(Request $request)
   {
-    $empresaId = Auth::user()?->empresa?->empresa_id;
+    $empresaId = request()->empresa_id;
 
     $pesquisa = $request->input('pesquisa');
 
@@ -33,30 +33,30 @@ class AnimalPelagemController extends Controller
 
   public function store(Request $request)
   {
-    $empresa_id = Auth::user()?->empresa?->empresa_id;
-
-    $request->validate([
-      'nome' => 'required',
-    ]);
+    $empresaId = request()->empresa_id;
+    $this->_validate($request);
 
     $hasAnotherPelagem = Pelagem::where('nome', $request->nome)
-      ->where('empresa_id', $request->empresa_id)
+      ->where('empresa_id', $empresaId)
       ->first();
 
     if ($hasAnotherPelagem) {
-      session()->flash("flash_error", "Já existe uma pelagem com este nome.");
+      session()->flash("flash_erro", "Já existe uma pelagem com este nome.");
       return redirect()->back()->withInput();
     }
 
     try {
-      Pelagem::create([
-        'nome' => $request->nome,
-        'empresa_id' => $empresa_id,
-      ]);
+      DB::transaction(function () use ($request, $empresaId) {
+        Pelagem::create([
+          'nome' => $request->nome,
+          'empresa_id' => $empresaId,
+        ]);
+      });
 
-      session()->flash("flash_success", "Pelagem cadastrada com sucesso!");
+      session()->flash("flash_sucesso", "Pelagem cadastrada com sucesso!");
     } catch (\Exception $e) {
-      session()->flash("flash_error", "Algo deu errado: " . $e->getMessage());
+      session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+      __saveLogError($e, request()->empresa_id);
     }
 
     return redirect()->route('animais.pelagens.index');
@@ -72,9 +72,8 @@ class AnimalPelagemController extends Controller
 
   public function update(Request $request, $id)
   {
-    $request->validate([
-      'nome' => 'required',
-    ]);
+    $empresaId = request()->empresa_id;
+    $this->_validate($request);
 
 
     try {
@@ -82,21 +81,24 @@ class AnimalPelagemController extends Controller
       __validaObjetoEmpresa($item);
 
       $hasAnotherPelagem = Pelagem::where('nome', $request->nome)
-        ->where('empresa_id', $request->empresa_id)
+        ->where('empresa_id', $empresaId)
         ->first();
 
       if ($hasAnotherPelagem && $item->nome != $request->nome) {
-        session()->flash("flash_error", "Já existe uma pelagem com este nome.");
+        session()->flash("flash_erro", "Já existe uma pelagem com este nome.");
         return redirect()->back()->withInput();
       }
 
-      $item->update([
-        'nome' => $request->nome,
-      ]);
+      DB::transaction(function () use ($request, $item) {
+        $item->update([
+          'nome' => $request->nome,
+        ]);
+      });
 
-      session()->flash("flash_success", "Pelagem atualizada com sucesso!");
+      session()->flash("flash_sucesso", "Pelagem atualizada com sucesso!");
     } catch (\Exception $e) {
-      session()->flash("flash_error", "Algo deu errado: " . $e->getMessage());
+      session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+      __saveLogError($e, request()->empresa_id);
     }
 
     return redirect()->route('animais.pelagens.index');
@@ -108,13 +110,27 @@ class AnimalPelagemController extends Controller
       $item = Pelagem::findOrFail($id);
       __validaObjetoEmpresa($item);
 
-      $item->delete();
+      DB::transaction(function () use ($item) {
+        $item->delete();
+      });
 
-      session()->flash("flash_success", "Pelagem excluída com sucesso!");
+      session()->flash("flash_sucesso", "Pelagem excluída com sucesso!");
     } catch (\Exception $e) {
-      session()->flash("flash_error", "Algo deu errado: " . $e->getMessage());
+      session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+      __saveLogError($e, request()->empresa_id);
     }
 
     return redirect()->route('animais.pelagens.index');
+  }
+
+  private function _validate(Request $request)
+  {
+    $rules = [
+      'nome' => 'required|max:255',
+    ];
+    $messages = [
+      'nome.required' => 'O nome é obrigatório.',
+    ];
+    $this->validate($request, $rules, $messages);
   }
 }

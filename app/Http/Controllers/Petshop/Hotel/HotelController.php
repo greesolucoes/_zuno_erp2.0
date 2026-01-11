@@ -217,7 +217,7 @@ class HotelController extends Controller
 
             $quarto = Quarto::findOrFail($request->quarto_id);
             if ($quarto->status !== Quarto::STATUS_DISPONIVEL) {
-                session()->flash('flash_error', 'Quarto selecionado não está disponível para reserva.');
+                session()->flash('flash_erro', 'Quarto selecionado não está disponível para reserva.');
                 return redirect()->back()->withInput();
             }
 
@@ -286,7 +286,7 @@ class HotelController extends Controller
             $quarto_is_busy = $quarto_service->checkIfQuartoIsBusy($quarto_data);
 
             if ($quarto_is_busy) {
-                session()->flash('flash_error', 'Não há vagas disponíveis nesse quarto para as datas selecionadas.');
+                session()->flash('flash_erro', 'Não há vagas disponíveis nesse quarto para as datas selecionadas.');
                 return redirect()->back()->withInput();
             }
 
@@ -393,10 +393,11 @@ class HotelController extends Controller
             (new HotelNotificacaoService())->nova($hotelParaNotificacao ?? $hotel);
 
 
-            session()->flash('flash_success', 'Reserva cadastrada com sucesso!');
+            session()->flash('flash_sucesso', 'Reserva cadastrada com sucesso!');
         } catch (\Exception $e) {
             Log::error('HotelController@store exception', ['message' => $e->getMessage()]);
-            session()->flash('flash_error', 'Erro ao cadastrar reserva...');
+            session()->flash('flash_erro', 'Erro ao cadastrar reserva: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('hoteis.index');
@@ -589,7 +590,7 @@ class HotelController extends Controller
 
             $quarto = Quarto::findOrFail($request->quarto_id);
             if ($quarto->status !== Quarto::STATUS_DISPONIVEL) {
-                session()->flash('flash_error', 'Quarto selecionado não está disponível para reserva.');
+                session()->flash('flash_erro', 'Quarto selecionado não está disponível para reserva.');
                 return redirect()->back()->withInput();
             }
 
@@ -656,7 +657,7 @@ class HotelController extends Controller
             $is_busy = $quarto_servie->checkIfQuartoIsBusy($quarto_data);
 
             if ($is_busy) {
-                session()->flash('flash_error', 'Não há vagas disponíveis nesse quarto para as datas selecionadas.');
+                session()->flash('flash_erro', 'Não há vagas disponíveis nesse quarto para as datas selecionadas.');
                 return redirect()->back()->withInput();
             }
 
@@ -763,10 +764,11 @@ class HotelController extends Controller
             $this->hotel_service->updateValorTotal($hotel->id);
             $this->hotel_service->updateContaReceberDataVencimento($hotel->id);
 
-            session()->flash('flash_success', 'Reserva atualizada com sucesso!');
+            session()->flash('flash_sucesso', 'Reserva atualizada com sucesso!');
         } catch (\Exception $e) {
             Log::error('HotelController@update exception', ['message' => $e->getMessage()]);
-            session()->flash('flash_error', 'Erro ao atualizar reserva...' );
+            session()->flash('flash_erro', 'Erro ao atualizar reserva: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('hoteis.index');
@@ -794,7 +796,7 @@ class HotelController extends Controller
     public function destroy(string $id)
     {
         try {
-            $empresa_id = Auth::user()?->empresa?->empresa_id;
+            $empresa_id = request()->empresa_id;
 
             // Busca o hotel garantindo que pertence à empresa
             $hotel = Hotel::where('empresa_id', $empresa_id)->findOrFail($id);
@@ -810,9 +812,10 @@ class HotelController extends Controller
 
             $hotel->delete();
 
-            session()->flash('flash_success', 'Reserva excluída com sucesso!');
+            session()->flash('flash_sucesso', 'Reserva excluída com sucesso!');
         } catch (\Exception $e) {
-            session()->flash('flash_error', 'Erro ao excluir hotel...');
+            session()->flash('flash_erro', 'Erro ao excluir hotel: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('hoteis.index');

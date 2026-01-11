@@ -116,6 +116,9 @@ class AgendamentoController extends Controller
     public function store(Request $request)
     {
         try {
+            $this->_validate($request, 'store');
+            $empresaId = request()->empresa_id;
+
             $agendamento = DB::transaction(function () use ($request) {
                 $dataAgendamento = [
                     'funcionario_id' => $request->funcionario_id,
@@ -129,7 +132,7 @@ class AgendamentoController extends Controller
                     'total' => __convert_value_float($request->total),
                     'desconto' => $request->desconto ? __convert_value_bd($request->desconto) : 0,
                     'acrescimo' => $request->acrescimo ? $request->acrescimo : 0,
-                    'empresa_id' => $request->empresa_id,
+                    'empresa_id' => request()->empresa_id,
                     'animal_id' => $request->animal_id ?? null,
                 ];
 
@@ -150,11 +153,12 @@ class AgendamentoController extends Controller
 
                 return $agendamento;
             });
-            __createLog($request->empresa_id, 'Agendamento', 'cadastrar', "Data: " . __data_pt($agendamento->data) . " - cliente: " . $agendamento->cliente->info);
-            session()->flash("flash_success", "Agendamento cadastrado!");
+            __createLog(request()->empresa_id, 'Agendamento', 'cadastrar', "Data: " . __data_pt($agendamento->data) . " - cliente: " . $agendamento->cliente->info);
+            session()->flash("flash_sucesso", "Agendamento cadastrado!");
         } catch (\Exception $e) {
-            __createLog($request->empresa_id, 'Agendamento', 'erro', $e->getMessage());
-            session()->flash("flash_error", 'Algo deu errado.', $e->getMessage());
+            __createLog(request()->empresa_id, 'Agendamento', 'erro', $e->getMessage());
+            session()->flash("flash_erro", 'Algo deu errado: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
         return redirect()->back();
     }
@@ -169,15 +173,25 @@ class AgendamentoController extends Controller
 
     public function update(Request $request, $id)
     {
+        $this->_validate($request, 'update');
         $item = Agendamento::findOrFail($id);
         __validaObjetoEmpresa($item);
-        $item->inicio = $request->inicio;
-        $item->termino = $request->termino;
-        $item->data = $request->data;
-        $item->save();
-        __createLog($request->empresa_id, 'Agendamento', 'editar', "Data: " . __data_pt($item->data) . " - cliente: " . $item->cliente->info);
 
-        session()->flash("flash_success", "Agendamento alterado!");
+        try {
+            DB::transaction(function () use ($request, $item) {
+                $item->inicio = $request->inicio;
+                $item->termino = $request->termino;
+                $item->data = $request->data;
+                $item->save();
+            });
+
+            __createLog(request()->empresa_id, 'Agendamento', 'editar', "Data: " . __data_pt($item->data) . " - cliente: " . $item->cliente->info);
+            session()->flash("flash_sucesso", "Agendamento alterado!");
+        } catch (\Exception $e) {
+            __createLog(request()->empresa_id, 'Agendamento', 'erro', $e->getMessage());
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
+        }
         return redirect()->back();
     }
 
@@ -185,9 +199,14 @@ class AgendamentoController extends Controller
     {
         $item = Agendamento::findOrFail($id);
         __validaObjetoEmpresa($item);
-        $item->status = 1;
-        $item->save();
-        session()->flash("flash_success", "Agendamento alterado!");
+        try {
+            $item->status = 1;
+            $item->save();
+            session()->flash("flash_sucesso", "Agendamento alterado!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
+        }
         return redirect()->route('petshop.agenda.index');
     }
 
@@ -201,12 +220,55 @@ class AgendamentoController extends Controller
             $item->itens()->delete();
             $item->delete();
             __createLog(request()->empresa_id, 'Agendamento', 'excluir', $descricaoLog);
-            session()->flash("flash_success", "Agendamento removido!");
+            session()->flash("flash_sucesso", "Agendamento removido!");
         } catch (\Exception $e) {
             __createLog(request()->empresa_id, 'Agendamento', 'erro', $e->getMessage());
-            session()->flash("flash_error", "Algo deu Errado: " . $e->getMessage());
+            session()->flash("flash_erro", "Algo deu Errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
         return redirect()->route('petshop.agenda.index');
+    }
+
+    private function _validate(Request $request, string $context = 'store')
+    {
+        $rules = [];
+        $messages = [];
+
+        if ($context === 'store') {
+            $rules = [
+                'funcionario_id' => 'required',
+                'cliente_id' => 'required',
+                'data' => 'required',
+                'inicio' => 'required',
+                'termino' => 'required',
+                'prioridade' => 'required',
+                'total' => 'required',
+                'servicos' => 'required|array|min:1',
+                'servicos.*' => 'required',
+            ];
+            $messages = [
+                'cliente_id.required' => 'O cliente é obrigatório.',
+                'data.required' => 'A data é obrigatória.',
+                'inicio.required' => 'O início é obrigatório.',
+                'termino.required' => 'O término é obrigatório.',
+                'servicos.required' => 'Selecione pelo menos um serviço.',
+            ];
+        }
+
+        if ($context === 'update') {
+            $rules = [
+                'data' => 'required',
+                'inicio' => 'required',
+                'termino' => 'required',
+            ];
+            $messages = [
+                'data.required' => 'A data é obrigatória.',
+                'inicio.required' => 'O início é obrigatório.',
+                'termino.required' => 'O término é obrigatório.',
+            ];
+        }
+
+        $this->validate($request, $rules, $messages);
     }
 
     public function pdv($id)

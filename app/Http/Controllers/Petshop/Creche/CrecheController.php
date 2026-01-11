@@ -19,7 +19,6 @@ use App\Services\TurmaService;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CrecheController extends Controller
@@ -37,7 +36,7 @@ class CrecheController extends Controller
 
     public function index(Request $request)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = request()->empresa_id;
         $pesquisa = $request->input('pesquisa');
         $start_date = $request->input('start_date');
         $end_date = $request->input('end_date');
@@ -101,9 +100,9 @@ class CrecheController extends Controller
 
     public function store(Request $request)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = request()->empresa_id;
             
-        $this->__validate($request);
+        $this->_validate($request);
 
         $servico_reserva = $request->servico_ids[0] ? Servico::with('categoria')->find($request->servico_ids[0]) : null;
 
@@ -119,7 +118,7 @@ class CrecheController extends Controller
 
             $turma = Turma::findOrFail($request->turma_id);
             if ($turma->status !== Turma::STATUS_DISPONIVEL) {
-                session()->flash('flash_error', 'Turma selecionada não está disponível para reserva.');
+                session()->flash('flash_erro', 'Turma selecionada não está disponível para reserva.');
                 return redirect()->back()->withInput();
             }
 
@@ -274,9 +273,10 @@ class CrecheController extends Controller
 
             (new CrecheNotificacaoService())->nova($crecheParaNotificacao ?? $creche);
 
-            session()->flash('flash_success', 'Reserva cadastrada com sucesso!');
+            session()->flash('flash_sucesso', 'Reserva cadastrada com sucesso!');
         } catch (\Exception $e) {
-            session()->flash('flash_error', 'Erro ao salvar reserva: '.$e->getMessage());
+            session()->flash('flash_erro', 'Erro ao salvar reserva: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('creches.index');
@@ -320,7 +320,7 @@ class CrecheController extends Controller
 
     public function edit(string $id)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = request()->empresa_id;
         $data = Creche::where('empresa_id', $empresa_id)->with(['servicos', 'produtos'])->findOrFail($id);
         
         $reserva = $data->servicos->first(function ($servico) {
@@ -346,9 +346,9 @@ class CrecheController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = request()->empresa_id;
 
-        $this->__validate($request);
+        $this->_validate($request);
 
         try {
             $data_entrada = Carbon::parse($request->data_entrada.' '.$request->horario_entrada);
@@ -358,7 +358,7 @@ class CrecheController extends Controller
             $pet = Animal::findOrFail($request->animal_id);
             $turma = Turma::findOrFail($request->turma_id);
             if ($turma->status !== Turma::STATUS_DISPONIVEL) {
-                session()->flash('flash_error', 'Turma selecionada não está disponível para reserva.');
+                session()->flash('flash_erro', 'Turma selecionada não está disponível para reserva.');
                 return redirect()->back()->withInput();
             }
 
@@ -426,7 +426,7 @@ class CrecheController extends Controller
             $is_busy = $this->turma_service->checkIfTurmaIsBusy($turma_data);
 
             if ($is_busy) {
-                session()->flash('flash_error', 'Não há vagas disponíveis nessa turma para as datas selecionadas.');
+                session()->flash('flash_erro', 'Não há vagas disponíveis nessa turma para as datas selecionadas.');
                 return redirect()->back()->withInput();
             }
 
@@ -530,15 +530,16 @@ class CrecheController extends Controller
                 }
             }
 
-            session()->flash('flash_success', 'Reserva atualizada com sucesso!');
+            session()->flash('flash_sucesso', 'Reserva atualizada com sucesso!');
         } catch (\Exception $e) {
-            session()->flash('flash_error', 'Erro ao atualizar reserva...');
+            session()->flash('flash_erro', 'Erro ao atualizar reserva: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('creches.index');
     }
 
-    private function __validate(Request $request) {
+    private function _validate(Request $request) {
         $request->merge([
             'servico_ids' => array_values(
                 array_map(
@@ -586,7 +587,7 @@ class CrecheController extends Controller
                 ->toArray(),
         ]);
             
-        $request->validate([
+        $rules = [
             // Dados da reserva
 
             'animal_id' => 'required|exists:petshop_animais,id',
@@ -616,7 +617,9 @@ class CrecheController extends Controller
             'produto_id.*' => 'nullable|exists:produtos,id',
             'qtd_produto' => 'nullable|array',
             'qtd_produto.*' => 'nullable|numeric|min:1',
-        ]);
+        ];
+        $messages = [];
+        $this->validate($request, $rules, $messages);
     }
 
      public function printEnderecoEntrega($id){
@@ -641,12 +644,13 @@ class CrecheController extends Controller
     public function destroy(string $id)
     {
         try {
-            $empresa_id = Auth::user()?->empresa?->empresa_id;
+            $empresa_id = request()->empresa_id;
             $creche = Creche::where('empresa_id', $empresa_id)->findOrFail($id);
             $creche->delete();
-            session()->flash('flash_success', 'Reserva excluída com sucesso!');
+            session()->flash('flash_sucesso', 'Reserva excluída com sucesso!');
         } catch (\Exception $e) {
-            session()->flash('flash_error', 'Erro ao excluir reserva: '.$e->getMessage());
+            session()->flash('flash_erro', 'Erro ao excluir reserva: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('creches.index');
@@ -654,15 +658,25 @@ class CrecheController extends Controller
 
     public function attachServicos(Request $request, Creche $creche)
     {
-        $request->validate([
+        $rules = [
             'servico_ids' => 'array',
             'servico_ids.*' => 'exists:servicos,id',
-        ]);
+        ];
+        $messages = [];
+        $this->validate($request, $rules, $messages);
 
-        foreach ($request->servico_ids ?? [] as $servico_id) {
-            $creche->servicos()->attach($servico_id);
+        try {
+            DB::transaction(function () use ($request, $creche) {
+                foreach ($request->servico_ids ?? [] as $servico_id) {
+                    $creche->servicos()->attach($servico_id);
+                }
+            });
+
+            session()->flash('flash_sucesso', 'Serviços adicionados com sucesso!');
+        } catch (\Exception $e) {
+            session()->flash('flash_erro', 'Erro ao adicionar serviços: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
-
-        return redirect()->back()->with('flash_success', 'Serviços adicionados com sucesso!');
+        return redirect()->back();
     }
 }

@@ -21,7 +21,7 @@ class PlanoResetPasswordController extends Controller
             $user = PortalUser::where('email', $request->email)->first();
         }
         if ($user == null) {
-            session()->flash('flash_error', 'E-mail não encontrado');
+            session()->flash('flash_erro', 'E-mail não encontrado');
             return back();
         }
 
@@ -33,7 +33,7 @@ class PlanoResetPasswordController extends Controller
             $m->to($user->email);
         });
 
-        session()->flash('flash_success', 'Foi enviado um e-mail com um link para redefinir sua senha.');
+        session()->flash('flash_sucesso', 'Foi enviado um e-mail com um link para redefinir sua senha.');
         return redirect()->route('petshop.planos.login');
     }
 
@@ -49,7 +49,7 @@ class PlanoResetPasswordController extends Controller
             ->first();
 
         if (is_null($reset) || !Hash::check($request->token, $reset->token) || Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
-            session()->flash('flash_error', 'O token de redefinição de senha é inválido ou expirou.');
+            session()->flash('flash_erro', 'O token de redefinição de senha é inválido ou expirou.');
             return redirect()->route('petshop.planos.login');
         }
 
@@ -58,7 +58,7 @@ class PlanoResetPasswordController extends Controller
             $user = PortalUser::where('email', $request->email)->first();
         }
         if (!$user) {
-            session()->flash('flash_error', 'E-mail não encontrado.');
+            session()->flash('flash_erro', 'E-mail não encontrado.');
             return redirect()->route('petshop.planos.login');
         }
 
@@ -68,7 +68,7 @@ class PlanoResetPasswordController extends Controller
             ->where('email', $request->email)
             ->delete();
 
-        session()->flash('flash_success', 'Sua senha foi redefinida com sucesso!');
+        session()->flash('flash_sucesso', 'Sua senha foi redefinida com sucesso!');
         return redirect()->route('petshop.planos.login');
     }
 }

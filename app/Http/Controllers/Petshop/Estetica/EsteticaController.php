@@ -181,7 +181,7 @@ class EsteticaController extends Controller
 
             if ($estetica->estado !== 'pendente_aprovacao') {
                 if (!$this->estetica_service->criarOrdemServico($estetica)) {
-                    session()->flash('flash_error', 'Limite de uso do serviço atingido para este período.');
+                    session()->flash('flash_erro', 'Limite de uso do serviço atingido para este período.');
                     return redirect()->back()->withInput();
                 }
             }
@@ -189,17 +189,20 @@ class EsteticaController extends Controller
             $esteticaParaNotificacao = $estetica->fresh(['empresa', 'cliente', 'animal', 'servicos.servico']);
             (new EsteticaNotificacaoService())->nova($esteticaParaNotificacao ?? $estetica);
 
-            session()->flash('flash_success', 'Agendamento criado com sucesso!');
+            session()->flash('flash_sucesso', 'Agendamento criado com sucesso!');
         } catch (\Exception $e) {
             Log::error('Erro ao salvar agendamento de estética', ['exception' => $e]);
-            session()->flash('flash_error', 'Erro ao salvar agendamento: ' . $e->getMessage());
+            session()->flash('flash_erro', 'Erro ao salvar agendamento: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         if ($request->back == 1) {
-            return redirect()->back()->with('flash_success', 'Agendamento criado com sucesso!');
+            session()->flash('flash_sucesso', 'Agendamento criado com sucesso!');
+            return redirect()->back();
         }
 
-        return redirect()->route('esteticas.index')->with('flash_success', 'Agendamento criado com sucesso!');
+        session()->flash('flash_sucesso', 'Agendamento criado com sucesso!');
+        return redirect()->route('esteticas.index');
     }
 
     public function edit($id)
@@ -422,9 +425,10 @@ class EsteticaController extends Controller
                 ]);
             }
 
-            session()->flash('flash_success', 'Agendamento atualizado com sucesso!');
+            session()->flash('flash_sucesso', 'Agendamento atualizado com sucesso!');
         } catch (\Exception $e) {
-            session()->flash('flash_error', 'Erro ao atualizar agendamento: ' . $e->getMessage());
+            session()->flash('flash_erro', 'Erro ao atualizar agendamento: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         if ($request->back == 1) {
@@ -530,9 +534,10 @@ class EsteticaController extends Controller
                 }
             }
 
-            session()->flash('flash_success', 'Agendamento excluído e plano atualizado com sucesso!');
+            session()->flash('flash_sucesso', 'Agendamento excluído e plano atualizado com sucesso!');
         } catch (\Exception $e) {
-            session()->flash('flash_error', 'Erro ao excluir agendamento: ' . $e->getMessage());
+            session()->flash('flash_erro', 'Erro ao excluir agendamento: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('esteticas.index');
@@ -589,11 +594,11 @@ class EsteticaController extends Controller
         $res = $this->estetica_service->aprovar($estetica);
 
         if (!$res['success']) {
-            session()->flash('flash_error', $res['message']);
+            session()->flash('flash_erro', $res['message']);
 
             return redirect()->back();
         } else {
-            session()->flash('flash_success', $res['message']);
+            session()->flash('flash_sucesso', $res['message']);
         }
 
         $route = $estetica->plano_id
@@ -608,11 +613,11 @@ class EsteticaController extends Controller
         $res = $this->estetica_service->rejeitar($estetica);
 
         if (!$res['success']) {
-            session()->flash('flash_error', 'Ocorreu um erro desconhecido ao rejeitar o agendamento.');
+            session()->flash('flash_erro', 'Ocorreu um erro desconhecido ao rejeitar o agendamento.');
 
             return redirect()->back();
         } else {
-            session()->flash('flash_success', $res['message']);
+            session()->flash('flash_sucesso', $res['message']);
         }
 
         $route = $estetica->plano_id
@@ -653,7 +658,8 @@ class EsteticaController extends Controller
             // Chama o mesmo método usado no store
             return $this->store($novoRequest);
         } catch (\Exception $e) {
-            session()->flash('flash_error', 'Erro ao processar agendamento: ' . $e->getMessage());
+            session()->flash('flash_erro', 'Erro ao processar agendamento: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
             return redirect()->back();
         }
     }

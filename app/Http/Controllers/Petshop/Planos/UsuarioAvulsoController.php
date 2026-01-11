@@ -49,15 +49,15 @@ class UsuarioAvulsoController extends Controller
 
         $avulsoUser->update($data);
 
-        return redirect()->route('petshop.planos.usuarios-avulso.index')
-            ->with('flash_success', 'Usuário avulso atualizado com sucesso!');
+        session()->flash('flash_sucesso', 'Usuário avulso atualizado com sucesso!');
+        return redirect()->route('petshop.planos.usuarios-avulso.index');
     }
 
     public function destroy(PortalUser $avulsoUser)
     {
         $avulsoUser->delete();
 
-        return redirect()->route('petshop.planos.usuarios-avulso.index')
-            ->with('flash_success', 'Usuário avulso removido com sucesso!');
+        session()->flash('flash_sucesso', 'Usuário avulso removido com sucesso!');
+        return redirect()->route('petshop.planos.usuarios-avulso.index');
     }
 }

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Funcionario;
 use App\Models\Petshop\Quarto;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Petshop\Hotel;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +14,7 @@ class QuartoController extends Controller
     public function index(Request $request)
     {
 
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresaId = request()->empresa_id;
         $pesquisa = $request->input('pesquisa');
         $start_date = $request->input('start_date');
         $end_date = $request->input('end_date');
@@ -24,7 +23,7 @@ class QuartoController extends Controller
         $status = $request->input('status');
         $tipo = $request->input('tipo');
 
-        $data = Quarto::where('empresa_id', $empresa_id)
+        $data = Quarto::where('empresa_id', $empresaId)
         ->when($pesquisa, function ($q) use ($pesquisa) {
             $q->where('nome', 'like', "%$pesquisa%");
         })
@@ -54,8 +53,8 @@ class QuartoController extends Controller
 
     public function create()
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
-        $funcionarios = Funcionario::where('empresa_id', $empresa_id)->get();
+        $empresaId = request()->empresa_id;
+        $funcionarios = Funcionario::where('empresa_id', $empresaId)->get();
 
 
         return view('quartos.create', compact('funcionarios'));
@@ -63,31 +62,26 @@ class QuartoController extends Controller
 
     public function store(Request $request)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
-
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'descricao' => 'nullable|string|max:1000',
-            'tipo' => 'required|string|in:pequeno,grande,individual,coletivo',
-            'capacidade' => 'required|integer|min:1',
-            'status' => 'required|string|in:disponivel,em_limpeza,manutencao,em_uso,reservado,bloqueado',
-            'colaborador_id' => 'nullable|exists:funcionarios,id',
-        ]);
+        $empresaId = request()->empresa_id;
+        $this->_validate($request);
 
         try {
-            Quarto::create([
-                'nome' => $request->nome,
-                'descricao' => $request->descricao,
-                'tipo' => $request->tipo,
-                'capacidade' => $request->capacidade,
-                'status' => $request->status,
-                'colaborador_id' => $request->colaborador_id,
-                'empresa_id' => $empresa_id,
-            ]);
+            DB::transaction(function () use ($request, $empresaId) {
+                Quarto::create([
+                    'nome' => $request->nome,
+                    'descricao' => $request->descricao,
+                    'tipo' => $request->tipo,
+                    'capacidade' => $request->capacidade,
+                    'status' => $request->status,
+                    'colaborador_id' => $request->colaborador_id,
+                    'empresa_id' => $empresaId,
+                ]);
+            });
 
-            session()->flash('flash_success', 'Quarto cadastrado com sucesso!');
+            session()->flash('flash_sucesso', 'Quarto cadastrado com sucesso!');
         } catch (\Exception $e) {
-            session()->flash('flash_error', 'Algo deu errado: ' . $e->getMessage());
+            session()->flash('flash_erro', 'Algo deu errado: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('quartos.index');
@@ -97,9 +91,11 @@ class QuartoController extends Controller
 
     public function edit(string $id)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
         $quarto = Quarto::findOrFail($id);
-        $funcionarios = Funcionario::where('empresa_id', $empresa_id)->get();
+        __validaObjetoEmpresa($quarto);
+
+        $empresaId = request()->empresa_id;
+        $funcionarios = Funcionario::where('empresa_id', $empresaId)->get();
         $reservasAtivas = Hotel::where('quarto_id', $quarto->id)
             ->whereIn(DB::raw('LOWER(estado)'), ['agendado', 'em_andamento'])
             ->whereDate('checkout', '>=', now())
@@ -111,42 +107,36 @@ class QuartoController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
-
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'descricao' => 'nullable|string|max:1000',
-            'tipo' => 'required|string|in:pequeno,grande,individual,coletivo',
-            'capacidade' => 'required|integer|min:1',
-            'status' => 'required|string|in:disponivel,em_limpeza,manutencao,em_uso,reservado,bloqueado',
-            'colaborador_id' => 'nullable|exists:funcionarios,id',
-        ]);
+        $empresaId = request()->empresa_id;
+        $this->_validate($request);
 
         try {
-            $quarto = Quarto::where('empresa_id', $empresa_id)->findOrFail($id);
+            $quarto = Quarto::where('empresa_id', $empresaId)->findOrFail($id);
             $reservasAtivas = Hotel::where('quarto_id', $quarto->id)
                 ->whereIn(DB::raw('LOWER(estado)'), ['agendado', 'em_andamento'])
                 ->whereDate('checkout', '>=', now())
                 ->count();
 
             if ($request->capacidade < $reservasAtivas) {
-                session()->flash('flash_error', 'Não é possível reduzir a capacidade para menos do que o número de reservas já existentes.');
+                session()->flash('flash_erro', 'Não é possível reduzir a capacidade para menos do que o número de reservas já existentes.');
                 return redirect()->back()->withInput();
             }
 
-            $quarto->update([
-                'nome' => $request->nome,
-                'descricao' => $request->descricao,
-                'tipo' => $request->tipo,
-                'capacidade' => $request->capacidade,
-                'status' => $request->status,
-                'colaborador_id' => $request->colaborador_id,
-                'empresa_id' => $empresa_id,
-            ]);
+            DB::transaction(function () use ($request, $quarto) {
+                $quarto->update([
+                    'nome' => $request->nome,
+                    'descricao' => $request->descricao,
+                    'tipo' => $request->tipo,
+                    'capacidade' => $request->capacidade,
+                    'status' => $request->status,
+                    'colaborador_id' => $request->colaborador_id,
+                ]);
+            });
 
-            session()->flash('flash_success', 'Quarto atualizado com sucesso!');
+            session()->flash('flash_sucesso', 'Quarto atualizado com sucesso!');
         } catch (\Exception $e) {
-            session()->flash('flash_error', 'Erro ao atualizar quarto: ' . $e->getMessage());
+            session()->flash('flash_erro', 'Erro ao atualizar quarto: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('quartos.index');
@@ -157,16 +147,37 @@ class QuartoController extends Controller
     {
         try {
 
-            $empresa_id = Auth::user()?->empresa?->empresa_id;
+            $empresaId = request()->empresa_id;
 
-            $quarto = Quarto::where('empresa_id', $empresa_id)->findOrFail($id);
-            $quarto->delete();
+            $quarto = Quarto::where('empresa_id', $empresaId)->findOrFail($id);
+            __validaObjetoEmpresa($quarto);
 
-            session()->flash('flash_success', 'Quarto excluído com sucesso!');
+            DB::transaction(function () use ($quarto) {
+                $quarto->delete();
+            });
+
+            session()->flash('flash_sucesso', 'Quarto excluído com sucesso!');
         } catch (\Exception $e) {
-            session()->flash('flash_error', 'Erro ao excluir quarto: ' . $e->getMessage());
+            session()->flash('flash_erro', 'Erro ao excluir quarto: ' . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('quartos.index');
+    }
+
+    private function _validate(Request $request)
+    {
+        $rules = [
+            'nome' => 'required|string|max:255',
+            'descricao' => 'nullable|string|max:1000',
+            'tipo' => 'required|string|in:pequeno,grande,individual,coletivo',
+            'capacidade' => 'required|integer|min:1',
+            'status' => 'required|string|in:disponivel,em_limpeza,manutencao,em_uso,reservado,bloqueado',
+            'colaborador_id' => 'nullable|exists:funcionarios,id',
+        ];
+        $messages = [
+            'nome.required' => 'O nome é obrigatório.',
+        ];
+        $this->validate($request, $rules, $messages);
     }
 }

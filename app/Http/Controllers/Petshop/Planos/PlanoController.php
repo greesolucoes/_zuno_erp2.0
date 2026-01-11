@@ -194,7 +194,7 @@ class PlanoController extends Controller
         ]);
 
         $this->planoService->create($data);
-        session()->flash('flash_success', 'Plano criado com sucesso!');
+        session()->flash('flash_sucesso', 'Plano criado com sucesso!');
 
         return redirect()->route('petshop.gerenciar.planos');
     }
@@ -312,7 +312,7 @@ class PlanoController extends Controller
         ]);
 
         $this->planoService->update($plano, $data);
-        session()->flash('flash_success', 'Plano atualizado com sucesso!');
+        session()->flash('flash_sucesso', 'Plano atualizado com sucesso!');
 
         return redirect()->route('petshop.gerenciar.planos');
     }
@@ -320,7 +320,7 @@ class PlanoController extends Controller
     public function destroy(Plano $plano)
     {
         $this->planoService->delete($plano);
-        session()->flash('flash_success', 'Plano removido com sucesso!');
+        session()->flash('flash_sucesso', 'Plano removido com sucesso!');
 
         return redirect()->route('petshop.gerenciar.planos');
     }
