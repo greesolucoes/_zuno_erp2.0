@@ -550,7 +550,7 @@
 @endsection
 
 @section('js')
-    <script src="/assets/vendor/fullcalendar/main.min.js"></script>
+    <script src="/fullcalendar/main.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/pt-br.js"></script>
     <script src="/js/vet/agenda.js"></script>

@@ -11,13 +11,13 @@
             <div class="modal-body">
                 <div class="row g-2">
                     <div class="col-md-3">
-                        {!!Form::text('novo_cpf_cnpj', 'CPF/CNPJ')
-                        ->attrs(
-                            ['class' => 'cpf_cnpj ignore'],
-                            ['data-cpf_autocomplet' => auth()->user()->can('cpf_autocomplet') ? 'true' : null])
-                        ->placeholder('Digite o CPF/CNPJ')
-                        !!}
-                    </div>
+	                        {!!Form::text('novo_cpf_cnpj', 'CPF/CNPJ')
+	                        ->attrs(
+	                            ['class' => 'cpf_cnpj ignore'],
+	                            ['data-cpf_autocomplet' => auth()->user()?->can('cpf_autocomplet') ? 'true' : null])
+	                        ->placeholder('Digite o CPF/CNPJ')
+	                        !!}
+	                    </div>
                     <div class="col-md-4">
                         {!!Form::text('novo_razao_social', 'Nome')->attrs(['class' => ''])
                             ->placeholder('Digite o Nome ou razão social')

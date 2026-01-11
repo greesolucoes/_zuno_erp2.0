@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Agendamentos'])
+@extends('default.layout', ['title' => 'Agendamentos'])
 
 @section('css')
   <link href="/css/agenda.css" rel="stylesheet" type="text/css"/>

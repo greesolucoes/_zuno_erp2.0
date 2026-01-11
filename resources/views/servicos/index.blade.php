@@ -1,8 +1,8 @@
 @extends('default.layout',['title' => 'Serviços'])
 @section('content')
 <div class="page-content">
-    <div class="card ">
-        <div class="card-body p-4">
+    <div class="card border-top border-0 border-4 border-primary">
+        <div class="card-body p-5">
             <div class="page-breadcrumb d-sm-flex align-items-center mb-3">
                 <div class="ms-auto">
                     <a href="{{ route('servicos.create')}}" type="button" class="btn btn-success">
@@ -10,8 +10,11 @@
                     </a>
                 </div>
             </div>
+            <div class="card-title d-flex align-items-center">
+                <h5 class="mb-0 text-primary">Serviços</h5>
+            </div>
+            <hr>
             <div class="col">
-                <h6 class="mb-0 text-uppercase">Serviços</h6>
                 {!!Form::open()->fill(request()->all())
                 ->get()
                 !!}

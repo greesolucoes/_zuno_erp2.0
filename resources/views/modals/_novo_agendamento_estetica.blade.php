@@ -50,7 +50,7 @@
                         </li>
                     </ul>
                     
-                    <input type="hidden" id="empresa_id" value="{{ auth()->user()->empresa->empresa_id }}">
+	                    <input type="hidden" id="empresa_id" value="{{ auth()->user()?->empresa?->empresa_id ?? request()->empresa_id }}">
 
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="estetica_info_geral">
