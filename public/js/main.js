@@ -121,41 +121,6 @@ if (!window.convertDateToDb) {
     };
 }
 
-/**
- * Converte data PT-BR (DD/MM/YYYY) para internacional (YYYY-MM-DD)
- */
-if (!window.convertPtDateToInternational) {
-    window.convertPtDateToInternational = function (date) {
-        if (!date) return "";
-        const parts = String(date).split("/");
-        if (parts.length !== 3) return "";
-
-        const day = String(parts[0] || "").padStart(2, "0");
-        const month = String(parts[1] || "").padStart(2, "0");
-        const year = String(parts[2] || "");
-        if (year.length !== 4) return "";
-
-        return `${year}-${month}-${day}`;
-    };
-}
-
-/**
- * Converte data internacional (YYYY-MM-DD) para PT-BR (DD/MM/YYYY)
- */
-if (!window.convertInternationalDateToPt) {
-    window.convertInternationalDateToPt = function (date) {
-        if (!date) return "";
-        const parts = String(date).split("-");
-        if (parts.length !== 3) return "";
-
-        const year = String(parts[0] || "");
-        const month = String(parts[1] || "").padStart(2, "0");
-        const day = String(parts[2] || "").padStart(2, "0");
-        if (year.length !== 4) return "";
-
-        return `${day}/${month}/${year}`;
-    };
-}
 
 /**
  * Desabilita um campo mas mantém seu valor no submit via input hidden (compat legado).
