@@ -204,101 +204,121 @@ class HotelController extends Controller
             $quarto_is_busy = $this->quarto_service->checkIfQuartoIsBusy($quarto_data);
 
             if ($quarto_is_busy) {
-                session()->flash('flash_error', 'Não há vagas disponíveis nesse quarto para as datas selecionadas.');
-                return redirect()->back()->withInput();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Não há vagas disponíveis nesse quarto para as datas selecionadas.'
+                ], 400);
             }
 
-            $hotel = Hotel::create([
-                'empresa_id'      => $empresa_id,
-                'animal_id'       => $pet->id,
-                'cliente_id'      => $pet->cliente_id,
-                'quarto_id'       => $quarto->id,
-                'colaborador_id'  => $request->colaborador_id,
-                'checkin'         => $checkin,
-                'checkout'        => $checkout,
-                'descricao'       => $request->descricao,
-                'diarias'         => $diarias,
-                'valor'           => ($valor_servicos) + $valor_produtos,
-                'estado'          => 'Agendado',
-                'situacao_checklist' => false,
-            ]);
-            Log::info('HotelController@store created', $hotel->only('id', 'checkin', 'checkout'));
-
-            foreach ($servicos_data as $pivot) {
-                $hotel->servicos()->attach($pivot['servico_id'], [
-                    'data_servico' => $pivot['data_servico'],
-                    'hora_servico' => $pivot['hora_servico'],
-                    'valor_servico' => $pivot['valor_servico'],
+            $hotel = DB::transaction(function () use (
+                $request,
+                $empresa_id,
+                $pet,
+                $quarto,
+                $checkin,
+                $checkout,
+                $diarias,
+                $valor_servicos,
+                $valor_produtos,
+                $servicos_data,
+                $servico_counts,
+                $produtos,
+                $produtos_data
+            ) {
+                $hotel = Hotel::create([
+                    'empresa_id'      => $empresa_id,
+                    'animal_id'       => $pet->id,
+                    'cliente_id'      => $pet->cliente_id,
+                    'quarto_id'       => $quarto->id,
+                    'colaborador_id'  => $request->colaborador_id,
+                    'checkin'         => $checkin,
+                    'checkout'        => $checkout,
+                    'descricao'       => $request->descricao,
+                    'diarias'         => $diarias,
+                    'valor'           => ($valor_servicos) + $valor_produtos,
+                    'estado'          => 'Agendado',
+                    'situacao_checklist' => false,
                 ]);
-            }
+                Log::info('HotelController@store created', $hotel->only('id', 'checkin', 'checkout'));
 
-            $servico_frete = $hotel->servicos->filter(function ($servico) {
-                return $servico->categoria && $servico->categoria->nome === 'FRETE';
+                foreach ($servicos_data as $pivot) {
+                    $hotel->servicos()->attach($pivot['servico_id'], [
+                        'data_servico' => $pivot['data_servico'],
+                        'hora_servico' => $pivot['hora_servico'],
+                        'valor_servico' => $pivot['valor_servico'],
+                    ]);
+                }
+
+                $servico_frete = $hotel->servicos->filter(function ($servico) {
+                    return $servico->categoria && $servico->categoria->nome === 'FRETE';
+                });
+
+                if ($servico_frete->first()) {
+                    $endereco_cliente_data = [
+                        'cep' => $request->cep,
+                        'rua' => $request->rua,
+                        'bairro' => $request->bairro,
+                        'numero' => $request->numero,
+                        'complemento' => $request->complemento,
+
+                        'cidade_id' => $request->modal_cidade_id,
+                        'hotel_id' => $hotel->id,
+                        'cliente_id' => $hotel->cliente_id,
+                    ];
+
+                    $this->hotel_service->updateOrCreateHotelClienteEndereco($hotel->id, $endereco_cliente_data);
+                }
+
+                if (!empty($produtos_data)) {
+                    $hotel->produtos()->sync($produtos_data);
+                }
+
+                $codigoSequencial = (OrdemServico::where('empresa_id', $empresa_id)->max('codigo_sequencial') ?? 0) + 1;
+
+                $ordem = OrdemServico::create([
+                    'descricao'         => 'Ordem de Serviço Avulso',
+                    'cliente_id'        => $pet->cliente_id,
+                    'empresa_id'        => $empresa_id,
+                    'funcionario_id'    => $request->colaborador_id,
+                    'animal_id'         => $pet->id,
+                    'plano_id'          => null,
+                    'hotel_id'          => $hotel->id,
+                    'usuario_id'        => auth()->id(),
+                    'codigo_sequencial' => $codigoSequencial,
+                    'valor'             => $valor_servicos + $valor_produtos,
+                    'data_inicio'       => $checkin,
+                    'data_entrega'      => $checkout,
+                    'estado'            => 'EA',
+                ]);
+
+                $hotel->update(['ordem_servico_id' => $ordem->id]);
+
+                foreach ($hotel->servicos as $servico) {
+                    $quantidade = $servico_counts[$servico->id];
+                    ServicoOs::create([
+                        'ordem_servico_id' => $ordem->id,
+                        'servico_id'       => $servico->id,
+                        'quantidade'       => $quantidade,
+                        'valor'            => $servico->pivot->valor_servico ?? 0,
+                        'subtotal'         => ($servico->pivot->valor_servico ?? 0) * $quantidade,
+                        'desconto'         => 0,
+                    ]);
+                }
+
+                foreach ($produtos as $produtoId => $produto) {
+                    $quantidade = $produtos_data[$produtoId]['quantidade'];
+                    ProdutoOs::create([
+                        'ordem_servico_id' => $ordem->id,
+                        'produto_id'       => $produto->id,
+                        'quantidade'       => $quantidade,
+                        'valor'            => $produto->valor_unitario ?? 0,
+                        'subtotal'         => ($produto->valor_unitario ?? 0) * $quantidade,
+                        'desconto'         => 0,
+                    ]);
+                }
+
+                return $hotel;
             });
-
-            if ($servico_frete->first()) {
-                $endereco_cliente_data = [
-                    'cep' => $request->cep,
-                    'rua' => $request->rua,
-                    'bairro' => $request->bairro,
-                    'numero' => $request->numero,
-                    'complemento' => $request->complemento,
-
-                    'cidade_id' => $request->modal_cidade_id,
-                    'hotel_id' => $hotel->id,
-                    'cliente_id' => $hotel->cliente_id,
-                ];
-
-                $this->hotel_service->updateOrCreateHotelClienteEndereco($hotel->id, $endereco_cliente_data);
-            }
-
-            if (!empty($produtos_data)) {
-                $hotel->produtos()->sync($produtos_data);
-            }
-
-            $codigoSequencial = (OrdemServico::where('empresa_id', $empresa_id)->max('codigo_sequencial') ?? 0) + 1;
-
-            $ordem = OrdemServico::create([
-                'descricao'         => 'Ordem de Serviço Avulso',
-                'cliente_id'        => $pet->cliente_id,
-                'empresa_id'        => $empresa_id,
-                'funcionario_id'    => $request->colaborador_id,
-                'animal_id'         => $pet->id,
-                'plano_id'          => null,
-                'hotel_id'          => $hotel->id,
-                'usuario_id'        => auth()->id(),
-                'codigo_sequencial' => $codigoSequencial,
-                'valor'             => $valor_servicos + $valor_produtos,
-                'data_inicio'       => $checkin,
-                'data_entrega'      => $checkout,
-                'estado'            => 'EA',
-            ]);
-
-            $hotel->update(['ordem_servico_id' => $ordem->id]);
-
-            foreach ($hotel->servicos as $servico) {
-                $quantidade = $servico_counts[$servico->id];
-                ServicoOs::create([
-                    'ordem_servico_id' => $ordem->id,
-                    'servico_id'       => $servico->id,
-                    'quantidade'       => $quantidade,
-                    'valor'            => $servico->pivot->valor_servico ?? 0,
-                    'subtotal'         => ($servico->pivot->valor_servico ?? 0) * $quantidade,
-                    'desconto'         => 0,
-                ]);
-            }
-
-            foreach ($produtos as $produtoId => $produto) {
-                $quantidade = $produtos_data[$produtoId]['quantidade'];
-                ProdutoOs::create([
-                    'ordem_servico_id' => $ordem->id,
-                    'produto_id'       => $produto->id,
-                    'quantidade'       => $quantidade,
-                    'valor'            => $produto->valor_unitario ?? 0,
-                    'subtotal'         => ($produto->valor_unitario ?? 0) * $quantidade,
-                    'desconto'         => 0,
-                ]);
-            }
 
             $hotelParaNotificacao = $hotel->fresh([
                 'empresa',
@@ -318,12 +338,13 @@ class HotelController extends Controller
 
         } catch (\Exception $e) {
             Log::error('HotelController@store exception', ['message' => $e->getMessage()]);
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
             
             return response()->json([
                 'success' => false,
                 'message' => 'Ocorreu um erro desconhecido ao agendar a reserva.',
                 'exception' => $e->getMessage()
-            ]);
+            ], 500);
         }
     }
 
@@ -578,14 +599,15 @@ class HotelController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message', 'Reserva atualizada com sucesso!'
+                'message' => 'Reserva atualizada com sucesso!'
             ], 200);
         } catch (\Exception $e) {
             Log::error('HotelController@update exception', ['message' => $e->getMessage()]);
-            response()->json([
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
+            return response()->json([
                 'success' => false,
-                'message', 'Erro ao atualizar reserva...' 
-            ]);
+                'message' => 'Erro ao atualizar reserva: ' . $e->getMessage()
+            ], 500);
         }
     }
 
@@ -615,9 +637,10 @@ class HotelController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message', 'Reserva atualizada com sucesso!'
+                'message' => 'Reserva atualizada com sucesso!'
             ], 200);
         } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
             return response()->json([
                 'success' => false,
                 'message' => 'Ocorreu um erro desconhecido ao atualizar a reserva...',
@@ -731,9 +754,10 @@ class HotelController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message', 'Serviços atualizados com sucesso!'
+                'message' => 'Serviços atualizados com sucesso!'
             ], 200);
         } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
             return response()->json([
                 'success' => false,
                 'message' => 'Ocorreu um erro desconhecido ao atualizar a reserva...',
@@ -830,9 +854,10 @@ class HotelController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message', 'Serviços atualizados com sucesso!'
+                'message' => 'Serviços atualizados com sucesso!'
             ], 200);
         } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
             return response()->json([
                 'success' => false,
                 'message' => 'Ocorreu um erro desconhecido ao atualizar a reserva...',
@@ -901,9 +926,10 @@ class HotelController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message', 'Produtos atualizados com sucesso!'
+                'message' => 'Produtos atualizados com sucesso!'
             ], 200);
         } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
             return response()->json([
                 'success' => false,
                 'message' => 'Ocorreu um erro desconhecido ao atualizar os produtos...',

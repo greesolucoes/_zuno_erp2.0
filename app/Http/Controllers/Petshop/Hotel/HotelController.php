@@ -86,7 +86,7 @@ class HotelController extends Controller
 
         $quartos = Quarto::where('empresa_id', $empresa_id)->get();
 
-        return view('hoteis.index', compact('data', 'contagemPorQuarto', 'servicos', 'quartos'));
+        return view('petshop.hotel.index', compact('data', 'contagemPorQuarto', 'servicos', 'quartos'));
     }
 
     public function create()
