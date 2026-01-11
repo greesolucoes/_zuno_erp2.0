@@ -71,6 +71,7 @@ Route::middleware(['hashEmpresa'])->group(function () {
 
 Route::group(['prefix' => 'agendamentos'], function () {
     Route::get('/all', 'API\\AgendamentoController@all');
+    Route::get('/search-agendamentos', 'API\\Petshop\\AgendamentoController@searchAgendamentos');
 });
 
 Route::group(['prefix' => 'petshop/agendamentos'], function () {

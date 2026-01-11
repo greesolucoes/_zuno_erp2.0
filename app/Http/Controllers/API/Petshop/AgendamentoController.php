@@ -433,7 +433,7 @@ class AgendamentoController extends Controller
                             'colaborador_id' => $a->colaborador_id,
                             'animal_id' => $a->animal->id,
                             'servico_id' => $a->servicos->first()?->servico?->id,
-                            'conta_receber_id' => $a->contaReceber->id ?? null,
+                            'conta_receber_id' => null,
                             'cliente_contato' => $a->cliente->telefone ?? $a->cliente->telefone_secundario ?? $a->cliente->telefone_terciario ?? '--',
                             'colaborador' => $a->colaborador->nome ?? null,
                             'horario' => $inicio->format('H:i') . ' - ' . $fim->format('H:i'),
