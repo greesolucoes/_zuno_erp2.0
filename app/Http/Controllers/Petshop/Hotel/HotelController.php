@@ -107,7 +107,7 @@ class HotelController extends Controller
 
         $data = new Hotel();
 
-        return view('hoteis.create', compact('data', 'servicos', 'quartos', 'servicosFormatados'));
+        return view('petshop.hotel.create', compact('data', 'servicos', 'quartos', 'servicosFormatados'));
     }
 
     public function store(Request $request)
@@ -403,14 +403,9 @@ class HotelController extends Controller
         return redirect()->route('hoteis.index');
     }
 
-    public function show()
+    public function show(string $id)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
-        dd('show');
-        $data = Hotel::where('empresa_id', $empresa_id)
-            ->paginate(env("PAGINACAO"));
-
-        return view('hoteis.agendamento.index', compact('data'));
+        return redirect()->route('hoteis.edit', [$id]);
     }
 
     public function move(Request $request, Hotel $hotel)
@@ -492,7 +487,7 @@ class HotelController extends Controller
 
         $data->hotelClienteEndereco && $data->hotelClienteEndereco = $data->hotelClienteEndereco->load('cidade');
 
-        return view('hoteis.edit', compact('data', 'servicos', 'quartos', 'servicosFormatados', 'reserva', 'frete'));
+        return view('petshop.hotel.edit', compact('data', 'servicos', 'quartos', 'servicosFormatados', 'reserva', 'frete'));
     }
 
     public function update(Request $request, $id)
@@ -783,7 +778,7 @@ class HotelController extends Controller
         
         $config = Empresa::where('id', $item->empresa_id)->first();
 
-        $p = view('hoteis.cupom_entrega', compact('config', 'item', 'hotel'));
+        $p = view('petshop.hotel.cupom_entrega', compact('config', 'item', 'hotel'));
 
         $domPdf = new Dompdf(["enable_remote" => true]);
         $domPdf->loadHtml($p);

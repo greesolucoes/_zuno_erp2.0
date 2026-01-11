@@ -57,7 +57,7 @@ class EsteticaController extends Controller
             ->paginate(env("PAGINACAO"))
             ->appends($request->all());
 
-        return view('esteticas.index', compact('data'));
+        return view('petshop.estetica.index', compact('data'));
     }
 
     public function create()
@@ -74,7 +74,12 @@ class EsteticaController extends Controller
 
         $status_estetica = Estetica::statusEstetica();
 
-        return view('esteticas.create', compact('servicos', 'servicosFormatados', 'status_estetica'));
+        return view('petshop.estetica.create', compact('servicos', 'servicosFormatados', 'status_estetica'));
+    }
+
+    public function show(string $id)
+    {
+        return redirect()->route('esteticas.edit', [$id]);
     }
 
     public function store(Request $request)
@@ -235,7 +240,7 @@ class EsteticaController extends Controller
 
         $data->data_agendamento = $data->data_agendamento ? $data->data_agendamento->format('Y-m-d') : null;
 
-        return view('esteticas.edit', compact('data', 'frete', 'servicos', 'servicosFormatados', 'status_estetica'));
+        return view('petshop.estetica.edit', compact('data', 'frete', 'servicos', 'servicosFormatados', 'status_estetica'));
     }
 
 
@@ -447,7 +452,7 @@ class EsteticaController extends Controller
         
         $config = Empresa::where('id', $item->empresa_id)->first();
 
-        $p = view('esteticas.cupom_entrega', compact('config', 'item', 'estetica'));
+        $p = view('petshop.estetica.cupom_entrega', compact('config', 'item', 'estetica'));
 
         $domPdf = new Dompdf(["enable_remote" => true]);
         $domPdf->loadHtml($p);
@@ -563,7 +568,7 @@ class EsteticaController extends Controller
             ->paginate(env("PAGINACAO"))
             ->appends($request->all());
 
-        return view('esteticas.agendamento.pendente', compact('data'));
+        return view('petshop.estetica.agendamento.pendente', compact('data'));
     }
 
     public function pendentesAvulso(Request $request)
@@ -586,7 +591,7 @@ class EsteticaController extends Controller
             ->paginate(env("PAGINACAO"))
             ->appends($request->all());
 
-        return view('esteticas.agendamento.pendente_avulso', compact('data'));
+        return view('petshop.estetica.agendamento.pendente_avulso', compact('data'));
     }
 
     public function aprovar(Estetica $estetica)

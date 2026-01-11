@@ -33,17 +33,17 @@ class TeleEntregaController extends Controller
       return view('tele_entregas.index', compact('data', 'clientes', 'status'));	
     }
 
-    public function show(Request $request, $id)
+    public function create()
     {
       $empresaId = request()->empresa_id;
-
-      $clientes = Cliente::where('empresa_id', $empresaId)->get();
       $tipos = TipoTeleEntrega::where('empresa_id', $empresaId)->get();
 
-      $item = TeleEntrega::findOrFail($id);
-      // return \response()->json($item);
+      return view('tele_entregas.create', compact('tipos'));
+    }
 
-      return view('tele_entregas.show', compact('clientes', 'tipos', 'item'));
+    public function show(Request $request, $id)
+    {
+      return redirect()->route('tele_entregas.edit', [$id]);
     }
     
     public function preStore(Request $request){
@@ -80,7 +80,7 @@ class TeleEntregaController extends Controller
             });
 
             session()->flash("flash_sucesso", "Pedido criado!");
-            return redirect()->route('tele_entregas.show', ['id' =>$pedido->id]);
+            return redirect()->route('tele_entregas.edit', [$pedido->id]);
         } catch (\Exception $e) {
             session()->flash("flash_erro", 'Algo deu errado: ' . $e->getMessage());
             __saveLogError($e, request()->empresa_id);

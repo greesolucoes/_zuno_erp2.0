@@ -90,12 +90,12 @@ class CrecheController extends Controller
 
         $turmas = Turma::where('empresa_id', $empresa_id)->get();
 
-        return view('creches.index', compact('data', 'servicos', 'contagemPorTurma', 'turmas'));
+        return view('petshop.creche.index', compact('data', 'servicos', 'contagemPorTurma', 'turmas'));
     }
 
     public function create()
     {
-        return view('creches.create');
+        return view('petshop.creche.create');
     }
 
     public function store(Request $request)
@@ -284,7 +284,7 @@ class CrecheController extends Controller
 
     public function show(string $id)
     {
-        return null;
+        return redirect()->route('creches.edit', [$id]);
     }
 
     public function move(Request $request, Creche $creche)
@@ -341,7 +341,7 @@ class CrecheController extends Controller
 
         $data->crecheClienteEndereco && $data->crecheClienteEndereco = $data->crecheClienteEndereco->load('cidade');
 
-        return view('creches.edit', compact('data', 'reserva', 'frete', 'extras_servicos'));
+        return view('petshop.creche.edit', compact('data', 'reserva', 'frete', 'extras_servicos'));
     }
 
     public function update(Request $request, string $id)
@@ -631,7 +631,7 @@ class CrecheController extends Controller
         
         $config = Empresa::where('id', $item->empresa_id)->first();
 
-        $p = view('creches.cupom_entrega', compact('config', 'item', 'creche'));
+        $p = view('petshop.creche.cupom_entrega', compact('config', 'item', 'creche'));
 
         $domPdf = new Dompdf(["enable_remote" => true]);
         $domPdf->loadHtml($p);

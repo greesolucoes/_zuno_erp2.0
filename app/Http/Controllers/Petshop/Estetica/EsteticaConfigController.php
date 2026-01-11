@@ -11,6 +11,6 @@ class EsteticaConfigController extends Controller
      */
     public function index()
     {
-        return view('estetica_config.index');
+        return view('petshop.estetica.config.index');
     }
 }
