@@ -1,8 +1,17 @@
-$('#inp-pet_cliente_id').select2({
-    minimumInputLength: 2,
-    language: 'pt-BR',
+function select2Defaults(options = {}) {
+    return Object.assign(
+        {
+            minimumInputLength: 2,
+            language: 'pt-BR',
+            width: '100%',
+            theme: 'bootstrap4',
+        },
+        options
+    );
+}
+
+$('#inp-pet_cliente_id').select2(select2Defaults({
     placeholder: 'Digite para buscar o cliente',
-    theme: 'bootstrap4',
     dropdownParent: $('#modal_novo_pet'),
     ajax: {
         cache: true,
@@ -30,11 +39,9 @@ $('#inp-pet_cliente_id').select2({
             };
         },
     },
-});
+}));
 
-$('#inp-animal_id').select2({
-    minimumInputLength: 2,
-    language: 'pt-BR',
+$('#inp-animal_id').select2(select2Defaults({
     placeholder: 'Digite para buscar o animal (pet)',
     dropdownParent: $('#event-modal'),
 
@@ -66,11 +73,9 @@ $('#inp-animal_id').select2({
             };
         },
     },
-});
+}));
 
-$('#inp-especie_id').select2({
-    minimumInputLength: 2,
-    language: 'pt-BR',
+$('#inp-especie_id').select2(select2Defaults({
     placeholder: 'Digite para buscar a espécie',
 
     ajax: {
@@ -100,13 +105,11 @@ $('#inp-especie_id').select2({
             };
         },
     },
-}).on('select2:select', function (e) {
+})).on('select2:select', function (e) {
     $('#inp-raca_id').val(null).trigger('change');
 }); 
 $('#modal_novo_pet').on('shown.bs.modal', function () {
-   $('#inp-especie_id').select2({
-        minimumInputLength: 2,
-        language: 'pt-BR',
+   $('#inp-especie_id').select2(select2Defaults({
         placeholder: 'Digite para buscar a espécie',
         dropdownParent: $('#modal_novo_pet'),
 
@@ -137,15 +140,13 @@ $('#modal_novo_pet').on('shown.bs.modal', function () {
                 };
             },
         },
-    }).on('select2:select', function (e) {
+    })).on('select2:select', function (e) {
         $('#inp-raca_id').val(null).trigger('change');
     }); 
 });
 
 function getRacasForSelect2() {
-    $('#inp-raca_id').select2({
-        minimumInputLength: 2,
-        language: 'pt-BR',
+    $('#inp-raca_id').select2(select2Defaults({
         placeholder: 'Digite para buscar a raça',
 
         ajax: {
@@ -176,11 +177,9 @@ function getRacasForSelect2() {
                 };
             },
         },
-    });
+    }));
     $('#modal_novo_pet').on('shown.bs.modal', function () {
-        $('#inp-raca_id').select2({
-            minimumInputLength: 2,
-            language: 'pt-BR',
+        $('#inp-raca_id').select2(select2Defaults({
             placeholder: 'Digite para buscar a raça',
             dropdownParent: $('#modal_novo_pet'),
 
@@ -212,7 +211,7 @@ function getRacasForSelect2() {
                     };
                 },
             },
-        });
+        }));
     });
 }
 
@@ -220,9 +219,7 @@ if ($('#inp-especie_id').val()) {
     getRacasForSelect2();
 }
 
-$('#inp-pelagem_id').select2({
-    minimumInputLength: 2,
-    language: 'pt-BR',
+$('#inp-pelagem_id').select2(select2Defaults({
     placeholder: 'Digite para buscar a pelagem',
 
     ajax: {
@@ -252,11 +249,9 @@ $('#inp-pelagem_id').select2({
             };
         },
     },
-});
+}));
 $('#modal_novo_pet').on('shown.bs.modal', function () {
-    $('#inp-pelagem_id').select2({
-        minimumInputLength: 2,
-        language: 'pt-BR',
+    $('#inp-pelagem_id').select2(select2Defaults({
         placeholder: 'Digite para buscar a pelagem',
         dropdownParent: $('#modal_novo_pet'),
 
@@ -287,7 +282,7 @@ $('#modal_novo_pet').on('shown.bs.modal', function () {
                 };
             },
         },
-    });
+    }));
 });
 
 let especie_back_modal = null;
@@ -351,9 +346,7 @@ $('#btn-modal-raca').on('click', function () {
     }
 });
 
-$('#inp-raca_especie_id').select2({
-    minimumInputLength: 2,
-    language: 'pt-BR',
+$('#inp-raca_especie_id').select2(select2Defaults({
     placeholder: 'Digite para buscar a espécie',
     dropdownParent: $('#modal_raca'),
 
@@ -384,7 +377,7 @@ $('#inp-raca_especie_id').select2({
             };
         },
     },
-});
+}));
 
 $('.btn-store-raca').click(() => {
     let item = {
@@ -525,4 +518,3 @@ $(document).on("click", ".btn-store-pet", function () {
             });
     }, 300);
 });
-

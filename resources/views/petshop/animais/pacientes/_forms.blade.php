@@ -20,8 +20,8 @@
       !!}
       @endif
     </div>
-    <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modal_novo_cliente" type="button">
-      <i class="ri-add-circle-fill"></i>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_novo_cliente" type="button">
+      <i class="bx bx-plus"></i>
     </button>
   </div>
 
@@ -37,8 +37,9 @@
         ->attrs(['class' => 'form-select select2'])
         !!}
       </div>
-      <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modal_especie" type="button">
-      <i class="ri-add-circle-fill"></i>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_especie" type="button">
+      <i class="bx bx-plus"></i>
+      
     </button>
   </div>
   @endif
@@ -53,8 +54,8 @@
         !!}
       </div>
       <button 
-        class="btn btn-dark" data-bs-toggle="modal"  data-bs-target="#modal_raca" type="button" disabled  id="btn-nova-raca">
-      <i class="ri-add-circle-fill"></i>
+        class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#modal_raca" type="button" disabled  id="btn-nova-raca">
+      <i class="bx bx-plus"></i>
     </button>
   </div>
   @endif
@@ -67,9 +68,9 @@
           ->attrs(['class' => 'form-select select2'])
         !!}
       </div>
-      <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modal_pelagem"
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_pelagem"
         type="button">
-        <i class="ri-add-circle-fill"></i>
+        <i class="bx bx-plus"></i>
       </button>
     </div>
   @endif
