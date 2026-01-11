@@ -46,146 +46,25 @@ class AgendamentoController extends Controller
             ->where('status', 1)
             ->get();
 
-        $status_os = OrdemServico::statusOs();
-
         $data = Agendamento::where('empresa_id', $empresaId)
             ->with('itens', 'itens.servico')
             ->orderBy('data', 'desc')->get();
 
         $agendamentos1 = [];
-        $agendamentos = [];
+        foreach ($data as $item) {
+            $primeiro_nome_servico = $item->itens->first()->servico->nome ?? null;
+            $primeiro_nome_cliente = isset($item->cliente->razao_social) ? explode(' ', $item->cliente->razao_social)[0] : '';
 
-        if (__isSegmento(Auth::user()->empresa, 'PRO')) {
-            $agendamentos_pro = OrdemServico::where('empresa_id', $empresaId)
-                ->when(!empty($request->funcionario_id), function ($query) use ($request) {
-                    return $query->where('funcionario_id', $request->funcionario_id);
-                })
-                ->when(!empty($request->estado), function ($query) use ($request) {
-                    return $query->where('estado', $request->estado);
-                })
-                ->with(['cliente', 'servicos.servico', 'funcionario', 'itens.produto'])
-                ->get()
-                ->map(function ($item) {
-                    return [
-                        'id' => $item->id,
-                        'estado' => $item->estado,
-                        'estado_label' => $item->getStatusByValue($item->estado),
-                        'codigo_sequencial' => $item->codigo_sequencial,
-                        'modulo' => 'PRO',
-                        'extendedProps' => [
-                            'cliente_id' => $item->cliente->id ?? null,
-                            'colaborador_id' => $item->funcionario_id ?? null,
-                            'cliente' => $item->cliente->razao_social ?? '--',
-                            'colaborador' => $item->funcionario->nome ?? ($item->servico->funcionario->nome ?? '--'),
-                            'servicos' => $item->servicos
-                                ->map(function($s){
-                                    return [
-                                        'id' => $s->id,
-                                        'nome' => $s->nome,
-                                        'categoria' => $s->categoria->nome ?? null,
-                                        'valor' => $s->valor ?? 0,
-                                        'tempo_execucao' => $s->tempo_execucao
-                                    ];
-                                }),
-                            'produtos' => $item->itens->map(function($p){
-                                    return [
-                                        'id' => $p->id,
-                                        'nome' => $p->nome,
-                                        'categoria' => $p->categoria->nome ?? null,
-                                        'valor_unitario' => $p->valor_unitario ?? 0,
-                                        'pivot' => $p->pivot
-                                    ];
-                                }),
-                            'horario' => __data_pt($item->data_inicio, false, 'Y/m/d H:i') . ' - ' . __data_pt($item->data_entrega, false, 'Y/m/d H:i'),
-                            'data_entrada' => __data_pt($item->data_inicio, false, 'Y/m/d'),
-                            'horario_entrada' => $item->data_inicio->format('H:i'),
-                            'data_saida' => __data_pt($item->data_entrega, false, 'Y/m/d'),
-                            'horario_saida' => Carbon::parse($item->data_entrega)->format('H:i'),
-                            'descricao' => $item->descricao,
-                        ],
-                        'start' => Carbon::parse($item->data_inicio)->toIso8601String(),
-                        'end'   => Carbon::parse($item->data_entrega)->toIso8601String(),
-                        'className' => 'bg-primary',
-                        'allDay' => false,
-                    ];
-                });
-
-            $agendamentos = $agendamentos_pro;
-        } else if (__isSegmento(Auth::user()->empresa, 'OFICINA')) {
-            $agendamentos_oficina = OrdemServico::where('empresa_id', $empresaId)
-                ->when(!empty($request->funcionario_id), function ($query) use ($request) {
-                    return $query->where('funcionario_id', $request->funcionario_id);
-                })
-                ->when(!empty($request->estado), function ($query) use ($request) {
-                    return $query->where('estado', $request->estado);
-                })
-                ->with(['cliente', 'servicos.servico', 'funcionario', 'itens.produto', 'veiculo'])
-                ->get()
-                ->map(function ($item) {
-                    return [
-                        'id' => $item->id,
-                        'estado' => $item->estado,
-                        'estado_label' => $item->getStatusByValue($item->estado),
-                        'codigo_sequencial' => $item->codigo_sequencial,
-                        'modulo' => 'OFICINA',
-                        'extendedProps' => [
-                            'cliente_id' => $item->cliente->id ?? null,
-                            'colaborador_id' => $item->funcionario_id ?? null,
-                            'cliente' => $item->cliente->razao_social ?? '--',
-                            'colaborador' => $item->funcionario->nome ?? ($item->servico->funcionario->nome ?? '--'),
-                            'servicos' => $item->servicos
-                                ->map(function($s){
-                                    return [
-                                        'id' => $s->id,
-                                        'nome' => $s->nome,
-                                        'categoria' => $s->categoria->nome ?? null,
-                                        'valor' => $s->valor ?? 0,
-                                        'tempo_execucao' => $s->tempo_execucao
-                                    ];
-                                }),
-                            'produtos' => $item->itens->map(function($p){
-                                    return [
-                                        'id' => $p->id,
-                                        'nome' => $p->nome,
-                                        'categoria' => $p->categoria->nome ?? null,
-                                        'valor_unitario' => $p->valor_unitario ?? 0,
-                                        'pivot' => $p->pivot
-                                    ];
-                                }),
-                            'veiculo' => isset($item->veiculo->marca) ?
-                            ($item->veiculo->marca->nome ?? '') . ' ' . $item->veiculo->modelo :
-                            null,
-                            'horario' => __data_pt($item->data_inicio, false, 'Y/m/d H:i') . ' - ' . __data_pt($item->data_entrega, false, 'Y/m/d H:i'),
-                            'data_entrada' => __data_pt($item->data_inicio, false, 'Y/m/d'),
-                            'horario_entrada' => $item->data_inicio->format('H:i'),
-                            'data_saida' => __data_pt($item->data_entrega, false, 'Y/m/d'),
-                            'horario_saida' => Carbon::parse($item->data_entrega)->format('H:i'),
-                            'descricao' => $item->descricao,
-                        ],
-                        'start' => Carbon::parse($item->data_inicio)->toIso8601String(),
-                        'end'   => Carbon::parse($item->data_entrega)->toIso8601String(),
-                        'className' => 'bg-primary',
-                        'allDay' => false,
-                    ];
-                });
-
-            $agendamentos = $agendamentos_oficina;
-        } else {
-            foreach ($data as $item) {
-                $primeiro_nome_servico = $item->itens->first()->servico->nome ?? null;
-                $primeiro_nome_cliente = isset($item->cliente->razao_social) ? explode(' ', $item->cliente->razao_social)[0] : '';
-
-                $agendamentos1[] = [
-                    'title' => $primeiro_nome_cliente . ' | ' . $primeiro_nome_servico,
-                    'start' => $item->data . " " . $item->inicio,
-                    'end' => $item->data . " " . $item->termino,
-                    'className' => $item->getPrioridade(),
-                    'id' => $item->id
-                ];
-            }
-
-            $agendamentos = $agendamentos1;
+            $agendamentos1[] = [
+                'title' => $primeiro_nome_cliente . ' | ' . $primeiro_nome_servico,
+                'start' => $item->data . " " . $item->inicio,
+                'end' => $item->data . " " . $item->termino,
+                'className' => $item->getPrioridade(),
+                'id' => $item->id
+            ];
         }
+
+        $agendamentos = $agendamentos1;
 
         $funcionarios = Funcionario::where('empresa_id', $empresaId)
             ->select('id', 'nome')
@@ -215,10 +94,7 @@ class AgendamentoController extends Controller
 
          $categorias = CategoriaServico::where(function ($q) {
             $q->where('empresa_id', request()->empresa_id);
-
-            if (__isSegmento(Auth::user()->empresa, 'PETSHOP')) {
-                $q->orWhereNull('empresa_id');
-            }
+            $q->orWhereNull('empresa_id');
         })->get();
 
         $clientes = Cliente::where('empresa_id', request()->empresa_id)->get();
@@ -240,7 +116,6 @@ class AgendamentoController extends Controller
             'segmento',
             'salas',
             'funcionarios',
-            'status_os'
         ));
     }
 

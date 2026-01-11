@@ -57,12 +57,12 @@
                             <p><b>Total de serviços: <strong class="text-primary">{{ sizeof($item->itens) }}</strong></b></p>
                             <p><b>Desconto: <strong class="text-danger">{{ __moeda($item->desconto) }}</strong></b></p>
                             <p><b>Atendente: <strong class="text-primary">{{ $item->funcionario ? $item->funcionario->nome : '' }}</strong></b></p>
-                            @if(__isSegmento(Auth::user()->empresa, 'OFICINA'))
-                                <p><b>Veiculo:
-                                <strong class="text-primary">
-                                    {{ $item->veiculo ? $item->veiculo->marca->nome . ' ' . $item->veiculo->modelo : '' }}
-                                </strong></b></p>
-                            @endif
+	                            @if($item->veiculo)
+	                              <p><b>Veiculo:
+	                              <strong class="text-primary">
+	                                  {{ $item->veiculo->marca->nome . ' ' . $item->veiculo->modelo }}
+	                              </strong></b></p>
+	                            @endif
                         </div>
 
                     </div><!-- end col -->

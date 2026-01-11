@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class OrdemServico extends Model
@@ -32,6 +33,22 @@ class OrdemServico extends Model
 
     public function usuario(){
         return $this->belongsTo(Usuario::class, 'usuario_id');
+    }
+
+    public static function statusOs()
+    {
+        return [
+            'pendente' => 'Pendente',
+            'aprovado' => 'Aprovado',
+            'reprovado' => 'Reprovado',
+            'finalizado' => 'Finalizado',
+        ];
+    }
+
+    public function getStatusByValue($value)
+    {
+        $status = self::statusOs();
+        return $status[$value] ?? (string)$value;
     }
 
     public static function filtroData($dataInicial, $dataFinal, $estado){
