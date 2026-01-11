@@ -59,7 +59,7 @@ class QuartoEventoController extends Controller
                 ->get();
         }
 
-        return view('quartos.eventos.index', compact(
+        return view('petshop.quartos.eventos.index', compact(
             'quartos',
             'eventos',
             'servicos',
@@ -84,7 +84,7 @@ class QuartoEventoController extends Controller
 
         $quartoId = $request->get('quarto_id');
 
-        return view('quartos.eventos.create', compact('quartos', 'servicos', 'quartoId'));
+        return view('petshop.quartos.eventos.create', compact('quartos', 'servicos', 'quartoId'));
     }
 
     public function edit(Request $request, $id)
@@ -96,7 +96,7 @@ class QuartoEventoController extends Controller
             ->where('empresa_id', $empresa_id)
             ->get();
 
-        return view('quartos.eventos.edit', compact('quartos', 'servicos', 'item'));
+        return view('petshop.quartos.eventos.edit', compact('quartos', 'servicos', 'item'));
     }
 
     public function store(Request $request)

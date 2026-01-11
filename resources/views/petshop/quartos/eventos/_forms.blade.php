@@ -17,38 +17,28 @@
         !!}
     </div>
 
-    <hr>
-
-    <div class="col-md-2">
-        {!! 
-            Form::date('inicio', 'Início do evento')
-            ->type('datetime-local')
-            ->value(isset($item) ? $item->inicio : null)
-            ->required() 
-        !!}
+    <div class="col-md-3">
+        {!! Form::date('inicio', 'Início do evento')
+        ->type('datetime-local')
+        ->value(isset($item) ? $item->inicio : null)
+        ->required() !!}
     </div>
-    <div class="col-md-2">
-        {!! 
-            Form::date('fim', 'Fim do evento')
-            ->type('datetime-local')
-            ->value(isset($item) ? $item->fim : null)
-            ->required() 
-        !!}
+    <div class="col-md-3">
+        {!! Form::date('fim', 'Fim do evento')
+        ->type('datetime-local')
+        ->value(isset($item) ? $item->fim : null)
+        ->required() !!}
     </div>
 
-    <hr>
-
-    <div class="col-md-5">
-        {!! 
-            Form::textarea('descricao', 'Descrição')
-            ->attrs(['rows' => 5, 'style' => 'resize: none;', 'class' => 'text-uppercase'])
-            ->placeholder('Digite uma descrição')
-            ->value(isset($item) ? $item->descricao : null)
-        !!}
+    <div class="col-md-6">
+        {!! Form::textarea('descricao', 'Descrição')
+        ->attrs(['rows' => 4, 'style' => 'resize: none;', 'class' => 'text-uppercase'])
+        ->placeholder('Digite uma descrição')
+        ->value(isset($item) ? $item->descricao : null) !!}
     </div>
 
-    <div class="col-12 text-end mt-5">
-        <button type="submit" class="btn btn-success" id="btn-store">Salvar</button>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary px-5" id="btn-store">Salvar</button>
     </div>
 </div>
 

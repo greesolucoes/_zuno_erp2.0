@@ -48,7 +48,7 @@ class QuartoController extends Controller
         ->orderBy('created_at', 'desc')
         ->paginate(env("PAGINACAO"))->appends($request->all());
 
-        return view('quartos.index', compact('data'));
+        return view('petshop.quartos.index', compact('data'));
     }
 
     public function create()
@@ -57,7 +57,7 @@ class QuartoController extends Controller
         $funcionarios = Funcionario::where('empresa_id', $empresaId)->get();
 
 
-        return view('quartos.create', compact('funcionarios'));
+        return view('petshop.quartos.create', compact('funcionarios'));
     }
 
     public function store(Request $request)
@@ -101,7 +101,7 @@ class QuartoController extends Controller
             ->whereDate('checkout', '>=', now())
             ->count();
 
-        return view('quartos.edit', compact('quarto', 'funcionarios', 'reservasAtivas'));
+        return view('petshop.quartos.edit', compact('quarto', 'funcionarios', 'reservasAtivas'));
     }
 
 
