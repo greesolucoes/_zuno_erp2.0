@@ -9,7 +9,7 @@ class HotelChecklist extends Model
 {
     use HasFactory;
 
-    protected $table = 'hotel_checklists';
+    protected $table = 'petshop_hotel_checklists';
 
     protected $fillable = [
         'hotel_id',

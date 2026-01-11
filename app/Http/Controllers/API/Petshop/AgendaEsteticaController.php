@@ -16,6 +16,9 @@ class AgendaEsteticaController extends Controller
 {
     public function buscarHorarios(Request $request)
     {
+        $this->_validate($request);
+
+        try {
         $servicosParam  = $request->servicos;
         $servicos       = is_string($servicosParam) ? json_decode($servicosParam, true) : (array) $servicosParam;
         $data           = $request->data;
@@ -192,7 +195,7 @@ class AgendaEsteticaController extends Controller
             }
 
             if ($request->wantsJson()) {
-                return response()->json($horarios);
+                return response()->json($horarios, 200);
             }
 
             return view('agendamento.partials.agenda_row', compact('horarios'));
@@ -253,7 +256,25 @@ class AgendaEsteticaController extends Controller
                 }
             }
 
-            return response()->json($horarios);
+            return response()->json($horarios, 200);
         }
+
+        return response()->json([], 200);
+        } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+    }
+
+    private function _validate(Request $request)
+    {
+        $rules = [
+            'empresa_id' => 'required',
+            'funcionario_id' => 'required',
+            'data' => 'required',
+            'servicos' => 'required',
+        ];
+        $messages = [];
+        $this->validate($request, $rules, $messages);
     }
 }

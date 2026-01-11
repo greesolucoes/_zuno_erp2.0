@@ -11,21 +11,37 @@ class FuncionarioController extends Controller
 {
     public function index(Request $request)
     {
+        $this->_validate($request);
+
         $localId = $request->query('local_id');
 
         if (!$localId) {
             return response()->json([]);
         }
 
-        $local = Filial::select('empresa_id')->find($localId);
-        if (!$local) {
-            return response()->json([]);
+        try {
+            $local = Filial::select('empresa_id')->find($localId);
+            if (!$local) {
+                return response()->json([]);
+            }
+
+            $funcionarios = Funcionario::where('empresa_id', $local->empresa_id)
+                ->orderBy('nome')
+                ->get(['id', 'nome']);
+
+            return response()->json($funcionarios, 200);
+        } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
+            return response()->json(['message' => $e->getMessage()], 400);
         }
+    }
 
-        $funcionarios = Funcionario::where('empresa_id', $local->empresa_id)
-            ->orderBy('nome')
-            ->get(['id', 'nome']);
-
-        return response()->json($funcionarios);
+    private function _validate(Request $request)
+    {
+        $rules = [
+            'local_id' => 'required',
+        ];
+        $messages = [];
+        $this->validate($request, $rules, $messages);
     }
 }

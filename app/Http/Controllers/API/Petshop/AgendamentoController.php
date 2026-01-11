@@ -44,30 +44,37 @@ class AgendamentoController extends Controller
      * @return Response $agendamentos - resposta json com a lista de agendamentos encontrados ou algum erro que tenha acontecido
      */
     public function searchAgendamentos (Request $request) {
-        $agendamentos = [];
+        $this->_validate($request);
 
-        switch ($request->categoria) {
-            case 'HOTEL':
-                $agendamentos = $this->getHotels($request->all());
-                break;
-            case 'CRECHE':
-                $agendamentos = $this->getCreches($request->all());
-                break;
-            case 'ESTETICA':
-                $agendamentos = $this->getEsteticas($request->all());
-                break;
-            case 'VETERINARIO':
-                $agendamentos = $this->getVetAtendimentos($request->all());
-                break;
-            default:
-                $agendamentos[] = $this->getHotels($request->all());
-                $agendamentos[] = $this->getCreches($request->all());
-                $agendamentos[] = $this->getEsteticas($request->all());
-                $agendamentos[] = $this->getVetAtendimentos($request->all());
-                break;
+        try {
+            $agendamentos = [];
+
+            switch ($request->categoria) {
+                case 'HOTEL':
+                    $agendamentos = $this->getHotels($request->all());
+                    break;
+                case 'CRECHE':
+                    $agendamentos = $this->getCreches($request->all());
+                    break;
+                case 'ESTETICA':
+                    $agendamentos = $this->getEsteticas($request->all());
+                    break;
+                case 'VETERINARIO':
+                    $agendamentos = $this->getVetAtendimentos($request->all());
+                    break;
+                default:
+                    $agendamentos[] = $this->getHotels($request->all());
+                    $agendamentos[] = $this->getCreches($request->all());
+                    $agendamentos[] = $this->getEsteticas($request->all());
+                    $agendamentos[] = $this->getVetAtendimentos($request->all());
+                    break;
+            }
+
+            return response()->json($agendamentos, 200);
+        } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
+            return response()->json(['message' => $e->getMessage()], 400);
         }
-
-        return response()->json($agendamentos, 200);
     }
 
     /**
@@ -204,6 +211,7 @@ class AgendamentoController extends Controller
 
             return $agendamentos;
         } catch (\Exception $e) {
+            __saveLogError($e, $data['empresa_id'] ?? request()->empresa_id);
             return [
                 'error' => true,
                 'message' => $e->getMessage()
@@ -336,6 +344,7 @@ class AgendamentoController extends Controller
 
             return $agendamentos;
         } catch (\Exception $e) {
+            __saveLogError($e, $data['empresa_id'] ?? request()->empresa_id);
             return [
                 'error' => true,
                 'message' => $e->getMessage()
@@ -475,6 +484,7 @@ class AgendamentoController extends Controller
 
             return $agendamentos;
         } catch (\Exception $e) {
+            __saveLogError($e, $data['empresa_id'] ?? request()->empresa_id);
             return [
                 'error' => true,
                 'message' => $e->getMessage()
@@ -646,6 +656,7 @@ class AgendamentoController extends Controller
 
             return $appointments;
         } catch (\Exception $e) {
+            __saveLogError($e, $data['empresa_id'] ?? request()->empresa_id);
             return [
                 'error' => true,
                 'message' => $e->getMessage(),
@@ -1269,6 +1280,16 @@ class AgendamentoController extends Controller
 
 
         return response()->json(['success' => false, 'message' => 'Nenhum agendamento foi encontrado...'], 404);
+    }
+
+    private function _validate(Request $request)
+    {
+        $rules = [
+            'empresa_id' => 'required',
+            'categoria' => 'nullable|in:HOTEL,CRECHE,ESTETICA,VETERINARIO',
+        ];
+        $messages = [];
+        $this->validate($request, $rules, $messages);
     }
 
 }

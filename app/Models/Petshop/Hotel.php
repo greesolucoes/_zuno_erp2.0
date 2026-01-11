@@ -16,7 +16,7 @@ class Hotel extends Model
 {
     use HasFactory;
 
-    protected $table = 'hoteis';
+    protected $table = 'petshop_hoteis';
 
     protected $fillable = [
         'empresa_id',
@@ -105,13 +105,13 @@ class Hotel extends Model
     }
     public function servicos()
     {
-        return $this->belongsToMany(Servico::class, 'hotel_servico', 'hotel_id', 'servico_id')
+        return $this->belongsToMany(Servico::class, 'petshop_hotel_servico', 'hotel_id', 'servico_id')
             ->withPivot(['data_servico', 'hora_servico', 'valor_servico']);
     }
 
     public function produtos()
     {
-        return $this->belongsToMany(Produto::class, 'hotel_produto', 'hotel_id', 'produto_id')
+        return $this->belongsToMany(Produto::class, 'petshop_hotel_produto', 'hotel_id', 'produto_id')
             ->withPivot('quantidade');
     }
 

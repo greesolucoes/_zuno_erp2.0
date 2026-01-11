@@ -12,7 +12,7 @@ class HotelClienteEndereco extends Model
 {
     use HasFactory;
 
-    protected $table = 'hoteis_clientes_enderecos';
+    protected $table = 'petshop_hoteis_clientes_enderecos';
 
     protected $fillable = [
         'hotel_id',

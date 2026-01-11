@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Petshop\Plano;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PlanoController extends Controller
 {
@@ -33,8 +34,22 @@ class PlanoController extends Controller
 
     public function store(Request $request)
     {
-        $plano = Plano::create($request->all());
-        return response()->json($plano, 201);
+        $this->_validate($request);
+
+        try {
+            $plano = DB::transaction(function () use ($request) {
+                $data = $request->all();
+                $data['empresa_id'] = $this->resolveEmpresaId($request);
+                $data['filial_id'] = $data['filial_id'] ?? $this->resolveLocalId($request);
+
+                return Plano::create($data);
+            });
+
+            return response()->json($plano, 201);
+        } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
@@ -67,14 +82,41 @@ class PlanoController extends Controller
 
     public function update(Request $request, Plano $plano)
     {
-        $plano->update($request->all());
-        return response()->json($plano);
+        $empresaId = $this->resolveEmpresaId($request);
+        if ($empresaId && (int) $plano->empresa_id !== (int) $empresaId) {
+            return response()->json(['message' => 'Acesso negado.'], 403);
+        }
+
+        $this->_validate($request, true);
+
+        try {
+            DB::transaction(function () use ($request, $plano) {
+                $plano->update($request->all());
+            });
+            return response()->json($plano);
+        } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy(Plano $plano)
     {
-        $plano->delete();
-        return response()->json(null, 204);
+        $empresaId = $this->resolveEmpresaId(request());
+        if ($empresaId && (int) $plano->empresa_id !== (int) $empresaId) {
+            return response()->json(['message' => 'Acesso negado.'], 403);
+        }
+
+        try {
+            DB::transaction(function () use ($plano) {
+                $plano->delete();
+            });
+
+            return response()->json(null, 204);
+        } catch (\Exception $e) {
+            __saveLogError($e, $empresaId ?? request()->empresa_id);
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
     }
 
     public function pesquisa(Request $request)
@@ -123,5 +165,18 @@ class PlanoController extends Controller
         $local = __getLocalAtivo();
 
         return is_object($local) ? $local->id : null;
+    }
+
+    private function _validate(Request $request, bool $isUpdate = false)
+    {
+        $rules = [
+            'nome' => 'required|max:255',
+            'ativo' => 'nullable',
+        ];
+        $messages = [
+            'nome.required' => 'O nome é obrigatório.',
+        ];
+
+        $this->validate($request, $rules, $messages);
     }
 }

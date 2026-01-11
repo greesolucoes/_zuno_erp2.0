@@ -9,6 +9,7 @@ use App\Models\Petshop\Hotel;
 use App\Models\Petshop\HotelChecklist;
 use App\Utils\UploadUtil;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 
 class ChecklistController extends Controller
@@ -22,6 +23,8 @@ class ChecklistController extends Controller
 
     public function updateOrCreate(Request $request)
     {
+        $this->_validate($request);
+
         $modulo = $request->input('modulo');
 
         $request->merge([
@@ -76,25 +79,27 @@ class ChecklistController extends Controller
                 $data['anexos'] = $anexos;
             }
 
-            HotelChecklist::updateOrCreate(
-                ['hotel_id' => $hotel->id, 'tipo' => $tipo],
-                [
-                    'empresa_id' => $request->empresa_id ?? null,
-                    'checklist' => $data,
-                ]
-            );
+            DB::transaction(function () use ($request, $hotel, $tipo, $data) {
+                HotelChecklist::updateOrCreate(
+                    ['hotel_id' => $hotel->id, 'tipo' => $tipo],
+                    [
+                        'empresa_id' => $request->empresa_id ?? null,
+                        'checklist' => $data,
+                    ]
+                );
 
-            $estado = $hotel->estado;
-            if ($tipo === 'entrada') {
-                $estado = 'em_andamento';
-            } elseif ($tipo === 'saida') {
-                $estado = 'concluido';
-            }
+                $estado = $hotel->estado;
+                if ($tipo === 'entrada') {
+                    $estado = 'em_andamento';
+                } elseif ($tipo === 'saida') {
+                    $estado = 'concluido';
+                }
 
-            $hotel->update([
-                'situacao_checklist' => true,
-                'estado' => $estado,
-            ]);
+                $hotel->update([
+                    'situacao_checklist' => true,
+                    'estado' => $estado,
+                ]);
+            });
 
             if ($request->go_print) {
                 $print_url = route('hoteis.checklist.imprimir', [
@@ -116,6 +121,7 @@ class ChecklistController extends Controller
             }
 
         } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
             return response()->json([
                 'success' => false,
                 'message' => 'Ocorreu um erro desconhecido ao atualizar o checklist...',
@@ -157,25 +163,27 @@ class ChecklistController extends Controller
                 $data['anexos'] = $anexos;
             }
 
-            CrecheChecklist::updateOrCreate(
-                ['creche_id' => $creche->id, 'tipo' => $tipo],
-                [
-                    'empresa_id' => $request->empresa_id ?? null,
-                    'checklist' => $data,
-                ]
-            );
+            DB::transaction(function () use ($request, $creche, $tipo, $data) {
+                CrecheChecklist::updateOrCreate(
+                    ['creche_id' => $creche->id, 'tipo' => $tipo],
+                    [
+                        'empresa_id' => $request->empresa_id ?? null,
+                        'checklist' => $data,
+                    ]
+                );
 
-            $estado = $creche->estado;
-            if ($tipo === 'entrada') {
-                $estado = 'em_andamento';
-            } elseif ($tipo === 'saida') {
-                $estado = 'concluido';
-            }
+                $estado = $creche->estado;
+                if ($tipo === 'entrada') {
+                    $estado = 'em_andamento';
+                } elseif ($tipo === 'saida') {
+                    $estado = 'concluido';
+                }
 
-            $creche->update([
-                'situacao_checklist' => true,
-                'estado' => $estado,
-            ]);
+                $creche->update([
+                    'situacao_checklist' => true,
+                    'estado' => $estado,
+                ]);
+            });
             
             if ($request->go_print) {
                 $print_url = route('creches.checklist.imprimir', [
@@ -196,11 +204,25 @@ class ChecklistController extends Controller
                 ], 200);
             }
         } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
             return response()->json([
                 'success' => false,
                 'message' => 'Ocorreu um erro desconhecido ao atualizar o checklist...',
                 'exception' => $e->getMessage()
             ], 500);
         }
+    }
+
+    private function _validate(Request $request)
+    {
+        $rules = [
+            'empresa_id' => 'required',
+            'modulo' => 'required|in:HOTEL,CRECHE',
+            'reserva_id' => 'required',
+            'tipo' => 'required|in:entrada,saida',
+        ];
+        $messages = [];
+
+        $this->validate($request, $rules, $messages);
     }
 }

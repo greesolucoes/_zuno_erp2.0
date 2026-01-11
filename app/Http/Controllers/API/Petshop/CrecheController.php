@@ -16,6 +16,7 @@ use App\Services\Petshop\CrecheService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CrecheController extends Controller
 {
@@ -30,7 +31,7 @@ class CrecheController extends Controller
      * Valida os campos de cadastro para se cadastrar uma nova creche ou 
      * atualiza-la por completo (usado no storeCreche)
      */
-    private function __validate(Request $request) {
+    private function _validate(Request $request) {
         $request->merge([
             'servico_ids' => array_values(
                 array_map(
@@ -78,7 +79,7 @@ class CrecheController extends Controller
                 ->toArray(),
         ]);
             
-        $request->validate([
+        $rules = [
             // Dados da reserva
 
             'animal_id' => 'required|exists:petshop_animais,id',
@@ -108,7 +109,9 @@ class CrecheController extends Controller
             'produto_id.*' => 'nullable|exists:produtos,id',
             'qtd_produto' => 'nullable|array',
             'qtd_produto.*' => 'nullable|numeric|min:1',
-        ]);
+        ];
+        $messages = [];
+        $this->validate($request, $rules, $messages);
     }
     
     /**
@@ -118,7 +121,7 @@ class CrecheController extends Controller
     {
         $empresa_id = $request->empresa_id;
             
-        $this->__validate($request);
+        $this->_validate($request);
 
         $servico_reserva = $request->servico_ids[0] ? Servico::with('categoria')->find($request->servico_ids[0]) : null;
 
@@ -194,93 +197,109 @@ class CrecheController extends Controller
 
             }
 
-            $creche = Creche::create([
-                'empresa_id' => $empresa_id,
-                'animal_id' => $pet->id,
-                'cliente_id' => $pet->cliente_id,
-                'turma_id' => $request->turma_id,
-                'colaborador_id' => $request->colaborador_id,
-                'data_entrada' => $data_entrada,
-                'data_saida' => $data_saida,
-                'descricao' => $request->descricao,
-                'valor' => $valor_servicos + $valor_produtos,
-                'estado' => 'agendado',
-            ]);
-
-            foreach ($servicos_data as $pivot) {
-                $creche->servicos()->attach($pivot['servico_id'], [
-                    'data_servico' => $pivot['data_servico'],
-                    'hora_servico' => $pivot['hora_servico'],
-                    'valor_servico' => $pivot['valor_servico'],
+            $creche = DB::transaction(function () use (
+                $request,
+                $empresa_id,
+                $pet,
+                $data_entrada,
+                $data_saida,
+                $valor_servicos,
+                $valor_produtos,
+                $servicos_data,
+                $servico_counts,
+                $produtos,
+                $produtos_data
+            ) {
+                $creche = Creche::create([
+                    'empresa_id' => $empresa_id,
+                    'animal_id' => $pet->id,
+                    'cliente_id' => $pet->cliente_id,
+                    'turma_id' => $request->turma_id,
+                    'colaborador_id' => $request->colaborador_id,
+                    'data_entrada' => $data_entrada,
+                    'data_saida' => $data_saida,
+                    'descricao' => $request->descricao,
+                    'valor' => $valor_servicos + $valor_produtos,
+                    'estado' => 'agendado',
                 ]);
-            }
 
-            $servico_frete = $creche->servicos->filter(function ($servico) {
-                return $servico->categoria && $servico->categoria->nome === 'FRETE';
-            });
+                foreach ($servicos_data as $pivot) {
+                    $creche->servicos()->attach($pivot['servico_id'], [
+                        'data_servico' => $pivot['data_servico'],
+                        'hora_servico' => $pivot['hora_servico'],
+                        'valor_servico' => $pivot['valor_servico'],
+                    ]);
+                }
 
-            if ($servico_frete->first()) {
-                $endereco_cliente_data = [
-                    'cep' => $request->cep,
-                    'rua' => $request->rua,
-                    'bairro' => $request->bairro,
-                    'numero' => $request->numero,
-                    'complemento' => $request->complemento,
+                $servico_frete = $creche->servicos->filter(function ($servico) {
+                    return $servico->categoria && $servico->categoria->nome === 'FRETE';
+                });
 
-                    'cidade_id' => $request->modal_cidade_id,
+                if ($servico_frete->first()) {
+                    $endereco_cliente_data = [
+                        'cep' => $request->cep,
+                        'rua' => $request->rua,
+                        'bairro' => $request->bairro,
+                        'numero' => $request->numero,
+                        'complemento' => $request->complemento,
+
+                        'cidade_id' => $request->modal_cidade_id,
+                        'creche_id' => $creche->id,
+                        'cliente_id' => $creche->cliente_id,
+                    ];
+
+                    $this->creche_service->updateOrCreateCrecheClienteEndereco($creche->id, $endereco_cliente_data);
+                }
+
+                if (!empty($produtos_data)) {
+                    $creche->produtos()->sync($produtos_data);
+                }
+
+                $codigo_sequencial = (OrdemServico::where('empresa_id', $empresa_id)->max('codigo_sequencial') ?? 0) + 1;
+
+                $ordem = OrdemServico::create([
+                    'descricao' => 'Ordem de Serviço Creche',
+                    'cliente_id' => $pet->cliente_id,
+                    'empresa_id' => $empresa_id,
+                    'funcionario_id' => $request->colaborador_id,
+                    'animal_id' => $pet->id,
                     'creche_id' => $creche->id,
-                    'cliente_id' => $creche->cliente_id,
-                ];
-
-                $this->creche_service->updateOrCreateCrecheClienteEndereco($creche->id, $endereco_cliente_data);
-            }
-
-            if (!empty($produtos_data)) {
-                $creche->produtos()->sync($produtos_data);
-            }
-
-            $codigo_sequencial = (OrdemServico::where('empresa_id', $empresa_id)->max('codigo_sequencial') ?? 0) + 1;
-
-            $ordem = OrdemServico::create([
-                'descricao' => 'Ordem de Serviço Creche',
-                'cliente_id' => $pet->cliente_id,
-                'empresa_id' => $empresa_id,
-                'funcionario_id' => $request->colaborador_id,
-                'animal_id' => $pet->id,
-                'creche_id' => $creche->id,
-                'usuario_id' => auth()->id(),
-                'codigo_sequencial' => $codigo_sequencial,
-                'valor' => $valor_servicos + $valor_produtos,
-                'data_inicio' => $data_entrada,
-                'data_entrega' => $data_saida,
-                'estado' => 'AG',
-            ]);
-
-            $creche->update(['ordem_servico_id' => $ordem->id]);
-
-            foreach ($creche->servicos as $servico) {
-                $quantidade = $servico_counts[$servico->id];
-                ServicoOs::create([
-                    'ordem_servico_id' => $ordem->id,
-                    'servico_id' => $servico->id,
-                    'quantidade' => $quantidade,
-                    'valor' => $servico->pivot->valor_servico ?? 0,
-                    'subtotal' => ($servico->pivot->valor_servico ?? 0) * $quantidade,
-                    'desconto' => 0,
+                    'usuario_id' => auth()->id(),
+                    'codigo_sequencial' => $codigo_sequencial,
+                    'valor' => $valor_servicos + $valor_produtos,
+                    'data_inicio' => $data_entrada,
+                    'data_entrega' => $data_saida,
+                    'estado' => 'AG',
                 ]);
-            }
 
-            foreach ($produtos as $produto_id => $produto) {
-                $quantidade = $produtos_data[$produto_id]['quantidade'];
-                ProdutoOs::create([
-                    'ordem_servico_id' => $ordem->id,
-                    'produto_id' => $produto->id,
-                    'quantidade' => $quantidade,
-                    'valor' => $produto->valor_unitario ?? 0,
-                    'subtotal' => ($produto->valor_unitario ?? 0) * $quantidade,
-                    'desconto' => 0,
-                ]);
-            }
+                $creche->update(['ordem_servico_id' => $ordem->id]);
+
+                foreach ($creche->servicos as $servico) {
+                    $quantidade = $servico_counts[$servico->id];
+                    ServicoOs::create([
+                        'ordem_servico_id' => $ordem->id,
+                        'servico_id' => $servico->id,
+                        'quantidade' => $quantidade,
+                        'valor' => $servico->pivot->valor_servico ?? 0,
+                        'subtotal' => ($servico->pivot->valor_servico ?? 0) * $quantidade,
+                        'desconto' => 0,
+                    ]);
+                }
+
+                foreach ($produtos as $produto_id => $produto) {
+                    $quantidade = $produtos_data[$produto_id]['quantidade'];
+                    ProdutoOs::create([
+                        'ordem_servico_id' => $ordem->id,
+                        'produto_id' => $produto->id,
+                        'quantidade' => $quantidade,
+                        'valor' => $produto->valor_unitario ?? 0,
+                        'subtotal' => ($produto->valor_unitario ?? 0) * $quantidade,
+                        'desconto' => 0,
+                    ]);
+                }
+
+                return $creche;
+            });
 
             $crecheParaNotificacao = $creche->fresh([
                 'empresa',
@@ -295,16 +314,17 @@ class CrecheController extends Controller
             (new CrecheNotificacaoService())->nova($crecheParaNotificacao ?? $creche);
 
             return response()->json([
-                'success' => true, 
+                'success' => true,
                 'message' => 'Reserva agendada com sucesso!',
-            ]);
+            ], 200);
 
         } catch (\Exception $e) {
+            __saveLogError($e, $empresa_id ?? request()->empresa_id);
             return response()->json([
                 'success' => false,
-                'exception' => $e,
-                'message' => 'Ocorreu um erro desconhecido ao agendar a reserva.', 
-            ]);
+                'message' => 'Ocorreu um erro desconhecido ao agendar a reserva.',
+                'exception' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -334,9 +354,10 @@ class CrecheController extends Controller
             
             return response()->json([
                 'success' => true,
-                'message', 'Reserva atualizada com sucesso!'
+                'message' => 'Reserva atualizada com sucesso!'
             ], 200);
         } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
             return response()->json([
                 'success' => false,
                 'message' => 'Ocorreu um erro desconhecido ao atualizar a reserva...',
@@ -456,9 +477,10 @@ class CrecheController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message', 'Serviços atualizados com sucesso!'
+                'message' => 'Serviços atualizados com sucesso!'
             ], 200);
         } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
             return response()->json([
                 'success' => false,
                 'message' => 'Ocorreu um erro desconhecido ao atualizar a reserva...',
@@ -554,9 +576,10 @@ class CrecheController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message', 'Serviços atualizados com sucesso!'
+                'message' => 'Serviços atualizados com sucesso!'
             ], 200);
         } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
             return response()->json([
                 'success' => false,
                 'message' => 'Ocorreu um erro desconhecido ao atualizar a reserva...',
@@ -625,9 +648,10 @@ class CrecheController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message', 'Produtos atualizados com sucesso!'
+                'message' => 'Produtos atualizados com sucesso!'
             ], 200);
         } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
             return response()->json([
                 'success' => false,
                 'message' => 'Ocorreu um erro desconhecido ao atualizar os produtos...',

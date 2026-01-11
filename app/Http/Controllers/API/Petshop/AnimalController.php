@@ -52,13 +52,15 @@ class AnimalController extends Controller
 
     public function storeEspecie(Request $request)
     {
-        $request->validate(['nome' => ['required', Rule::unique('petshop_animais_especies')->where('empresa_id', $request->empresa_id),],], ['nome.unique' => 'Já existe uma espécie com este nome.',]);
         try {
+            $this->_validateEspecie($request);
+
             $item = Especie::create(['empresa_id' => $request->empresa_id, 'nome' => $request->nome]);
 
             return response()->json($item, 200);
-        } catch (Exception $e) {
-            return response()->json($e->getMessage(), 200);
+        } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id);
+            return response()->json(['message' => $e->getMessage()], 400);
         }
     }
 
@@ -78,13 +80,15 @@ class AnimalController extends Controller
 
     public function storePelagem(Request $request)
     {
-        $request->validate(['nome' => ['required', Rule::unique('petshop_animais_pelagens')->where('empresa_id', $request->empresa_id),],], ['nome.unique' => 'Já existe uma pelagem com este nome.',]);
         try {
+            $this->_validatePelagem($request);
+
             $item = Pelagem::create(['empresa_id' => $request->empresa_id, 'nome' => $request->nome]);
 
             return response()->json($item, 200);
-        } catch (Exception $e) {
-            return response()->json($e->getMessage(), 200);
+        } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id);
+            return response()->json(['message' => $e->getMessage()], 400);
         }
     }
 
@@ -105,13 +109,61 @@ class AnimalController extends Controller
 
     public function storeRaca(Request $request)
     {
-        $request->validate(['nome' => ['required', Rule::unique('petshop_animais_racas')->where('empresa_id', $request->empresa_id),],], ['nome.unique' => 'Já existe uma raça com este nome.',]);
         try {
+            $this->_validateRaca($request);
+
             $item = Raca::create(['empresa_id' => $request->empresa_id, 'nome' => $request->nome, 'especie_id' => $request->especie_id ?? null]);
 
             return response()->json($item, 200);
-        } catch (Exception $e) {
-            return response()->json($e->getMessage(), 200);
+        } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id);
+            return response()->json(['message' => $e->getMessage()], 400);
         }
+    }
+
+    private function _validateEspecie(Request $request)
+    {
+        $rules = [
+            'empresa_id' => 'required',
+            'nome' => [
+                'required',
+                Rule::unique('petshop_animais_especies')->where('empresa_id', $request->empresa_id),
+            ],
+        ];
+        $messages = [
+            'nome.unique' => 'Já existe uma espécie com este nome.',
+        ];
+        $this->validate($request, $rules, $messages);
+    }
+
+    private function _validatePelagem(Request $request)
+    {
+        $rules = [
+            'empresa_id' => 'required',
+            'nome' => [
+                'required',
+                Rule::unique('petshop_animais_pelagens')->where('empresa_id', $request->empresa_id),
+            ],
+        ];
+        $messages = [
+            'nome.unique' => 'Já existe uma pelagem com este nome.',
+        ];
+        $this->validate($request, $rules, $messages);
+    }
+
+    private function _validateRaca(Request $request)
+    {
+        $rules = [
+            'empresa_id' => 'required',
+            'especie_id' => 'required',
+            'nome' => [
+                'required',
+                Rule::unique('petshop_animais_racas')->where('empresa_id', $request->empresa_id),
+            ],
+        ];
+        $messages = [
+            'nome.unique' => 'Já existe uma raça com este nome.',
+        ];
+        $this->validate($request, $rules, $messages);
     }
 }

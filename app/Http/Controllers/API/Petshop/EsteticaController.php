@@ -20,6 +20,7 @@ use App\Services\Petshop\EsteticaService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class EsteticaController extends Controller
@@ -144,92 +145,81 @@ class EsteticaController extends Controller
             }
         }
 
-        $request->validate([
-            'animal_id'           => 'required|exists:petshop_animais,id',
-            'colaborador_id'      => 'nullable|exists:funcionarios,id',
-            'servico_id'          => 'required|array|min:1',
-            'servico_id.*'        => 'exists:servicos,id',
-            'produto_id'          => 'nullable|array',
-            'produto_id.*'        => 'nullable|exists:produtos,id',
-            'qtd_produto'         => 'nullable|array',
-            'data_agendamento'    => 'required|date_format:Y-m-d',
-            'horario_agendamento' => 'required|date_format:H:i',
-            'horario_saida'       => 'required|date_format:H:i',
-            'descricao'           => 'nullable|string|max:1000',
-        ]);
+        $this->_validate($request, 'store');
 
         try {
             $pet = Animal::findOrFail($request->animal_id);
 
-            $estetica = Estetica::create([
-                'empresa_id'         => $empresa_id,
-                'animal_id'          => $pet->id,
-                'cliente_id'         => $pet->cliente_id,
-                'colaborador_id'     => $request->colaborador_id ?: null,
-                'plano_id'           => $request->plano_id,
-                'descricao'          => $request->descricao,
-                'data_agendamento'   => $request->data_agendamento,
-                'horario_agendamento'=> $request->horario_agendamento,
-                'horario_saida'      => $request->horario_saida,
-                'estado'             => $request->estado ?? 'agendado',
-            ]);
-
-            foreach ($request->servico_id as $index => $servicoId) {
-                $servico = Servico::findOrFail($servicoId);
-                EsteticaServico::create([
-                    'estetica_id' => $estetica->id,
-                    'servico_id'  => $servico->id,
-                    'subtotal'    => __convert_value_bd($request->subtotal_servico[$index]) ?? 0,
+            $estetica = DB::transaction(function () use ($request, $empresa_id, $pet) {
+                $estetica = Estetica::create([
+                    'empresa_id'         => $empresa_id,
+                    'animal_id'          => $pet->id,
+                    'cliente_id'         => $pet->cliente_id,
+                    'colaborador_id'     => $request->colaborador_id ?: null,
+                    'plano_id'           => $request->plano_id,
+                    'descricao'          => $request->descricao,
+                    'data_agendamento'   => $request->data_agendamento,
+                    'horario_agendamento'=> $request->horario_agendamento,
+                    'horario_saida'      => $request->horario_saida,
+                    'estado'             => $request->estado ?? 'agendado',
                 ]);
-            }
 
-            $servico_frete = $estetica->servicos->filter(function ($item) {
-                return $item->servico->categoria && $item->servico->categoria->nome === 'FRETE';
-            });
-
-            if ($servico_frete->first()) {
-                $endereco_cliente_data = [
-                    'cep' => $request->cep,
-                    'rua' => $request->rua,
-                    'bairro' => $request->bairro,
-                    'numero' => $request->numero,
-                    'complemento' => $request->complemento,
-
-                    'cidade_id' => $request->modal_cidade_id,
-                    'estetica_id' => $estetica->id,
-                    'cliente_id' => $estetica->cliente_id,
-                ];
-
-                $this->estetica_service->updateOrCreateEsteticaClienteEndereco($estetica->id, $endereco_cliente_data);
-            }
-
-            if ($request->filled('produto_id')) {
-                foreach ($request->produto_id as $index => $produtoId) {
-                    if (!$produtoId) {
-                        continue;
-                    }
-                    $produto = Produto::findOrFail($produtoId);
-                    $qtd = intval($request->qtd_produto[$index] ?? 1);
-                    $subtotal = ($produto->valor_unitario ?? 0) * $qtd;
-
-                    EsteticaProduto::create([
+                foreach ($request->servico_id as $index => $servicoId) {
+                    $servico = Servico::findOrFail($servicoId);
+                    EsteticaServico::create([
                         'estetica_id' => $estetica->id,
-                        'produto_id'  => $produto->id,
-                        'quantidade'  => $qtd,
-                        'valor'       => $produto->valor_unitario ?? 0,
-                        'subtotal'    => $subtotal,
+                        'servico_id'  => $servico->id,
+                        'subtotal'    => __convert_value_bd($request->subtotal_servico[$index]) ?? 0,
                     ]);
                 }
-            }
 
-            if ($estetica->estado !== 'pendente_aprovacao') {
-                if (!$this->estetica_service->criarOrdemServico($estetica)) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Limite de uso do serviço atingido para este período.'
-                    ]);
+                $servico_frete = $estetica->servicos->filter(function ($item) {
+                    return $item->servico->categoria && $item->servico->categoria->nome === 'FRETE';
+                });
+
+                if ($servico_frete->first()) {
+                    $endereco_cliente_data = [
+                        'cep' => $request->cep,
+                        'rua' => $request->rua,
+                        'bairro' => $request->bairro,
+                        'numero' => $request->numero,
+                        'complemento' => $request->complemento,
+
+                        'cidade_id' => $request->modal_cidade_id,
+                        'estetica_id' => $estetica->id,
+                        'cliente_id' => $estetica->cliente_id,
+                    ];
+
+                    $this->estetica_service->updateOrCreateEsteticaClienteEndereco($estetica->id, $endereco_cliente_data);
                 }
-            }
+
+                if ($request->filled('produto_id')) {
+                    foreach ($request->produto_id as $index => $produtoId) {
+                        if (!$produtoId) {
+                            continue;
+                        }
+                        $produto = Produto::findOrFail($produtoId);
+                        $qtd = intval($request->qtd_produto[$index] ?? 1);
+                        $subtotal = ($produto->valor_unitario ?? 0) * $qtd;
+
+                        EsteticaProduto::create([
+                            'estetica_id' => $estetica->id,
+                            'produto_id'  => $produto->id,
+                            'quantidade'  => $qtd,
+                            'valor'       => $produto->valor_unitario ?? 0,
+                            'subtotal'    => $subtotal,
+                        ]);
+                    }
+                }
+
+                if ($estetica->estado !== 'pendente_aprovacao') {
+                    if (!$this->estetica_service->criarOrdemServico($estetica)) {
+                        throw new Exception('Limite de uso do serviço atingido para este período.');
+                    }
+                }
+
+                return $estetica;
+            });
 
             $esteticaParaNotificacao = $estetica->fresh(['empresa', 'cliente', 'animal', 'servicos.servico']);
             (new EsteticaNotificacaoService())->nova($esteticaParaNotificacao ?? $estetica);
@@ -237,9 +227,10 @@ class EsteticaController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Reserva agendada com sucesso!'
-            ]);
-        } catch (Exception $e) {
+            ], 200);
+        } catch (\Exception $e) {
             Log::error('Erro ao salvar agendamento de estética', ['exception' => $e]);
+            __saveLogError($e, $empresa_id ?? request()->empresa_id);
 
             return response()->json([    
                 'success' => false,
@@ -251,14 +242,7 @@ class EsteticaController extends Controller
 
     public function updateEstetica(Request $request, $id)
     {
-        $request->validate([
-            'animal_id'      => 'required|exists:petshop_animais,id',
-            'servico_id'    => 'required|exists:servicos,id',
-            'colaborador_id' => 'nullable|exists:funcionarios,id',
-            'entrada'        => 'required|date_format:Y-m-d',
-            'saida'          => 'required|date_format:Y-m-d',
-            'descricao'      => 'nullable|string|max:1000',
-        ]);
+        $this->_validate($request, 'update');
 
         try {
             $estetica    = Estetica::findOrFail($id);
@@ -411,8 +395,9 @@ class EsteticaController extends Controller
                 'message' => 'Agendamento atualizado com sucesso!'
             ], 200);
         } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
             return response()->json([
-                'success' => 'false',
+                'success' => false,
                 'message' => 'Erro ao atualizar agendamento: ' . $e->getMessage()
             ], 500);
         }
@@ -677,14 +662,52 @@ class EsteticaController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message', 'Serviços atualizados com sucesso!'
+                'message' => 'Serviços atualizados com sucesso!'
             ], 200);
         } catch (\Exception $e) {
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
             return response()->json([
                 'success' => false,
                 'message' => 'Ocorreu um erro desconhecido ao atualizar a reserva...',
                 'exception' => $e->getMessage() 
             ], 500);
         }
+    }
+
+    private function _validate(Request $request, string $context = 'store')
+    {
+        $rules = [];
+        $messages = [];
+
+        if ($context === 'store') {
+            $rules = [
+                'empresa_id'          => 'required',
+                'animal_id'           => 'required|exists:petshop_animais,id',
+                'colaborador_id'      => 'nullable|exists:funcionarios,id',
+                'servico_id'          => 'required|array|min:1',
+                'servico_id.*'        => 'exists:servicos,id',
+                'produto_id'          => 'nullable|array',
+                'produto_id.*'        => 'nullable|exists:produtos,id',
+                'qtd_produto'         => 'nullable|array',
+                'data_agendamento'    => 'required|date_format:Y-m-d',
+                'horario_agendamento' => 'required|date_format:H:i',
+                'horario_saida'       => 'required|date_format:H:i',
+                'descricao'           => 'nullable|string|max:1000',
+            ];
+        }
+
+        if ($context === 'update') {
+            $rules = [
+                'empresa_id' => 'required',
+                'animal_id' => 'required|exists:petshop_animais,id',
+                'servico_id' => 'required|exists:servicos,id',
+                'colaborador_id' => 'nullable|exists:funcionarios,id',
+                'entrada' => 'required|date_format:Y-m-d',
+                'saida' => 'required|date_format:Y-m-d',
+                'descricao' => 'nullable|string|max:1000',
+            ];
+        }
+
+        $this->validate($request, $rules, $messages);
     }
 }
