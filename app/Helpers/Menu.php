@@ -237,12 +237,12 @@ class Menu
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Usuários Plano',
+						'nome' => 'Cliente Plano',
 						'rota' => $this->safeRoute('petshop.planos.usuario.index'),
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Usuário Avulso',
+						'nome' => 'Cliente Avulso (Portal)',
 						'rota' => $this->safeRoute('petshop.planos.usuarios-avulso.index'),
 						'mostrar_sempre' => true,
 					],
@@ -433,7 +433,7 @@ class Menu
 					],
 					[
 						'nome' => 'Agenda',
-						'rota' => $this->safeRoute('agendamentos.index'),
+						'rota' => $this->safeRoute('petshop.agenda.index'),
 						'mostrar_sempre' => true,
 					],
 					[

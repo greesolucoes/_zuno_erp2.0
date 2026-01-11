@@ -13,6 +13,7 @@ use App\Http\Controllers\Petshop\Planos\PlanoController as PlanoGerenciarControl
 use App\Http\Controllers\Petshop\Public\HistoricoController as PlanoPublicHistoricoController;
 use App\Http\Controllers\Petshop\ConfiguracaoController;
 use App\Http\Controllers\Petshop\Public\ClienteController as PublicClienteController;
+use App\Http\Controllers\Petshop\Agendamento\AgendamentoController as PetshopAgendamentoController;
 use App\Http\Controllers\Petshop\Vet\AgendaController as VetAgendaController;
 use App\Http\Controllers\Petshop\Vet\AtendimentosController as VetAtendimentosController;
 use App\Http\Controllers\Petshop\Vet\InternacoesController as VetInternacoesController;
@@ -146,6 +147,16 @@ Route::middleware(['verificaEmpresa', 'validaAcesso', 'verificaContratoAssinado'
       Route::prefix('petshop')->group(function () {
                 Route::get('config', [ConfiguracaoController::class, 'index'])->name('petshop.config.index');
                 Route::post('config', [ConfiguracaoController::class, 'store'])->name('petshop.config.store');
+
+        Route::prefix('AgendaGeralPetShop')->name('petshop.agenda.')->group(function () {
+            Route::get('', [PetshopAgendamentoController::class, 'index'])->name('index');
+            Route::post('', [PetshopAgendamentoController::class, 'store'])->name('store');
+            Route::get('{agendamento}', [PetshopAgendamentoController::class, 'show'])->whereNumber('agendamento')->name('show');
+            Route::put('{agendamento}', [PetshopAgendamentoController::class, 'update'])->whereNumber('agendamento')->name('update');
+            Route::put('{agendamento}/status', [PetshopAgendamentoController::class, 'updateStatus'])->whereNumber('agendamento')->name('update-status');
+            Route::delete('{agendamento}', [PetshopAgendamentoController::class, 'destroy'])->whereNumber('agendamento')->name('destroy');
+            Route::get('{agendamento}/pdv', [PetshopAgendamentoController::class, 'pdv'])->whereNumber('agendamento')->name('pdv');
+        });
 
         Route::get('planos', [PlanoGerenciarController::class, 'index'])->name('petshop.gerenciar.planos');
         Route::get('planos/novo', [PlanoGerenciarController::class, 'create'])->name('petshop.criar.plano');

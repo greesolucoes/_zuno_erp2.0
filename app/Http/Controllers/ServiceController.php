@@ -15,6 +15,7 @@ class ServiceController extends Controller
     public function index(Request $request)
     {
         $data = Servico::where('empresa_id', request()->empresa_id)
+            ->where('status', 1)
             ->when(!empty($request->nome), function ($q) use ($request) {
                 return  $q->where(function ($quer) use ($request) {
                     return $quer->where('nome', 'LIKE', "%$request->nome%");
@@ -41,7 +42,8 @@ class ServiceController extends Controller
                 'comissao' => $request->comissao ?? '0',
                 'tempo_tolerancia' => $request->tempo_tolerancia ?? '0',
                 'tempo_adicional' => $request->tempo_adicional ?? '0',
-                'valor_adicional' => $request->valor_adicional ?? '0'
+                'valor_adicional' => $request->valor_adicional ?? '0',
+                'status' => $request->status ?? 1,
             ]);
             DB::transaction(function () use ($request) {
                 Servico::create($request->all());
@@ -62,13 +64,15 @@ class ServiceController extends Controller
             'unidade_cobranca' => 'required',
             'tempo_servico' => 'required',
             'comissao' => 'max:6',
+            'status' => 'nullable|in:0,1',
         ];
         $messages = [
             'nome.required' => 'Nome é obrigatório',
             'valor.required' => 'Campo obrigatório',
             'unidade_cobranca.required' => 'Campo obrigatório',
             'tempo_servico.required' => 'Campo obrigatório',
-            'comissao.max' => 'No máximo 5 digitos'
+            'comissao.max' => 'No máximo 5 digitos',
+            'status.in' => 'Status inválido',
         ];
         $this->validate($request, $rules, $messages);
     }
@@ -90,7 +94,8 @@ class ServiceController extends Controller
                 'comissao' => __convert_value_bd($request->comissao),
                 'tempo_tolerancia' => $request->tempo_tolerancia ?? '0',
                 'tempo_adicional' => $request->tempo_adicional ?? '0',
-                'valor_adicional' => $request->valor_adicional ?? '0'
+                'valor_adicional' => $request->valor_adicional ?? '0',
+                'status' => $request->status ?? $item->status ?? 1,
             ]);
             DB::transaction(function () use ($request, $item) {
                 $item->fill($request->all())->save();

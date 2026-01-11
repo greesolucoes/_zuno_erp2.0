@@ -36,6 +36,12 @@
     </div>
 
     <div class="col-md-2">
+        {!!Form::select('status', 'Status', [1 => 'Ativo', 0 => 'Inativo'])
+        ->attrs(['class' => 'form-select'])
+        !!}
+    </div>
+
+    <div class="col-md-2">
         {!!Form::text('tempo_adicional', 'Tempo adicional')
         ->attrs(['data-mask' => '00:00'])
         !!}

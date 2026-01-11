@@ -69,9 +69,13 @@ Route::middleware(['hashEmpresa'])->group(function () {
     });
 
 
-    Route::group(['prefix' => 'agendamentos'], function () {
-        Route::get('/all', 'API\\AgendamentoController@all');
-    });
+Route::group(['prefix' => 'agendamentos'], function () {
+    Route::get('/all', 'API\\AgendamentoController@all');
+});
+
+Route::group(['prefix' => 'petshop/agendamentos'], function () {
+    Route::post('/search', 'API\\Petshop\\AgendamentoController@searchAgendamentos');
+});
 
     Route::group(['prefix' => 'servicos'], function () {
         Route::get('/find/{id}', 'API\\ServicoController@find');
@@ -566,5 +570,4 @@ Route::group(['prefix' => '/controle_comandas'], function(){
     Route::get('/pedido/{id}', 'ControleComanda\\HomeController@pedido')->middleware('authAppComanda');
 
 });
-
 

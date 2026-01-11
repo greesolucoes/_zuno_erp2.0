@@ -14,6 +14,7 @@ Instruções para agentes ao criar/alterar **Controllers**, **Services** e **Mod
 ## Backend (nunca esquecer)
 - Multi-tenant: em consultas e gravações, respeitar `empresa_id` (padrão: `request()->empresa_id`/`$request->empresa_id`).
 - Acesso ao registro: quando o módulo usar, validar com `__valida_objeto($item)` e negar com `abort(403)` antes de editar/remover/baixar.
+- Permissão de Acesso (DESTAQUE TOTAL): ao criar rota nova “do sistema”, NUNCA esquecer de colocar ela no controle de acesso (ver seção abaixo).
 - Validação: validar no início de `store()`/`update()`; não persistir dados sem `_validate(...)`.
 - Transação: quando houver mais de 1 escrita relacionada, usar `DB::transaction(...)`.
 - Erros: encapsular ações críticas em `try/catch`, manter `flash_sucesso/flash_erro` (web) e, quando existir no módulo, chamar `__saveLogError($e, request()->empresa_id)`.
@@ -21,6 +22,22 @@ Instruções para agentes ao criar/alterar **Controllers**, **Services** e **Mod
 - Arquivos/diretórios: antes de gravar em `public_path(...)`, garantir pasta com `is_dir(...)` + `mkdir(..., 0777, true)` (padrão do projeto).
 - API: retornar `response()->json(..., <status>)` e manter o padrão de status do módulo (ex.: `200`, `400/401`).
 - Consistência: manter estilo do módulo (imports, view path, nomes) e não adicionar `error_reporting/ini_set('display_errors', ...)` novos.
+
+## Permissão de Acesso (como o projeto funciona)
+- O controle de acesso do painel/admin é feito pelo middleware `validaAcesso` (`app/Http/Middleware/ValidaAcesso.php`) + lista de rotas permitidas no campo JSON `permissao` do usuário/perfil.
+- A “fonte da verdade” do que precisa de permissão é o menu do sistema (`app/Helpers/Menu.php`):
+  - Se a rota existe no `Menu.php`, ela passa a ser “controlada” pelo `validaAcesso`.
+  - Se não existe no `Menu.php`, o middleware entende que **não precisa controlar** e libera.
+- A tela de perfis (`PerfilAcessoController`) monta as permissões a partir do `Menu.php`.
+
+## Checklist ao criar uma rota nova (web/admin)
+1) Colocar a rota no grupo protegido que já usa `validaAcesso` (ex.: em `routes/web.php` e/ou `routes/petshop.php`).
+2) Adicionar a rota no `app/Helpers/Menu.php` (ou em um submenu existente), usando `route('nome.da.rota')` como nos itens atuais.
+3) Garantir que a rota que você colocou no menu é a mesma que deve ser liberada/bloqueada pelo acesso (não inventar URL “hardcoded” diferente do padrão do projeto).
+4) Atualizar os perfis/usuários que precisam da nova permissão (perfis antigos não ganham permissão automaticamente; a permissão precisa ser marcada e salva).
+
+## Quando NÃO controlar a rota
+- Rotas públicas (login/cadastro/portal/páginas abertas) devem ficar fora do menu e, quando necessário, usar `->withoutMiddleware([...])` como já existe no projeto.
 
 ## Local e namespace
 - Controller “web” padrão: `app/Http/Controllers/<Nome>Controller.php` com `namespace App\Http\Controllers;`

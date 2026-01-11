@@ -38,6 +38,7 @@
                                         <th>Categoria</th>
                                         <th>Valor</th>
                                         <th>Unidade de cobrança</th>
+                                        <th>Status</th>
                                         <th>Ações</th>
                                     </tr>
                                 </thead>
@@ -48,6 +49,7 @@
                                         <td>{{ $item->categoria->nome }}</td>
                                         <td>{{ __moeda($item->valor) }}</td>
                                         <td>{{ $item->unidade_cobranca }}</td>
+                                        <td>{{ $item->status == 1 ? 'Ativo' : 'Inativo' }}</td>
                                         <td>
                                             <form action="{{ route('servicos.destroy', $item->id) }}" method="post" id="form-{{$item->id}}">
                                                 @method('delete')
