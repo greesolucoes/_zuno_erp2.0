@@ -1,4 +1,74 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Compatibilidade: o layout do sistema carrega SweetAlert (swal) e não SweetAlert2 (Swal.fire).
+    // Este adapter evita "Swal is not defined" mantendo o padrão `.then(({isConfirmed}))`.
+    if (!window.Swal || typeof window.Swal.fire !== 'function') {
+        window.Swal = window.Swal || {};
+        window.Swal.fire = function (options = {}) {
+            if (typeof window.swal !== 'function') {
+                return Promise.resolve({ isConfirmed: false });
+            }
+
+            const hasCancel = !!options.showCancelButton;
+            const content = options.html
+                ? (function () {
+                      const div = document.createElement('div');
+                      div.innerHTML = options.html;
+                      return div;
+                  })()
+                : undefined;
+
+            return window
+                .swal({
+                    title: options.title || '',
+                    text: options.text,
+                    icon: options.icon,
+                    content,
+                    buttons: hasCancel
+                        ? {
+                              cancel: options.cancelButtonText || 'Cancelar',
+                              confirm: options.confirmButtonText || 'OK',
+                          }
+                        : options.confirmButtonText || true,
+                    dangerMode: options.icon === 'warning',
+                })
+                .then(function (confirmed) {
+                    return { isConfirmed: !!confirmed };
+                });
+        };
+    }
+
+    // Compatibilidade: algumas telas antigas usam `addClassRequired` global.
+    if (typeof window.addClassRequired !== 'function') {
+        window.addClassRequired = function (formSelector, isModal = false) {
+            const $root = $(formSelector);
+            if (!$root.length) return true;
+
+            const $required = $root.find('input, select, textarea').filter(function () {
+                if (!$(this).prop('required')) return false;
+                if ($(this).hasClass('ignore')) return false;
+                if (!isModal && $(this).closest('.modal').length > 0) return false;
+                return true;
+            });
+
+            const $invalid = $required.filter(function () {
+                const value = $(this).val();
+                return value === null || value === undefined || String(value).trim() === '';
+            });
+
+            if ($invalid.length) {
+                $invalid.first().addClass('is-invalid');
+                window.Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos pendentes',
+                    text: 'Preencha os campos obrigatórios antes de continuar.',
+                });
+                return false;
+            }
+
+            return true;
+        };
+    }
+
     window.selectDiv = function (ref) {
         $('button').removeClass('link-active')
         if (ref == 'aliquotas') {

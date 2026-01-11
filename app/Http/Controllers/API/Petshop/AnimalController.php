@@ -30,7 +30,7 @@ class AnimalController extends Controller
             ->get();
 
         if ($data->isEmpty()) {
-            return response()->json(['success' => 'false', 'message' => 'Nenhum animal encontrado.'], 404);
+            return response()->json(['success' => 'true', 'data' => []], 200);
         }
 
         return response()->json(['success' => 'true', 'data' => $data], 200);
@@ -44,7 +44,7 @@ class AnimalController extends Controller
             ->get();
 
         if ($data->isEmpty()) {
-            return response()->json(['success' => 'false', 'message' => 'Nenhuma espécie encontrada.'], 404);
+            return response()->json(['success' => 'true', 'data' => []], 200);
         }
 
         return response()->json(['success' => 'true', 'data' => $data], 200);
@@ -72,7 +72,7 @@ class AnimalController extends Controller
             ->get();
 
         if ($data->isEmpty()) {
-            return response()->json(['success' => 'false', 'message' => 'Nenhuma pelagem encontrada.'], 404);
+            return response()->json(['success' => 'true', 'data' => []], 200);
         }
 
         return response()->json(['success' => 'true', 'data' => $data], 200);
@@ -101,7 +101,7 @@ class AnimalController extends Controller
         ->get();
 
         if ($data->isEmpty()) {
-            return response()->json(['success' => 'false', 'message' => 'Nenhuma raça encontrada.'], 404);
+            return response()->json(['success' => 'true', 'data' => []], 200);
         }
 
         return response()->json(['success' => 'true', 'data' => $data], 200);

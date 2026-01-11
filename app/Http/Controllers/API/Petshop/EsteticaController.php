@@ -41,18 +41,10 @@ class EsteticaController extends Controller
         $has_jornada_funcionario = false;
 
         if ($request->funcionario_id) {
-            $funcionario = Funcionario::with('jornadaTrabalho.dias')->find($request->funcionario_id);
+            $funcionario = Funcionario::find($request->funcionario_id);
             
             if (isset($funcionario)) {
-                if (isset($funcionario->jornadaTrabalho)) {
-                    $current_jornada = $funcionario->jornadaTrabalho->dias()->where('dia_semana', $requested_day_week)->first();
-
-                    if ($current_jornada) {
-                        $current_jornada_funcionario = $current_jornada;
-                    }
-
-                    $has_jornada_funcionario = true;
-                } 
+                // Jornada por funcionário é opcional e pode não estar implementada neste projeto.
             } else {
                 return response()->json(['success' => false, 'message' => 'Colaborador não encontrado'], 404);
             }
@@ -88,7 +80,7 @@ class EsteticaController extends Controller
         $requested_date = Carbon::parse($request->dia_agendamento);
 
         try {
-            $agendamentos = Estetica::with(['colaborador', 'colaborador.jornadaTrabalho', 'colaborador.jornadaTrabalho.dias', 'cliente', 'animal', 'servicos', 'servicos.servico'])->where('empresa_id', $request->empresa_id)
+            $agendamentos = Estetica::with(['colaborador', 'cliente', 'animal', 'servicos', 'servicos.servico'])->where('empresa_id', $request->empresa_id)
                 ->whereNotIn('estado', ['concluido', 'rejeitado', 'cancelado', 'pendente_aprovacao'])
                 ->where('data_agendamento', $requested_date->format('Y-m-d'))
                 ->orderBy('horario_agendamento', 'asc')

@@ -120,7 +120,7 @@ class ProdutoController extends Controller
         ->where('produtos.nome', 'like', "%$request->pesquisa%")
         ->with('estoque')
         ->get();
-        $permissaoAcesso = __getLocaisUsarioLogado($request->usuario_id);
+
         $temp = [];
         foreach ($data as $p) {
             $locais = json_decode($p->locais);

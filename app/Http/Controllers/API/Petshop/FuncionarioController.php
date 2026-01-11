@@ -9,6 +9,23 @@ use Illuminate\Http\Request;
 
 class FuncionarioController extends Controller
 {
+    public function pesquisa(Request $request)
+    {
+        $data = Funcionario::where('empresa_id', $request->empresa_id)
+            ->when($request->filled('pesquisa'), function ($q) use ($request) {
+                $q->where('nome', 'like', '%' . $request->pesquisa . '%');
+            })
+            ->orderBy('nome')
+            ->get(['id', 'nome'])
+            ->map(function ($item) {
+                $item->cargo = $item->cargo ?? '';
+                return $item;
+            })
+            ->values();
+
+        return response()->json($data, 200);
+    }
+
     public function index(Request $request)
     {
         $this->_validate($request);

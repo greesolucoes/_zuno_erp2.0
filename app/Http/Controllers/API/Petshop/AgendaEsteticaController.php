@@ -56,7 +56,7 @@ class AgendaEsteticaController extends Controller
         ]);
 
         $horarios   = [];
-        $funcionario = Funcionario::with('jornadaTrabalho.dias')->find($funcionario_id);
+        $funcionario = Funcionario::find($funcionario_id);
         $isToday     = Carbon::parse($data)->isToday();
         $agora       = now();
 
@@ -72,7 +72,6 @@ class AgendaEsteticaController extends Controller
                 ->first();
         }
 
-        $funcionario = Funcionario::with('jornadaTrabalho.dias')->find($funcionario_id);
         // Se ainda não encontrou configuração, tenta usar a empresa do colaborador
         if (!$config && $funcionario) {
             $config = Configuracao::with('horarios')
@@ -88,118 +87,8 @@ class AgendaEsteticaController extends Controller
         }
         $diaSemana = Carbon::parse($data)->dayOfWeek;
 
-        // Prioriza os horários de trabalho do funcionário caso eles existam
-
-        if ($funcionario && $funcionario->jornadaTrabalho) {
-            $diaSemana = Carbon::parse($data)->dayOfWeek;
-            $diaJornada = $funcionario->jornadaTrabalho?->dias->firstWhere('dia_semana', $diaSemana);
-
-            if ($diaJornada && $diaJornada->hora_inicio && $diaJornada->hora_fim) {
-                $inicioJornada = Carbon::parse("$data {$diaJornada->hora_inicio}");
-                $fimJornada    = Carbon::parse("$data {$diaJornada->hora_fim}");
-                $inicioIntervalo = $diaJornada->inicio_intervalo
-                    ? Carbon::parse("$data {$diaJornada->inicio_intervalo}")
-                    : null;
-                $fimIntervalo = $diaJornada->fim_intervalo
-                    ? Carbon::parse("$data {$diaJornada->fim_intervalo}")
-                    : null;
-
-                Log::debug('Jornada e tempo total', [
-                    'inicio_jornada'   => $inicioJornada->toDateTimeString(),
-                    'fim_jornada'      => $fimJornada->toDateTimeString(),
-                    'inicio_intervalo' => $inicioIntervalo?->toDateTimeString(),
-                    'fim_intervalo'    => $fimIntervalo?->toDateTimeString(),
-                    'tempo_servico'    => $tempoServico,
-                ]);
-
-                $agendamentos = Estetica::with('servicos.servico')
-                    ->where('empresa_id', $empresa_id)
-                    ->where('colaborador_id', $funcionario_id)
-                    ->whereDate('data_agendamento', $data)
-                    ->where('estado', '!=', 'rejeitado')
-                    ->get()
-                    ->map(function ($a) {
-                        $inicio = Carbon::parse($a->data_agendamento)->setTimeFromTimeString($a->horario_agendamento);
-                        $duracao = $a->servicos->sum(fn($s) => $s->servico ? $s->servico->tempo_execucao : 0);
-                        return [
-                            'inicio' => $inicio,
-                            'fim'    => $inicio->copy()->addMinutes($duracao),
-                        ];
-                    });
-
-                $cursor = $inicioJornada->copy();
-                while ($cursor->lt($fimJornada)) {
-                    $slotInicio = $cursor->copy();
-                    $slotFim    = $slotInicio->copy()->addMinutes($tempoServico);
-
-                    if ($isToday && $slotInicio->lt($agora)) {
-                        $cursor = $cursor->addMinutes($tempoServico);
-                        continue;
-                    }
-
-                    if ($inicioIntervalo && $fimIntervalo &&
-                        $slotInicio->lt($fimIntervalo) && $slotFim->gt($inicioIntervalo)) {
-                        $cursor = $fimIntervalo->copy();
-                        continue;
-                    }
-
-                    Log::debug('Verificando slot', [
-                        'inicio' => $slotInicio->toDateTimeString(),
-                        'fim'    => $slotFim->toDateTimeString(),
-                    ]);
-
-                    $conflito = $agendamentos->first(function ($a) use ($slotInicio, $slotFim) {
-                        return $slotInicio->lt($a['fim']) && $slotFim->gt($a['inicio']);
-                    });
-
-                    if (!$conflito) {
-                        $horarios[] = [
-                            'funcionario_id'   => $funcionario->id,
-                            'funcionario_nome' => $funcionario->nome,
-                            'inicio'           => $slotInicio->format('H:i'),
-                            'fim'              => $slotFim->format('H:i'),
-                            'data'             => $data,
-                            'total'            => $totalServico,
-                            'tempoServico'     => $tempoServico,
-                        ];
-
-                        Log::debug('Horário disponível adicionado', [
-                            'inicio' => $slotInicio->format('H:i'),
-                            'fim'    => $slotFim->format('H:i'),
-                        ]);
-
-                        if ($slotFim->gt($fimJornada)) {
-                            Log::warning('Tempo de serviço ultrapassa fim da jornada', [
-                                'slot_fim'   => $slotFim->toDateTimeString(),
-                                'fim_jornada'=> $fimJornada->toDateTimeString(),
-                            ]);
-                            break;
-                        }
-                    } else {
-                        Log::debug('Conflito com agendamento existente', [
-                            'slot_inicio' => $slotInicio->toDateTimeString(),
-                            'slot_fim'    => $slotFim->toDateTimeString(),
-                        ]);
-
-                        if ($slotFim->gt($fimJornada)) {
-                            Log::debug('Fim da jornada atingido durante conflito', [
-                                'slot_fim'   => $slotFim->toDateTimeString(),
-                                'fim_jornada'=> $fimJornada->toDateTimeString(),
-                            ]);
-                            break;
-                        }
-                    }
-
-                    $cursor = $cursor->addMinutes($tempoServico);
-                }
-            }
-
-            if ($request->wantsJson()) {
-                return response()->json($horarios, 200);
-            }
-
-            return view('agendamento.partials.agenda_row', compact('horarios'));
-        }
+        // Jornada por funcionário é opcional e pode não estar implementada neste projeto.
+        // Quando não existir, usamos apenas os horários configurados no Petshop (configuração global).
 
         $intervalos = $config?->horarios->where('dia_semana', $diaSemana);
 

@@ -91,5 +91,4 @@
     </td>
 </tr>
 
-@include('modals._crm')
 @include('modals._view_cliente', ['cliente' => $item])

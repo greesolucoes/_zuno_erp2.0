@@ -13,6 +13,11 @@ function __moeda($valor, $casas_decimais = 2){
 	return number_format((float)$valor, $casas_decimais, ',', '.');
 }
 
+function __moedaInput($valor, $casas_decimais = 2){
+	$valor = $valor ?? 0;
+	return number_format((float)$valor, $casas_decimais, ',', '');
+}
+
 //  function __qtd_carga($valor, $casas_decimais = 4){
 //  	return number_format($valor, $casas_decimais, ',', '.');
 //  }
@@ -69,4 +74,3 @@ function erroFull($e){
 		'message' => $e->getMessage(),
 	];
 }
-
