@@ -49,6 +49,19 @@
             <input type="hidden" name="id_quarto" value="{{ $data->quarto->id ?? null }}"/>
         </div>
     </div>
+
+    <div class="row col-12">
+        <div class="col-6">
+            @include('components.petshop.reservas._tempo_execucao_hint', [
+                'module' => 'hotel',
+                'dateInName' => 'checkin',
+                'timeInName' => 'timecheckin',
+                'dateOutName' => 'checkout',
+                'timeOutName' => 'timecheckout',
+            ])
+        </div>
+    </div>
+
     <div class="row col-12 mt-3">
         <div class="col-6">
             @include('components.petshop.hoteis._servico_reserva_input_line')

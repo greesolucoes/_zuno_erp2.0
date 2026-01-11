@@ -86,6 +86,16 @@ Route::group(['prefix' => 'petshop/agendamentos'], function () {
         Route::get('/servicos', 'API\\Petshop\\ServicoController@pesquisa');
     });
 
+    Route::group(['prefix' => 'quartos'], function () {
+        Route::get('/', 'API\\Petshop\\QuartoController@search');
+        Route::get('/check-quarto-free', 'API\\Petshop\\QuartoController@checkQuartoIsFree');
+    });
+
+    Route::group(['prefix' => 'turmas'], function () {
+        Route::get('/', 'API\\Petshop\\TurmaController@search');
+        Route::get('/check-turma-free', 'API\\Petshop\\TurmaController@checkTurmaIsFree');
+    });
+
     Route::group(['prefix' => 'esteticas'], function () {
         Route::get('/get-jornada', 'API\\Petshop\\EsteticaController@getJornada');
         Route::get('/get-current-agendamentos', 'API\\Petshop\\EsteticaController@getCurrentAgendamentos');

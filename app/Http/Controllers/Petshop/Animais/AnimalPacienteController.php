@@ -57,7 +57,6 @@ class AnimalPacienteController extends Controller
       ->where('empresa_id', $empresaId)
       ->findOrFail($id);
 
-    __validaObjetoEmpresa($animal);
 
     $year = (int) $request->input('year', now()->year);
 

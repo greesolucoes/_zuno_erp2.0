@@ -124,23 +124,29 @@ class CrecheController extends Controller
 
             $servico_counts = [];
             $servicos_data = [];
-            $valor_servicos = 0;
+            $valor_servicos = 0.0;
             foreach ($request->servico_ids ?? [] as $index => $servico_id) {
                 if (!$servico_id) {
                     continue;
                 }
                 $servico = Servico::findOrFail($servico_id);
-                $valor_servicos += $request->servico_valor[$index] ?? 0;
+                $raw_valor_servico = $request->servico_valor[$index] ?? null;
+                $raw_valor_servico = $raw_valor_servico !== null ? preg_replace('/[^0-9,\\.-]/', '', (string) $raw_valor_servico) : null;
+                $valor_servicos += !empty($raw_valor_servico) ? (float) __convert_value_bd($raw_valor_servico) : 0.0;
                 $servico_counts[$servico_id] = ($servico_counts[$servico_id] ?? 0) + 1;
 
                 if ($index === 0) {
                     $data_servico = $request->data_entrada;
                     $hora_servico = $request->horario_entrada;
-                    $valor_servico = $request->servico_valor[0] ? __convert_value_bd($request->servico_valor[0]) : 0;
+                    $raw_valor_servico = $request->servico_valor[0] ?? null;
+                    $raw_valor_servico = $raw_valor_servico !== null ? preg_replace('/[^0-9,\\.-]/', '', (string) $raw_valor_servico) : null;
+                    $valor_servico = !empty($raw_valor_servico) ? (float) __convert_value_bd($raw_valor_servico) : 0.0;
                 } else {
                     $data_servico = isset($request->servico_datas[$index - 1]) ? $request->servico_datas[$index - 1] : $request->data_entrada;
                     $hora_servico = isset($request->servico_horas[$index - 1]) ? $request->servico_horas[$index - 1] : $request->horario_entrada;
-                    $valor_servico = $request->servico_valor[$index] ? __convert_value_bd($request->servico_valor[$index]) : 0;
+                    $raw_valor_servico = $request->servico_valor[$index] ?? null;
+                    $raw_valor_servico = $raw_valor_servico !== null ? preg_replace('/[^0-9,\\.-]/', '', (string) $raw_valor_servico) : null;
+                    $valor_servico = !empty($raw_valor_servico) ? (float) __convert_value_bd($raw_valor_servico) : 0.0;
                 }
 
                 $servicos_data[] = [

@@ -48,6 +48,18 @@
         </div>
     </div>
 
+    <div class="row col-12">
+        <div class="col-6">
+            @include('components.petshop.reservas._tempo_execucao_hint', [
+                'module' => 'creche',
+                'dateInName' => 'data_entrada',
+                'timeInName' => 'horario_entrada',
+                'dateOutName' => 'data_saida',
+                'timeOutName' => 'horario_saida',
+            ])
+        </div>
+    </div>
+
     <div class="row col-12 mt-3">
         <div class="col-6">
             @include('components.petshop.creches._servico_reserva_input_line')

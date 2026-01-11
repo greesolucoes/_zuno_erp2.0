@@ -190,7 +190,7 @@ $(document).ready(function () {
                                 text: v.nome + ' R$ ' + convertFloatToMoeda(v.valor),
                                 valor: v.valor,
                                 categoria: v.categoria,
-                                tempo_execucao: v.tempo_execucao,
+                                tempo_execucao: v.tempo_execucao ?? v.tempo_servico,
                             }))
                         };
                     },
@@ -200,7 +200,7 @@ $(document).ready(function () {
                 let $row = $(this).closest('tr');
                 $row.find('.valor-servico').val('R$ ' + convertFloatToMoeda(data.valor)).trigger('blur');
                 $row.find('input[name="servico_categoria[]"]').val(data.categoria.nome);
-                $row.find('input[name="tempo_execucao"]').val(data.tempo_execucao);
+                $row.find('input[name="tempo_execucao"]').val(data.tempo_execucao ?? data.tempo_servico);
 
                 if ($(this).data('is-reserva')) {
                     selectedService = data;
@@ -774,6 +774,8 @@ $(document).ready(function () {
         const $data_saida = $('input[name="data_saida"]');
         const $timedata_saida = $('input[name="horario_saida"]');
 
+        updateTempoExecucaoHint();
+
         if (!$data_saida.val() && !$timedata_saida.val()) {
             $data_saida.attr('disabled', true);
             $timedata_saida.attr('disabled', true);
@@ -788,11 +790,14 @@ $(document).ready(function () {
         updateCrecheMainServiceDateTime();
 
         if (!selectedService) return;
+        if (!data_entradaDate || !data_entradaTime) return;
 
         const data_entradaDT = new Date(`${data_entradaDate}T${data_entradaTime}`);
+        if (isNaN(data_entradaDT.getTime())) return;
 
         const dt = new Date(data_entradaDT.getTime());
-        const tempo = parseInt(selectedService.tempo_execucao, 10);
+        const tempo = parseInt(selectedService.tempo_execucao ?? selectedService.tempo_servico, 10);
+        if (!Number.isFinite(tempo) || tempo <= 0) return;
 
         dt.setMinutes(dt.getMinutes() + tempo);
 
@@ -809,8 +814,67 @@ $(document).ready(function () {
 
         updateCrecheMainServiceDateTime(`${year}-${month}-${day}`);
         handleTurmaInput();
+
+        updateTempoExecucaoHint();
     }
     calculateDataSaida();
+
+    function formatTempoExecucao(minutosTotal) {
+        const min = parseInt(minutosTotal, 10);
+        if (!Number.isFinite(min) || min <= 0) return null;
+
+        const dias = Math.floor(min / 1440);
+        const resto = min % 1440;
+        const horas = Math.floor(resto / 60);
+        const minutos = resto % 60;
+
+        const parts = [];
+        if (dias) parts.push(`${dias}d`);
+        if (horas) parts.push(`${horas}h`);
+        if (minutos) parts.push(`${minutos}m`);
+        return parts.length ? parts.join(' ') : '0m';
+    }
+
+    function formatDTBR(dateStr, timeStr) {
+        if (!dateStr || !timeStr) return null;
+        const dt = new Date(`${dateStr}T${timeStr}`);
+        if (isNaN(dt.getTime())) return null;
+
+        const day = String(dt.getDate()).padStart(2, '0');
+        const month = String(dt.getMonth() + 1).padStart(2, '0');
+        const year = dt.getFullYear();
+        const hour = String(dt.getHours()).padStart(2, '0');
+        const minute = String(dt.getMinutes()).padStart(2, '0');
+
+        return `${day}/${month}/${year} ${hour}:${minute}`;
+    }
+
+    function updateTempoExecucaoHint() {
+        const $hint = $('[data-tempo-execucao-hint="true"][data-module="creche"]').first();
+        if (!$hint.length) return;
+
+        const dateInName = $hint.data('date-in-name');
+        const timeInName = $hint.data('time-in-name');
+        const dateOutName = $hint.data('date-out-name');
+        const timeOutName = $hint.data('time-out-name');
+
+        const dateIn = $(`input[name="${dateInName}"]`).val();
+        const timeIn = $(`input[name="${timeInName}"]`).val();
+        const dateOut = $(`input[name="${dateOutName}"]`).val();
+        const timeOut = $(`input[name="${timeOutName}"]`).val();
+
+        const $servicoSelect = $('.table-creche-servico-reserva select[name="servico_ids[]"][data-is-reserva="true"]').first();
+        const servicoText = $servicoSelect.find('option:selected').text() || '—';
+        const servicoNome = servicoText ? servicoText.split(' R$')[0] : '—';
+
+        const tempo = selectedService?.tempo_execucao || $('.table-creche-servico-reserva input[name="tempo_execucao"]').val();
+        const tempoFmt = formatTempoExecucao(tempo);
+
+        $hint.find('[data-role="servico"]').text(servicoNome || '—');
+        $hint.find('[data-role="tempo"]').text(tempoFmt || 'Selecione o serviço de reserva');
+        $hint.find('[data-role="entrada"]').text(formatDTBR(dateIn, timeIn) || '—');
+        $hint.find('[data-role="saida"]').text(formatDTBR(dateOut, timeOut) || '—');
+    }
 
     /**
      * Valida o periodo da reserva e o tempo de execução do serviço de reserva
