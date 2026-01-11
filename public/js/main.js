@@ -84,7 +84,9 @@ window.initializeTooltip = function (target, message, options) {
         $el.attr("title", message);
         $el.tooltip("dispose");
         $el.tooltip(config);
-        $el.tooltip("show");
+        if (config.trigger === "manual") {
+            $el.tooltip("show");
+        }
     } catch (e) {
         // silencioso: tooltip não deve quebrar o fluxo do formulário
     }

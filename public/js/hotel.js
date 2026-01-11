@@ -33,6 +33,19 @@ $('#modal_novo_agendamento_hotel').on('show.bs.modal', function () {
     setDateValidationForServicosExtrasSelect2();
 });
 
+	window.selectDiv = function (ref) {
+	    $('button').removeClass('link-active')
+	    if (ref == 'aliquotas') {
+	        $('.div-aliquotas').removeClass('d-none')
+	        $('.div-identificacao').addClass('d-none')
+	        $('.btn-aliquotas').addClass('link-active')
+	    } else {
+	        $('.div-aliquotas').addClass('d-none')
+	        $('.div-identificacao').removeClass('d-none')
+	        $('.btn-identificacao').addClass('link-active')
+	    }
+	}
+
 $(`
     #modal_novo_agendamento_hotel .btn-close,
     #modal_novo_agendamento_hotel .btn-close-modal
@@ -621,8 +634,8 @@ function calculateCheckout () {
   $checkout.attr('disabled', true);
   $timecheckout.attr('disabled', true);
 
-  initializeTooltip($checkout, 'Determine o serviço de reserva primeiro.');
-  initializeTooltip($timecheckout, 'Determine o serviço de reserva primeiro.');
+  initializeTooltip($checkout, 'Determine o serviço de reserva primeiro.', { trigger: 'hover focus' });
+  initializeTooltip($timecheckout, 'Determine o serviço de reserva primeiro.', { trigger: 'hover focus' });
 
   updateMainServiceDateTime();
 
@@ -673,8 +686,8 @@ function handleServicoReservaFields () {
     ) {
         valor_servico_input.prop('disabled', true);
 
-        initializeTooltip(servico_input.next('.select2'), 'Determine o check in da reserva primeiro.');
-        initializeTooltip(valor_servico_input, 'Determine o check in da reserva primeiro.');
+        initializeTooltip(servico_input.next('.select2'), 'Determine o check in da reserva primeiro.', { trigger: 'hover focus' });
+        initializeTooltip(valor_servico_input, 'Determine o check in da reserva primeiro.', { trigger: 'hover focus' });
 
         return;
     }
@@ -771,12 +784,12 @@ function handleServicosExtraFields () {
             disableWithHidden(hora_servico_input);
             disableWithHidden(valor_servico_input);
 
-            initializeTooltip(servico_input.next('.select2'), 'Determine o check in e check out da reserva primeiro.');
-            initializeTooltip(servico_frete_input.next('.select2'), 'Determine o check in e check out da reserva primeiro.');
-            initializeTooltip(data_servico_input, 'Determine o check in e check out da reserva primeiro.');
-            initializeTooltip(hora_servico_input, 'Determine o check in e check out da reserva primeiro.');
-            initializeTooltip(valor_servico_input, 'Determine o check in e check out da reserva primeiro.');
-            initializeTooltip(servico_frete_valor_input, 'Determine o check in e check out da reserva primeiro.');
+            initializeTooltip(servico_input.next('.select2'), 'Determine o check in e check out da reserva primeiro.', { trigger: 'hover focus' });
+            initializeTooltip(servico_frete_input.next('.select2'), 'Determine o check in e check out da reserva primeiro.', { trigger: 'hover focus' });
+            initializeTooltip(data_servico_input, 'Determine o check in e check out da reserva primeiro.', { trigger: 'hover focus' });
+            initializeTooltip(hora_servico_input, 'Determine o check in e check out da reserva primeiro.', { trigger: 'hover focus' });
+            initializeTooltip(valor_servico_input, 'Determine o check in e check out da reserva primeiro.', { trigger: 'hover focus' });
+            initializeTooltip(servico_frete_valor_input, 'Determine o check in e check out da reserva primeiro.', { trigger: 'hover focus' });
 
             return;
         }
@@ -850,7 +863,7 @@ function handleQuartoInput () {
 
     if (!checkin_input.val() || !checkin_hour_input.val() || !checkout_input.val() || !checkout_hour_input.val()) {
         quarto_input.prop('disabled', true);
-        initializeTooltip(quarto_input, 'Determine o período da reserva primeiro.');
+        initializeTooltip(quarto_input, 'Determine o período da reserva primeiro.', { trigger: 'hover focus' });
 
         return;
     }
@@ -1026,7 +1039,7 @@ function validateServicoReservaRangeDate (trigger) {
         icon: 'warning',
     });
 
-    initializeTooltip(trigger, 'O tempo de execução do serviço de reserva deve ser maior ou igual ao tempo de permanência da reserva.');
+    initializeTooltip(trigger, 'O tempo de execução do serviço de reserva deve ser maior ou igual ao tempo de permanência da reserva.', { trigger: 'hover focus' });
     trigger.addClass('is-invalid');
     trigger.val(trigger.data('old') ?? null);
 
@@ -1091,7 +1104,7 @@ function validateServicoExtraRangeDate (element) {
     }
 
     if (!data_servico_input.val()) {
-        initializeTooltip(data_servico_input, 'Determine a data de início primeiro.');
+        initializeTooltip(data_servico_input, 'Determine a data de início primeiro.', { trigger: 'hover focus' });
         data_servico_input.addClass('is-invalid');
 
         return false;
@@ -1160,7 +1173,7 @@ function validateServicoExtraRangeDate (element) {
     }
 
     if (!hora_servico_input.val()) {
-        initializeTooltip(hora_servico_input, 'Determine o horário de início primeiro.');
+        initializeTooltip(hora_servico_input, 'Determine o horário de início primeiro.', { trigger: 'hover focus' });
         hora_servico_input.addClass('is-invalid');
 
         return false;

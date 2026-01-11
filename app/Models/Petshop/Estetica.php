@@ -19,16 +19,18 @@ class Estetica extends Model
 {
     use HasFactory;
 
-    protected $table = 'esteticas';
+    protected $table = 'petshop_esteticas';
 
     protected $fillable = [
         'empresa_id',
         'animal_id',
         'cliente_id',
         'colaborador_id',
+        'servico_id',
         'plano_id',
         'ordem_servico_id',
         'descricao',
+        'valor',
         'data_agendamento',
         'horario_agendamento',
         'horario_saida',

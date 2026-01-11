@@ -10,7 +10,7 @@ class EsteticaProduto extends Model
 {
     use HasFactory;
 
-    protected $table = 'estetica_produtos';
+    protected $table = 'petshop_estetica_produtos';
 
     protected $fillable = [
         'estetica_id',

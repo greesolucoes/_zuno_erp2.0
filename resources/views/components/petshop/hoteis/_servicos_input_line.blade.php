@@ -22,8 +22,8 @@
                             <option class="selected-option" value="{{ $item->id }}">{{ $item->nome }}</option>
                         </select>
                         <a href="{{ route('servicos.create') }}" target="_blank">
-                            <button class="btn btn-dark" type="button">
-                                <i class="ri-add-circle-fill"></i>
+                            <button class="btn btn-primary" type="button">
+                                <i class="bx bx-plus"></i>
                             </button>
                         </a>
                     </div>
@@ -59,8 +59,8 @@
                     >
                 </td>
                 <td>
-                    <button type="button" class="btn btn-danger hotel-btn-remove-tr">
-                        <i class="ri-delete-bin-line"></i>
+                    <button type="button" class="btn btn-danger btn-sm hotel-btn-remove-tr">
+                        <i class="bx bx-trash"></i>
                     </button>
                 </td>
             </tr>
@@ -74,8 +74,8 @@
                             data-label="Serviço"
                         ></select>
                         <a href="{{ route('servicos.create') }}" target="_blank">
-                            <button class="btn btn-dark" type="button">
-                                <i class="ri-add-circle-fill"></i>
+                            <button class="btn btn-primary" type="button">
+                                <i class="bx bx-plus"></i>
                             </button>
                         </a>
                     </div>
@@ -106,8 +106,8 @@
                     >
                 </td>
                 <td>
-                    <button type="button" class="btn btn-danger hotel-btn-remove-tr">
-                        <i class="ri-delete-bin-line"></i>
+                    <button type="button" class="btn btn-danger btn-sm hotel-btn-remove-tr">
+                        <i class="bx bx-trash"></i>
                     </button>
                 </td>
             </tr>
@@ -118,8 +118,8 @@
                 <div class='d-flex align-items-center gap-1'>
                     <select class="servico_id" name="servico_ids[]" data-label="Serviço"></select>
                     <a href="{{ route('servicos.create') }}" target="_blank">
-                        <button class="btn btn-dark" type="button">
-                            <i class="ri-add-circle-fill"></i>
+                        <button class="btn btn-primary" type="button">
+                            <i class="bx bx-plus"></i>
                         </button>
                     </a>
                 </div>
@@ -146,8 +146,8 @@
                 <input class="form-control moeda valor-servico" type="tel" name="servico_valor[]" disabled>
             </td>
             <td>
-                <button type="button" class="btn btn-danger hotel-btn-remove-tr">
-                    <i class="ri-delete-bin-line"></i>
+                <button type="button" class="btn btn-danger btn-sm hotel-btn-remove-tr">
+                    <i class="bx bx-trash"></i>
                 </button>
             </td>
         </tr>
@@ -157,8 +157,8 @@
         <tr>
             <td colspan="5" class="new-colors">
                 <div class="d-flex justify-content-between align-items-center">
-                    <button type="button" class="btn btn-dark btn-add-tr px-2" data-content="servicos">
-                        <i class="ri-add-fill"></i>
+                    <button type="button" class="btn btn-primary btn-add-tr px-2" data-content="servicos">
+                        <i class="bx bx-plus"></i>
                         Adicionar Serviço
                     </button>
                     <div class="text-right text-green">

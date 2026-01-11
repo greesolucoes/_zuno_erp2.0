@@ -668,9 +668,4 @@ class EsteticaController extends Controller
             return redirect()->back();
         }
     }
-
-    public function show()
-    {
-        return redirect()->route('estetica.esteticas.agend');
-    }
 }
