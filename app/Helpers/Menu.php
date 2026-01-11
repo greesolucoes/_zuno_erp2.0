@@ -466,44 +466,44 @@ class Menu
 				]
 			],
 
-			[
-				'titulo' => 'CTe',
-				'icone' => 'bx bx-bus',
-				'subs' => [
-					[
-						'nome' => 'Lista',
-						'rota' => route('cte.index')
-					],
-					[
-						'nome' => 'Nova',
-						'rota' => route('cte.create'),
-					],
-					[
-						'nome' => 'Categorias de Despesa',
-						'rota' => route('categoriaDespesa.index')
-					],
+		//	[
+		//		'titulo' => 'CTe',
+		//		'icone' => 'bx bx-bus',
+		//		'subs' => [
+		//			[
+		//				'nome' => 'Lista',
+		//				'rota' => route('cte.index')
+		//			],
+		//			[
+		//				'nome' => 'Nova',
+		//				'rota' => route('cte.create'),
+		//			],
+		//			[
+		//				'nome' => 'Categorias de Despesa',
+		//				'rota' => route('categoriaDespesa.index')
+		//			],
 					// [
 					// 	'nome' => 'Manifesto',
 					// 	'rota' => route('cte.manifesto')
 					// ],
 
-				]
-			],
+		//		]
+		//	],
 
-			[
-				'titulo' => 'CTe Os',
-				'icone' => 'bx bx-current-location',
-				'subs' => [
-					[
-						'nome' => 'Lista',
-						'rota' => route('cteOs.index')
-					],
-					[
-						'nome' => 'Nova',
-						'rota' => route('cteOs.create'),
-					],
-				]
-			],
+		//	[
+		//		'titulo' => 'CTe Os',
+		//		'icone' => 'bx bx-current-location',
+		//		'subs' => [
+		//			[
+		//				'nome' => 'Lista',
+		//				'rota' => route('cteOs.index')
+		//			],
+		//			[
+		//				'nome' => 'Nova',
+		//				'rota' => route('cteOs.create'),
+		//			],
+		//		]
+		//	],
 
 			[
 				'titulo' => 'Relatórios',
@@ -520,51 +520,51 @@ class Menu
 				]
 			],
 
-			[
-				'titulo' => 'Locação',
-				'icone' => 'bx bx-bookmark',
-				'subs' => [
-					[
-						'nome' => 'Nova Locação',
-						'rota' => route('locacao.create')
-					],
-					[
-						'nome' => 'Listar',
-						'rota' => route('locacao.index')
-					]
-				]
-			],
+		//	[
+		//		'titulo' => 'Locação',
+		//		'icone' => 'bx bx-bookmark',
+		//		'subs' => [
+		//			[
+		//				'nome' => 'Nova Locação',
+		//				'rota' => route('locacao.create')
+		//			],
+		//			[
+		//				'nome' => 'Listar',
+		//				'rota' => route('locacao.index')
+		//			]
+		//		]
+		//	],
 
-			[
-				'titulo' => 'Pedidos',
-				'icone' => 'bx bx-purchase-tag',
-				'subs' => [
-					[
-						'nome' => 'Abrir Comandas',
-						'rota' => route('pedidos.index')
-					],
-					[
-						'nome' => 'Adicionais',
-						'rota' => route('deliveryComplemento.index')
-					],
-					[
-						'nome' => 'Telas de Pedido',
-						'rota' => '/telasPedido'
-					],
-					[
-						'nome' => 'Controle de Pedidos',
-						'rota' => route('controleCozinha.selecionar')
-					],
-					[
-						'nome' => 'Cadastrar Mesas',
-						'rota' => route('mesas.index')
-					],
-					[
-						'nome' => 'Controle de Comandas',
-						'rota' => route('pedidos.controleComandas')
-					],
-				]
-			],
+		//	[
+		//		'titulo' => 'Pedidos',
+		//		'icone' => 'bx bx-purchase-tag',
+		//		'subs' => [
+		//			[
+		//				'nome' => 'Abrir Comandas',
+		//				'rota' => route('pedidos.index')
+		//			],
+		//			[
+		//				'nome' => 'Adicionais',
+		//				'rota' => route('deliveryComplemento.index')
+		//			],
+		//			[
+		//				'nome' => 'Telas de Pedido',
+		//				'rota' => '/telasPedido'
+		//			],
+		//			[
+		//				'nome' => 'Controle de Pedidos',
+		//				'rota' => route('controleCozinha.selecionar')
+		//			],
+		//			[
+		//				'nome' => 'Cadastrar Mesas',
+		//				'rota' => route('mesas.index')
+		//			],
+		//			[
+		//				'nome' => 'Controle de Comandas',
+		//				'rota' => route('pedidos.controleComandas')
+		//			],
+		//		]
+		//	],
 
 				[
 					'titulo' => 'Configurações',
