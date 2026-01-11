@@ -16,15 +16,15 @@
                     <div class="row g-3">
                         <div class="col-md-2" data-person="fisica">
                         {!!
-                            Form::text('cpf', 'CPF')
-                            ->attrs([
-                                'class' => 'cpf',
-                                'data-iscnpj' => 'false',
-                                'data-cpf_autocomplet' => auth()->user()->can('cpf_autocomplet') ? 'true' : null
-                            ])
-                            ->placeholder('Digite seu CPF')
-                        !!}
-                    </div>
+	                            Form::text('cpf', 'CPF')
+	                            ->attrs([
+	                                'class' => 'cpf',
+	                                'data-iscnpj' => 'false',
+	                                'data-cpf_autocomplet' => (auth()->user()?->can('cpf_autocomplet')) ? 'true' : null
+	                            ])
+	                            ->placeholder('Digite seu CPF')
+	                        !!}
+	                    </div>
                     <div class="col-md-3" data-person="juridica">
                         {!!
                             Form::text('cnpj', 'CNPJ')
