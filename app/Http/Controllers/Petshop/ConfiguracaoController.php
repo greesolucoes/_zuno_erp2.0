@@ -7,14 +7,22 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Petshop\Configuracao;
 use Illuminate\Http\Request;
+use App\Models\Empresa;
+use App\Models\Filial;
 
 class ConfiguracaoController extends Controller
 {
-   public function index()
+   public function index(Request $request)
     {
-        $usuario = Auth::user();
-        $empresa = $usuario?->empresa ?? null;
-        $filial = $usuario?->filial ?? null;
+        $empresaId = $request->empresa_id ?? request()->empresa_id;
+        $filialId = $request->filial_id ?? request()->filial_id ?? Auth::user()?->filial_id;
+
+        if (!$empresaId) {
+            abort(403, 'Empresa não definida para o usuário.');
+        }
+
+        $empresa = Empresa::find($empresaId);
+        $filial = $filialId ? Filial::find($filialId) : null;
 
         $empresaSlug = $empresa ? Str::slug($empresa->nome) : 'empresa';
         $filialLabel = $filial?->descricao ?? $filial?->nome_fantasia ?? $filial?->razao_social ?? 'filial';
@@ -24,8 +32,8 @@ class ConfiguracaoController extends Controller
 
         $config = Configuracao::firstOrCreate(
             [
-                'empresa_id' => $empresa?->id,
-                'filial_id' => $filial?->id,
+                'empresa_id' => $empresaId,
+                'filial_id' => $filialId,
             ]
         );
 
@@ -36,14 +44,17 @@ class ConfiguracaoController extends Controller
 
     public function store(Request $request)
     {
-        $usuario = Auth::user();
-        $empresa = $usuario?->empresa ?? null;
-        $filial = $usuario?->filial ?? null;
+        $empresaId = $request->empresa_id ?? request()->empresa_id;
+        $filialId = $request->filial_id ?? request()->filial_id ?? Auth::user()?->filial_id;
+
+        if (!$empresaId) {
+            abort(403, 'Empresa não definida para o usuário.');
+        }
 
         $config = Configuracao::firstOrCreate(
             [
-                'empresa_id' => $empresa?->id,
-                'filial_id' => $filial?->id,
+                'empresa_id' => $empresaId,
+                'filial_id' => $filialId,
             ]
         );
 
