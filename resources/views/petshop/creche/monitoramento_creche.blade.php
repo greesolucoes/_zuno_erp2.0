@@ -1,64 +1,79 @@
 @extends('default.layout', ['title' => 'Monitoramento Creche'])
 
 @section('content')
-<div class="mb-3">
-    <form method="GET" action="{{ route('creche.monitoramento.creche') }}" class="row g-2">
-        <div class="col-md-3">
-            <label for="mes" class="form-label">Período</label>
-            <input type="month" id="mes" name="mes" value="{{ $mes }}" class="form-control">
-        </div>
-        <div class="col-md-2 d-flex align-items-end">
-            <button class="btn btn-primary"><i class="ri-search-line"></i> Filtrar</button>
-        </div>
-    </form>
-</div>
+<div class="page-content">
+    <div class="card border-top border-0 border-4 border-primary">
+        <div class="card-body p-5">
+            <div class="page-breadcrumb d-sm-flex align-items-center mb-3">
+                <div class="ms-auto"></div>
+            </div>
 
-<div class="mb-3 d-flex flex-wrap gap-3">
-    <div class="d-flex align-items-center" data-bs-toggle="tooltip" title="Verde: sem reserva.">
-        <span class="rounded me-1" style="width:15px;height:15px;display:inline-block;background-color:#198754;"></span>
-        <small>Sem reserva</small>
-    </div>
-    <div class="d-flex align-items-center" data-bs-toggle="tooltip" title="Amarelo: com reserva.">
-        <span class="rounded me-1" style="width:15px;height:15px;display:inline-block;background-color:#ffc107;"></span>
-        <small>Com reserva</small>
-    </div>
-</div>
+            <div class="card-title d-flex align-items-center">
+                <h5 class="mb-0 text-primary">Monitoramento Creche</h5>
+            </div>
+            <hr>
 
-<div class="table-responsive">
-    <table class="table table-bordered text-center">
-        <thead>
-            <tr>
-                <th class="text-start">Sala</th>
-                @foreach ($dias as $dia)
-                    <th>{{ $dia->format('d') }}</th>
-                @endforeach
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($turmas as $turma)
-                <tr>
-                    <td class="text-start">{{ $turma->nome }}</td>
-                    @foreach ($dias as $dia)
-                        @php
-                            $data = $dia->format('Y-m-d');
-                            $reserva = $ocupacoes[$turma->id][$data] ?? null;
-                            $statusClass = $reserva ? 'bg-warning' : 'bg-success';
-                        @endphp
-                        <td>
-                            <div class="p-1 rounded text-white {{ $statusClass }} d-flex flex-column align-items-center"
-                                role="button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#infoModal"
-                                data-turma="{{ $turma->id }}"
-                                data-data="{{ $data }}">
-                                <span>{{ $dia->format('d') }}</span>
-                            </div>
-                        </td>
-                    @endforeach
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+            <div class="mb-3">
+                <form method="GET" action="{{ route('creche.monitoramento.creche') }}" class="row g-2">
+                    <div class="col-md-3">
+                        <label for="mes" class="form-label">Período</label>
+                        <input type="month" id="mes" name="mes" value="{{ $mes }}" class="form-control">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-primary"><i class="ri-search-line"></i> Filtrar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="mb-3 d-flex flex-wrap gap-3">
+                <div class="d-flex align-items-center" data-bs-toggle="tooltip" title="Verde: sem reserva.">
+                    <span class="rounded me-1" style="width:15px;height:15px;display:inline-block;background-color:#198754;"></span>
+                    <small>Sem reserva</small>
+                </div>
+                <div class="d-flex align-items-center" data-bs-toggle="tooltip" title="Amarelo: com reserva.">
+                    <span class="rounded me-1" style="width:15px;height:15px;display:inline-block;background-color:#ffc107;"></span>
+                    <small>Com reserva</small>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th class="text-start">Sala</th>
+                            @foreach ($dias as $dia)
+                                <th>{{ $dia->format('d') }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($turmas as $turma)
+                            <tr>
+                                <td class="text-start">{{ $turma->nome }}</td>
+                                @foreach ($dias as $dia)
+                                    @php
+                                        $data = $dia->format('Y-m-d');
+                                        $reserva = $ocupacoes[$turma->id][$data] ?? null;
+                                        $statusClass = $reserva ? 'bg-warning' : 'bg-success';
+                                    @endphp
+                                    <td>
+                                        <div class="p-1 rounded text-white {{ $statusClass }} d-flex flex-column align-items-center"
+                                            role="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#infoModal"
+                                            data-turma="{{ $turma->id }}"
+                                            data-data="{{ $data }}">
+                                            <span>{{ $dia->format('d') }}</span>
+                                        </div>
+                                    </td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="infoModal" tabindex="-1" aria-hidden="true">

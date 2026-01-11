@@ -3,6 +3,7 @@
         {!! Form::select('animal_id', 'Pet')
         ->options([])
         ->value($data->animal_id ?? null)
+        ->attrs(['class' => 'form-select select2'])
         ->required()
         !!}
 
@@ -29,7 +30,7 @@
             ->value(
                 isset($data->estado) ? $data->estado : 'agendado'
             )
-            ->attrs(['class' => 'form-select'])
+            ->attrs(['class' => 'form-select select2'])
             ->disabled(!isset($data->estado) ? true : false)
             ->required()
         !!}

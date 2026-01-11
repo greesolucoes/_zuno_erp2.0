@@ -4,7 +4,7 @@
             {!!
                 Form::select('animal_id', 'Pet')
                 ->value(old('animal_id', $data->animal_info ?? null))
-                ->attrs(['class' => 'form-select'])
+                ->attrs(['class' => 'form-select select2'])
                 ->required()
             !!}
             <input type="hidden" name="animal_info" value="{{ $data->animal->animal_info ?? null }}"/>
@@ -25,7 +25,7 @@
                 ->value($data->estado ?? 'agendado')
                 ->options(App\Models\Petshop\Creche::statusCreche())
                 ->attrs([
-                    'class' => 'form-select',
+                    'class' => 'form-select select2',
                 ])
                 ->disabled(!isset($data->data_saida))
             !!}

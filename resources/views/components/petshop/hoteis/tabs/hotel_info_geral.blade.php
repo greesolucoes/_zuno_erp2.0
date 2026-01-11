@@ -4,7 +4,7 @@
             {!! Form::select('animal_id', 'Pet')
                 ->options(['' => 'Selecione um pet'])
                 ->value(old('animal_id' ?? null))
-                ->attrs(['class' => 'form-select'])
+                ->attrs(['class' => 'form-select select2'])
                 ->required()
             !!}
             
@@ -26,7 +26,7 @@
                 ->value($data->estado ?? 'agendado')
                 ->options(App\Models\Petshop\Hotel::statusHotel())
                 ->attrs([
-                    'class' => 'form-select',
+                    'class' => 'form-select select2',
                 ])
                 ->disabled(!isset($data->checkout))
             !!}

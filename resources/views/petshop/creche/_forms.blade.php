@@ -49,7 +49,7 @@
 
     <hr class="mt-4">
     <div class="col-12" style="text-align: right;">
-        <button type="submit" class="btn btn-success px-5" id="btn-store">Salvar</button>
+        <button type="submit" class="btn btn-primary px-5" id="btn-store">Salvar</button>
     </div>
 </div>
 

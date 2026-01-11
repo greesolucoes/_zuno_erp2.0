@@ -1,26 +1,33 @@
-@extends('layouts.app', ['title' => 'Editar Reserva de Hotel'])
+@extends('default.layout', ['title' => 'Editar Reserva de Hotel'])
 
 @section('content')
-  <div class="card">
-      <div class="card-header d-flex align-items-center justify-content-between">
-          <h3 class="text-color">Editar Reserva de Hotel</h3>
+<div class="page-content">
+	<div class="card border-top border-0 border-4 border-primary">
+		<div class="card-body p-5">
+			<div class="page-breadcrumb d-sm-flex align-items-center mb-3">
+				<div class="ms-auto">
+					<a href="{{ route('hoteis.index', ['page' => request()->query('page', 1)]) }}" type="button" class="btn btn-light btn-sm">
+						<i class="bx bx-arrow-back"></i> Voltar
+					</a>
+				</div>
+			</div>
 
-          <a href="{{ route('hoteis.index', ['page' => request()->query('page', 1)]) }}" class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-2">
-              <i class="ri-arrow-left-double-fill"></i>Voltar
-          </a>
-      </div>
+			<div class="card-title d-flex align-items-center">
+				<h5 class="mb-0 text-primary">Editar Reserva de Hotel</h5>
+			</div>
+			<hr>
 
-      <div class="card-body">
-          {!!Form::open()->fill($data)
-          ->put()
-          ->route('hoteis.update', [$data->id])
-          ->multipart()
-          ->id('main-form')
-          !!}
-          <div class="pl-lg-4">
-              @include('hoteis._forms')
-          </div>
-          {!!Form::close()!!}
-      </div>
-  </div>
+			{!!Form::open()->fill($data)
+			->put()
+			->route('hoteis.update', [$data->id])
+			->multipart()
+			->id('main-form')
+			!!}
+			<div class="pl-lg-4">
+				@include('petshop.hotel._forms')
+			</div>
+			{!!Form::close()!!}
+		</div>
+	</div>
+</div>
 @endsection

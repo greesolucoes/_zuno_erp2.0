@@ -33,6 +33,8 @@ class HotelController extends Controller
 
     public function storeHotel (Request $request)
     {
+        $this->_validate($request);
+
         $empresa_id = $request->empresa_id;
         Log::debug('HotelController@store payload', $request->only('checkin', 'timecheckin', 'checkout', 'timecheckout'));
 
