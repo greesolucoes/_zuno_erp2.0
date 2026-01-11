@@ -22,8 +22,8 @@
                         </select>
                         @if (isset($show_actions) && $show_actions == 1)
                             <a href={{ route('servicos.create') }} target='_blank'>
-                                <button class="btn btn-dark" type="button">
-                                    <i class="ri-add-circle-fill"></i>
+                                <button class="btn btn-primary" type="button">
+                                    <i class="bx bx-plus"></i>
                                 </button>
                             </a>
                         @endif
@@ -35,8 +35,8 @@
                 </td>
                 @if (isset($show_actions) && $show_actions == 1)
                     <td>
-                        <button type="button" class="btn btn-danger estetica-btn-remove-tr">
-                            <i class="ri-delete-bin-line"></i>
+                        <button type="button" class="btn btn-danger btn-sm estetica-btn-remove-tr">
+                            <i class="bx bx-trash"></i>
                         </button>
                     </td>
                 @endif
@@ -48,8 +48,8 @@
                         <select class="select2 servico_id" name="servico_id[]"></select>
                         @if (isset($show_actions) && $show_actions == 1)
                             <a href={{ route('servicos.create') }} target='_blank'>
-                                <button class="btn btn-dark" type="button">
-                                    <i class="ri-add-circle-fill"></i>
+                                <button class="btn btn-primary" type="button">
+                                    <i class="bx bx-plus"></i>
                                 </button>
                             </a>
                         @endif
@@ -61,8 +61,8 @@
                 </td>
                 @if (isset($show_actions) && $show_actions == 1)
                     <td>
-                        <button type="button" class="btn btn-danger estetica-btn-remove-tr">
-                            <i class="ri-delete-bin-line"></i>
+                        <button type="button" class="btn btn-danger btn-sm estetica-btn-remove-tr">
+                            <i class="bx bx-trash"></i>
                         </button>
                     </td>
                 @endif
@@ -75,8 +75,8 @@
                     <select class="select2 servico_id" name="servico_id[]"></select>
                     @if (isset($show_actions) && $show_actions == 1)
                         <a href={{ route('servicos.create') }} target='_blank'>
-                            <button class="btn btn-dark" type="button">
-                                <i class="ri-add-circle-fill"></i>
+                            <button class="btn btn-primary" type="button">
+                                <i class="bx bx-plus"></i>
                             </button>
                         </a>
                     @endif
@@ -88,8 +88,8 @@
             </td>
             @if (isset($show_actions) && $show_actions == 1)
                 <td>
-                    <button type="button" class="btn btn-danger estetica-btn-remove-tr">
-                        <i class="ri-delete-bin-line"></i>
+                    <button type="button" class="btn btn-danger btn-sm estetica-btn-remove-tr">
+                        <i class="bx bx-trash"></i>
                     </button>
                 </td>
             @endif
@@ -100,8 +100,8 @@
 @if (isset($show_actions) && $show_actions == 1)
     <div class="row col-12 col-lg-2 new-colors">
         <br>
-        <button type="button" class="btn btn-dark btn-add-estetica-tr px-2" data-content="servicos">
-            <i class="ri-add-fill"></i>
+        <button type="button" class="btn btn-primary btn-add-estetica-tr px-2" data-content="servicos">
+            <i class="bx bx-plus"></i>
             Adicionar Serviço
         </button>
     </div>

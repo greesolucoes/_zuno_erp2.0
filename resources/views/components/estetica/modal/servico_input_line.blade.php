@@ -13,8 +13,8 @@
                     <div class='d-flex align-items-center gap-1'>
                         <select name="servico_id[]"></select>
                         <a href={{ route('servicos.create') }} target='_blank'>
-                            <button class="btn btn-dark" type="button">
-                                <i class="ri-add-circle-fill"></i>
+                            <button class="btn btn-primary" type="button">
+                                <i class="bx bx-plus"></i>
                             </button>
                         </a>
                         <input type="hidden" name="id_servico[]">
@@ -26,8 +26,8 @@
                     <input class="form-control moeda subtotal-servico" type="tel" name="subtotal_servico[]">
                 </td>
                     <td>
-                        <button type="button" class="btn btn-danger pethsop-modal-btn-remove-tr">
-                            <i class="ri-delete-bin-line"></i>
+                        <button type="button" class="btn btn-danger btn-sm pethsop-modal-btn-remove-tr">
+                            <i class="bx bx-trash"></i>
                         </button>
                     </td>
             </tr>
@@ -36,8 +36,8 @@
 </div>
 <div class="row col-6 col-lg-3 new-colors">
     <br>
-    <button type="button" class="btn btn-dark btn-add-estetica-modal-tr px-2" data-content="servicos">
-        <i class="ri-add-fill"></i>
+    <button type="button" class="btn btn-primary btn-add-estetica-modal-tr px-2" data-content="servicos">
+        <i class="bx bx-plus"></i>
         Adicionar Serviço
     </button>
 </div>

@@ -43,7 +43,7 @@ class EsteticaController extends Controller
 
     public function index(Request $request)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = $request->empresa_id ?? Auth::user()?->empresa?->empresa_id;
 
         $pesquisa = $request->input('pesquisa');
         $data = Estetica::with(['animal', 'cliente', 'servicos.servico', 'produtos', 'ordemServico'])
@@ -62,7 +62,7 @@ class EsteticaController extends Controller
 
     public function create()
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = request()->empresa_id ?? Auth::user()?->empresa?->empresa_id;
 
         $servicos = Servico::where('empresa_id', $empresa_id)->whereHas('categoria', function ($query) {
             $query->where('nome', 'ESTETICA');
@@ -84,7 +84,7 @@ class EsteticaController extends Controller
 
     public function store(Request $request)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = $request->empresa_id ?? Auth::user()?->empresa?->empresa_id;
         if ($request->filled('data_agendamento')) {
             try {
                 $request->merge([
@@ -212,7 +212,7 @@ class EsteticaController extends Controller
 
     public function edit($id)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = request()->empresa_id ?? Auth::user()?->empresa?->empresa_id;
 
         $data = Estetica::where('empresa_id', $empresa_id)->findOrFail($id);
 
@@ -247,7 +247,7 @@ class EsteticaController extends Controller
 
     public function update(Request $request, $id)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = $request->empresa_id ?? Auth::user()?->empresa?->empresa_id;
         if ($request->filled('data_agendamento')) {
             try {
                 $request->merge([
@@ -466,7 +466,7 @@ class EsteticaController extends Controller
     public function destroy($id)
     {
         try {
-            $empresa_id = Auth::user()?->empresa?->empresa_id;
+            $empresa_id = request()->empresa_id ?? Auth::user()?->empresa?->empresa_id;
             $estetica = Estetica::where('empresa_id', $empresa_id)->findOrFail($id);
             $planoId = $estetica->plano_id;
             $dataEstetica = Carbon::parse($estetica->entrada);
@@ -550,7 +550,7 @@ class EsteticaController extends Controller
 
     public function pendentes(Request $request)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = $request->empresa_id ?? Auth::user()?->empresa?->empresa_id;
 
         $pesquisa = $request->input('pesquisa');
         $data = Estetica::with(['animal', 'cliente', 'servicos.servico', 'produtos', 'ordemServico'])
@@ -573,7 +573,7 @@ class EsteticaController extends Controller
 
     public function pendentesAvulso(Request $request)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = $request->empresa_id ?? Auth::user()?->empresa?->empresa_id;
 
         $pesquisa = $request->input('pesquisa');
         $data = Estetica::with(['animal', 'cliente', 'servicos.servico', 'produtos', 'ordemServico'])

@@ -34,8 +34,8 @@
                             <option class="selected-option" value="{{ $frete->servico_id }}">{{ $frete->servico->nome }}</option>
                         </select>
                         <a href="{{ route('servicos.create') }}" target="_blank">
-                            <button class="btn btn-dark" type="button">
-                                <i class="ri-add-circle-fill"></i>
+                            <button class="btn btn-primary" type="button">
+                                <i class="bx bx-plus"></i>
                             </button>
                         </a>
                     </div>
@@ -50,8 +50,8 @@
                     >
                 </td>
                 <td>
-                    <button type="button" class="btn btn-danger estetica-btn-remove-tr">
-                        <i class="ri-delete-bin-line"></i>
+                    <button type="button" class="btn btn-danger btn-sm estetica-btn-remove-tr">
+                        <i class="bx bx-trash"></i>
                     </button>
                 </td>
             </tr>
@@ -67,8 +67,8 @@
                         >
                         </select>
                         <a href="{{ route('servicos.create') }}" target="_blank">
-                            <button class="btn btn-dark" type="button">
-                                <i class="ri-add-circle-fill"></i>
+                            <button class="btn btn-primary" type="button">
+                                <i class="bx bx-plus"></i>
                             </button>
                         </a>
                     </div>
@@ -85,8 +85,8 @@
                     >
                 </td>
                 <td>
-                    <button type="button" class="btn btn-danger estetica-btn-remove-tr">
-                        <i class="ri-delete-bin-line"></i>
+                    <button type="button" class="btn btn-danger btn-sm estetica-btn-remove-tr">
+                        <i class="bx bx-trash"></i>
                     </button>
                 </td>
             </tr>

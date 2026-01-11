@@ -2,6 +2,19 @@ $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
 
+window.selectDiv = function (ref) {
+    $('button').removeClass('link-active')
+    if (ref == 'aliquotas') {
+        $('.div-aliquotas').removeClass('d-none')
+        $('.div-identificacao').addClass('d-none')
+        $('.btn-aliquotas').addClass('link-active')
+    } else {
+        $('.div-aliquotas').addClass('d-none')
+        $('.div-identificacao').removeClass('d-none')
+        $('.btn-identificacao').addClass('link-active')
+    }
+}
+
 // ----------
 // Configuração dos campos select2
 
@@ -571,7 +584,7 @@ $(document).ready(function () {
 
         if (!data_entrada.val() || !horario_entrada_input.val() || !data_saida.val() || !horario_saida_input.val()) {
             turma_input.prop('disabled', true);
-            initializeTooltip(turma_input, 'Determine o período da reserva primeiro.');
+            initializeTooltip(turma_input, 'Determine o período da reserva primeiro.', { trigger: 'hover focus' });
 
             return;
         }
@@ -703,8 +716,8 @@ $(document).ready(function () {
         ) {
             valor_servico_input.prop('disabled', true);
 
-            initializeTooltip(servico_input.next('.select2'), 'Determine o período de entrada da reserva primeiro.');
-            initializeTooltip(valor_servico_input, 'Determine o período de entrada da reserva primeiro.');
+            initializeTooltip(servico_input.next('.select2'), 'Determine o período de entrada da reserva primeiro.', { trigger: 'hover focus' });
+            initializeTooltip(valor_servico_input, 'Determine o período de entrada da reserva primeiro.', { trigger: 'hover focus' });
 
             return;
         }
@@ -760,8 +773,8 @@ $(document).ready(function () {
             $data_saida.attr('disabled', true);
             $timedata_saida.attr('disabled', true);
 
-            initializeTooltip($data_saida, 'Determine o serviço de reserva primeiro.');
-            initializeTooltip($timedata_saida, 'Determine o serviço de reserva primeiro.');
+            initializeTooltip($data_saida, 'Determine o serviço de reserva primeiro.', { trigger: 'hover focus' });
+            initializeTooltip($timedata_saida, 'Determine o serviço de reserva primeiro.', { trigger: 'hover focus' });
         } else {
             $data_saida.attr('disabled', false);
             $timedata_saida.attr('disabled', false);
@@ -843,7 +856,7 @@ $(document).ready(function () {
             icon: 'warning',
         });
 
-        initializeTooltip(trigger, 'O tempo de execução do serviço de reserva deve ser maior ou igual ao tempo de permanência da reserva.');
+        initializeTooltip(trigger, 'O tempo de execução do serviço de reserva deve ser maior ou igual ao tempo de permanência da reserva.', { trigger: 'hover focus' });
         trigger.addClass('is-invalid');
         trigger.val(trigger.data('old') ?? null);
 
@@ -903,7 +916,7 @@ $(document).ready(function () {
         }
 
         if (!data_servico_input.val()) {
-            initializeTooltip(data_servico_input, 'Determine a data de início primeiro.');
+            initializeTooltip(data_servico_input, 'Determine a data de início primeiro.', { trigger: 'hover focus' });
             data_servico_input.addClass('is-invalid');
 
             return false;
@@ -972,7 +985,7 @@ $(document).ready(function () {
         }
 
         if (!hora_servico_input.val()) {
-            initializeTooltip(hora_servico_input, 'Determine o horário de início primeiro.');
+            initializeTooltip(hora_servico_input, 'Determine o horário de início primeiro.', { trigger: 'hover focus' });
             hora_servico_input.addClass('is-invalid');
 
             return false;
@@ -1092,12 +1105,12 @@ $(document).ready(function () {
                 disableWithHidden(hora_servico_input);
                 disableWithHidden(valor_servico_input);
 
-                initializeTooltip(servico_input.next('.select2'), 'Determine o período de entrada e o período de saída da reserva primeiro.');
-                initializeTooltip(servico_frete_input.next('.select2'), 'Determine o período de entrada e o período de saída da reserva primeiro.');
-                initializeTooltip(data_servico_input, 'Determine o período de entrada e o período de saída da reserva primeiro.');
-                initializeTooltip(hora_servico_input, 'Determine o período de entrada e o período de saída da reserva primeiro.');
-                initializeTooltip(valor_servico_input, 'Determine o período de entrada e o período de saída da reserva primeiro.');
-                initializeTooltip(servico_frete_valor_input, 'Determine o período de entrada e o período de saída da reserva primeiro.');
+                initializeTooltip(servico_input.next('.select2'), 'Determine o período de entrada e o período de saída da reserva primeiro.', { trigger: 'hover focus' });
+                initializeTooltip(servico_frete_input.next('.select2'), 'Determine o período de entrada e o período de saída da reserva primeiro.', { trigger: 'hover focus' });
+                initializeTooltip(data_servico_input, 'Determine o período de entrada e o período de saída da reserva primeiro.', { trigger: 'hover focus' });
+                initializeTooltip(hora_servico_input, 'Determine o período de entrada e o período de saída da reserva primeiro.', { trigger: 'hover focus' });
+                initializeTooltip(valor_servico_input, 'Determine o período de entrada e o período de saída da reserva primeiro.', { trigger: 'hover focus' });
+                initializeTooltip(servico_frete_valor_input, 'Determine o período de entrada e o período de saída da reserva primeiro.', { trigger: 'hover focus' });
 
                 return;
             }
@@ -1218,7 +1231,7 @@ $(document).ready(function () {
 
         if (!data_entrada_input.val() || !horario_entrada_input.val() || !data_saida_input.val() || !horario_saida_input.val()) {
             turma_input.prop('disabled', true);
-            initializeTooltip(turma_input, 'Determine o período da reserva primeiro.');
+            initializeTooltip(turma_input, 'Determine o período da reserva primeiro.', { trigger: 'hover focus' });
 
             return;
         }

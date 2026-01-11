@@ -1,4 +1,17 @@
 document.addEventListener('DOMContentLoaded', function () {
+    window.selectDiv = function (ref) {
+        $('button').removeClass('link-active')
+        if (ref == 'aliquotas') {
+            $('.div-aliquotas').removeClass('d-none')
+            $('.div-identificacao').addClass('d-none')
+            $('.btn-aliquotas').addClass('link-active')
+        } else {
+            $('.div-aliquotas').addClass('d-none')
+            $('.div-identificacao').removeClass('d-none')
+            $('.btn-identificacao').addClass('link-active')
+        }
+    }
+
     // #region Variáveis de controle do arquivo
     
         let reopen_modal_novo_agendamento_estetica = false;
@@ -433,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 `);
 
                 data_agendamento_field.prop('disabled', true);
-                initializeTooltip(data_agendamento_field, 'Selecione um serviço primeiro para definir o agendamento.');
+                initializeTooltip(data_agendamento_field, 'Selecione um serviço primeiro para definir o agendamento.', { trigger: 'hover focus' });
 
                 horario_agendamento_field.prop('disabled', true);
                 horario_saida_field.prop('disabled', true);
@@ -463,8 +476,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 horario_agendamento_field.prop('disabled', true);
                 horario_saida_field.prop('disabled', true);
 
-                initializeTooltip(horario_agendamento_field, 'Selecione uma data primeiro para definir o horário.');
-                initializeTooltip(horario_saida_field, 'Selecione uma data primeiro para definir o horário.');
+                initializeTooltip(horario_agendamento_field, 'Selecione uma data primeiro para definir o horário.', { trigger: 'hover focus' });
+                initializeTooltip(horario_saida_field, 'Selecione uma data primeiro para definir o horário.', { trigger: 'hover focus' });
 
                 return;
             }
@@ -507,8 +520,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     horario_agendamento_field.prop('disabled', true);
                     horario_saida_field.prop('disabled', true);
 
-                    initializeTooltip(horario_agendamento_field, 'O colaborador selecionado está de folga neste dia');
-                    initializeTooltip(horario_saida_field, 'O colaborador selecionado está de folga neste dia');
+                    initializeTooltip(horario_agendamento_field, 'O colaborador selecionado está de folga neste dia', { trigger: 'hover focus' });
+                    initializeTooltip(horario_saida_field, 'O colaborador selecionado está de folga neste dia', { trigger: 'hover focus' });
 
                     return false;
                 } else {
@@ -587,7 +600,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             trigger.val(trigger.data('old'));
                             trigger.addClass('is-invalid');
 
-                            initializeTooltip(trigger, 'O horário selecionado não está dentro da jornada de trabalho do colaborador selecionado');
+                            initializeTooltip(trigger, 'O horário selecionado não está dentro da jornada de trabalho do colaborador selecionado', { trigger: 'hover focus' });
                         }
 
                         return false;
@@ -621,7 +634,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 trigger.val(trigger.data('old'));
                                 trigger.addClass('is-invalid');
 
-                                initializeTooltip(trigger, 'O horário selecionado invade o intervalo do colaborador.');
+                                initializeTooltip(trigger, 'O horário selecionado invade o intervalo do colaborador.', { trigger: 'hover focus' });
                             }
 
                             return false;
@@ -656,7 +669,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         trigger.val(trigger.data('old'));
                         trigger.addClass('is-invalid');
 
-                        initializeTooltip(trigger, 'O horário selecionado não está dentro da jornada de trabalho da empresa.');
+                        initializeTooltip(trigger, 'O horário selecionado não está dentro da jornada de trabalho da empresa.', { trigger: 'hover focus' });
                     }
 
                     return false;
@@ -732,7 +745,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         trigger.val(trigger.data('old'));
                         trigger.addClass('is-invalid');
 
-                        initializeTooltip(trigger, 'O horário selecionado conflita com o horário de outro agendamento.');
+                        initializeTooltip(trigger, 'O horário selecionado conflita com o horário de outro agendamento.', { trigger: 'hover focus' });
                     }
                 
                     return false;

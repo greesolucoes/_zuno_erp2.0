@@ -1,61 +1,39 @@
-<div class="row g-3">
-    <ul class="nav nav-tabs nav-primary" role="tablist">
-        <li class="nav-item" style="flex: 1 !important" role="presentation">
-            <a class="px-3 nav-link active" data-bs-toggle="tab" href="#estetica_info_geral" role="tab"
-                aria-selected="true">
-                <div class="d-flex align-items-center justify-content-center">
-                    <div class="tab-title">
-                        <i class="ri-file-user-fill"></i>
-                        Informações gerais
-                    </div>
-                </div>
-            </a>
-        </li>
-        <li class="nav-item" style="flex: 1 !important" role="presentation">
-            <a class="px-3 nav-link" data-bs-toggle="tab" href="#estetica_servicos_produtos" role="tab">
-                <div class="d-flex align-items-center justify-content-center">
-                    <div class="tab-title">
-                        <i class="ri-box-2-line"></i>
-                        Serviços e produtos
-                    </div>
-                </div>
-            </a>
-        </li>
-        <li class="nav-item" style="flex: 1 !important" role="presentation">
-            <a class="px-3 nav-link" data-bs-toggle="tab" href="#estetica_agendamento" role="tab">
-                <div class="d-flex align-items-center justify-content-center">
-                    <div class="tab-title">
-                        <i class="ri-calendar-2-line"></i>
-                        Agendamento
-                    </div>
-                </div>
-            </a>
-        </li>
-    </ul>
-    
-    <input type="hidden" id="empresa_id" value="{{ auth()->user()->empresa->empresa_id }}">
+<div class="row g-3 m-auto">
+    <div class="row mt-3">
+        <div class="col-md-6 row">
+            <button type="button" class="btn btn-identificacao btn-outline-primary link-active px-6" onclick="selectDiv('identificacao')">Reserva</button>
+        </div>
+        <div class="col-md-6 row m-auto">
+            <button type="button" class="btn btn-aliquotas btn-outline-primary" onclick="selectDiv('aliquotas')">Serviços e produtos</button>
+        </div>
+    </div>
+
+    <input type="hidden" id="empresa_id" value="{{ request()->empresa_id ?? auth()->user()?->empresa?->empresa_id }}">
     <input type="hidden" id="id_estetica" value="{{ isset($data) ? $data->id : ''}}">
 
-    <div class="tab-content">
-        <div class="tab-pane fade show active" id="estetica_info_geral">
+    <div class="div-identificacao row mt-4">
+        <h6 class="mt-2">Informações gerais</h6>
+        <div class="col-12">
             @include('components.petshop.esteticas.tabs.estetica_info_geral')
-        </div>  
-    </div>
-    
-    <div class="tab-content">
-        <div class="tab-pane fade" id="estetica_servicos_produtos">
-            @include('components.petshop.esteticas.tabs.estetica_servicos_produtos')
-        </div>  
-    </div>
-    
-    <div class="tab-content">
-        <div class="tab-pane fade" id="estetica_agendamento">
+        </div>
+
+        <hr>
+
+        <h6>Agendamento</h6>
+        <div class="col-12">
             @include('components.petshop.esteticas.tabs.estetica_agendamento')
-        </div>  
+        </div>
+    </div>
+
+    <div class="div-aliquotas row mt-4 d-none">
+        <h6 class="mt-2">Serviços e produtos</h6>
+        <div class="col-12">
+            @include('components.petshop.esteticas.tabs.estetica_servicos_produtos')
+        </div>
     </div>
 
     <hr class="mt-4">
-    <div class="col-12" style="text-align: right;">
+    <div class="col-12">
         <button type="submit" class="btn btn-primary px-5" id="btn-store">Salvar</button>
     </div>
 </div>
