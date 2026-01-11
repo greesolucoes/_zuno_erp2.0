@@ -37,13 +37,23 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // #region Configurações dos campos select2
 
+        function select2Defaults(options = {}) {
+            return Object.assign(
+                {
+                    minimumInputLength: 2,
+                    language: 'pt-BR',
+                    width: '100%',
+                    theme: 'bootstrap4',
+                },
+                options
+            );
+        }
+
         function setAnimalSelect2() {
             const parent_modal = $('#modal_novo_agendamento_estetica');
             
             $(parent_modal.length > 0 ? parent_modal : $('body')).find('select[name="animal_id"]').each(function () {
-                $(this).select2({
-                    minimumInputLength: 2,
-                    language: 'pt-BR',
+                $(this).select2(select2Defaults({
                     placeholder: 'Digite para buscar o animal (pet)',
                     dropdownParent: parent_modal.length > 0 ? parent_modal : null,      
                     ajax: {
@@ -59,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         },
                         processResults: function (response) {
                             var results = [];
-                            console.log(response);
                             $.each(response.data, function (i, v) {
                                 var o = {};
                                 o.id = v.id;
@@ -76,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             };
                         },
                     },
-                }).on('select2:select', function (e) {
+                })).on('select2:select', function (e) {
                     var data = e.params.data;
 
                     $('input[name="cliente_id"]').val(data.cliente_id);
@@ -94,65 +103,63 @@ document.addEventListener('DOMContentLoaded', function () {
         function setColaboradorSelect2ForEstetica() {
             const parent_modal = $('#modal_novo_agendamento_estetica');
 
-            $(parent_modal.length > 0 ? parent_modal : $('body')).find('select[name="colaborador_id"]').select2({
-                minimumInputLength: 2,
-                language: 'pt-BR',
-                placeholder: 'Digite para buscar o colaborador',
-                dropdownParent: parent_modal.length > 0 ? parent_modal : null,
-                ajax: {
-                    cache: true,
-                    url: path_url + 'api/funcionarios/pesquisa',
-                    dataType: 'json',
-                    data: function (params) {
-                        var query = {
-                            pesquisa: params.term,
-                            empresa_id: $('#empresa_id').val(),
-                        };
-                        return query;
-                    },
-                    processResults: function (response) {
-                        var results = [];
+            $(parent_modal.length > 0 ? parent_modal : $('body')).find('select[name="colaborador_id"]').each(function () {
+                $(this).select2(select2Defaults({
+                    placeholder: 'Digite para buscar o colaborador',
+                    dropdownParent: parent_modal.length > 0 ? parent_modal : null,
+                    ajax: {
+                        cache: true,
+                        url: path_url + 'api/funcionarios/pesquisa',
+                        dataType: 'json',
+                        data: function (params) {
+                            return {
+                                pesquisa: params.term,
+                                empresa_id: $('#empresa_id').val(),
+                            };
+                        },
+                        processResults: function (response) {
+                            var results = [];
 
-                        $.each(response, function (i, v) {
-                            var o = {};
-                            o.id = v.id;
+                            $.each(response, function (i, v) {
+                                results.push({
+                                    id: v.id,
+                                    text: v.nome + ' - Cargo: ' + v.cargo,
+                                    value: v.id,
+                                    nome: v.nome,
+                                });
+                            });
 
-                            o.text =
-                                v.nome +
-                                ' - Cargo: ' +
-                                v.cargo;
-                            o.value = v.id;
-                            results.push(o);
-                        });
-                        return {
-                            results: results,
-                        };
+                            return { results: results };
+                        },
                     },
-                },
-            }).on('select2:select', async function (e) {
-                await getSelectedDayJornada();
-                validateDataAndHorarioFromEsteticaAgendamento();
-            })
+                })).on('select2:select', async function (e) {
+                    var data = e.params.data;
+
+                    $('input[name="id_colaborador"]').val(data.id);
+                    $('input[name="nome_colaborador"]').val(data.nome ?? null);
+
+                    await getSelectedDayJornada();
+                    validateDataAndHorarioFromEsteticaAgendamento();
+                });
+
+                const selected_colaborador = $('input[name="id_colaborador"]').val();
+                const label_colaborador = $('input[name="nome_colaborador"]').val();
+
+                if (selected_colaborador && label_colaborador) {
+                    const option = new Option(label_colaborador, selected_colaborador, true, true);
+                    $(this).append(option).trigger('change');
+                }
+            });
             
-            const selected_colaborador = $('input[name="id_colaborador"]').val();
-            const label_colaborador = $('input[name="nome_colaborador"]').val();
-
-            if (selected_colaborador && label_colaborador) {
-                const option = new Option(label_colaborador, selected_colaborador, true, true);
-                $('select[name="colaborador_id"]').append(option).trigger('change');
-            }
         }
 
         function setupServicoSelects() {
             const dropdownParent = $('#modal_novo_agendamento_estetica').length > 0 ? $('#modal_novo_agendamento_estetica') : $(document.body);
             
             $(dropdownParent).find('select[name="servico_id[]"]').each(function(id, element) {
-                $(this).select2({
+                $(this).select2(select2Defaults({
                     dropdownParent: dropdownParent.length > 0 ? dropdownParent : $(document.body),
-                    minimumInputLength: 2,
-                    language: 'pt-BR',
                     placeholder: 'Digite para buscar o serviço',
-                    width: '100%',
                     ajax: {
                         cache: true,
                         url: path_url + 'api/petshop/servicos',
@@ -186,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             };
                         }
                     }
-                }).on('select2:select', function(e) {
+                })).on('select2:select', function(e) {
                     var row = $(this).closest('tr');
                     var servico_id = $(this).val();
 
@@ -216,12 +223,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 if ($(this).data('select2')) {
                     $(this).off('change').select2('destroy');
                 }
-                $(this).select2({
+                $(this).select2(select2Defaults({
                     dropdownParent: dropdownParent.length ? dropdownParent : $(document.body),
-                    minimumInputLength: 2,
-                    language: 'pt-BR',
                     placeholder: 'Digite para buscar o produto',
-                    width: '100%',
                     ajax: {
                         cache: true,
                         url: path_url + 'api/produtos',
@@ -241,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             };
                         }
                     }
-                }).on('change', function() {
+                })).on('change', function() {
                     var $row = $(this).closest('tr');
                     var produto_id = $(this).val();
                     if (!produto_id) return;

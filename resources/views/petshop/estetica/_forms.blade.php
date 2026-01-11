@@ -17,9 +17,9 @@
             @include('components.petshop.esteticas.tabs.estetica_info_geral')
         </div>
 
-        <hr>
+        <hr class="mt-3">
 
-        <h6>Agendamento</h6>
+        <h6 class="mt-2">Agendamento</h6>
         <div class="col-12">
             @include('components.petshop.esteticas.tabs.estetica_agendamento')
         </div>

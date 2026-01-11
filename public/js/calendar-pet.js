@@ -6143,6 +6143,7 @@ function setFilterFuncionarios () {
   $('#inp-filter_funcionario_id').select2({
     placeholder: 'Digite para buscar o colaborador',
     language: 'pt-BR',
+    theme: 'bootstrap4',
     ajax: {
         cache: true,
         url: path_url + 'api/funcionarios/pesquisa',
@@ -6184,7 +6185,7 @@ function setFilterClientes () {
     placeholder: 'Digite para buscar o colaborador',
     language: 'pt-BR',
     placeholder: 'Digite para buscar o cliente',
-
+    theme: 'bootstrap4',
     ajax: {
         cache: true,
         url: path_url + 'api/clientes/pesquisa',

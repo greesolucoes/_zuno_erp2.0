@@ -22,6 +22,18 @@ $(document).ready(function () {
     let selectedService = null;
     let reopen_modal_novo_agendamento_creche = false;
 
+    function select2Defaults(options = {}) {
+        return Object.assign(
+            {
+                minimumInputLength: 2,
+                language: 'pt-BR',
+                width: '100%',
+                theme: 'bootstrap4',
+            },
+            options
+        );
+    }
+
     /**
      * Configura o select2 do animal
     */
@@ -29,9 +41,7 @@ $(document).ready(function () {
         const parent_modal = $('#modal_novo_agendamento_creche');
     
         $(parent_modal ? parent_modal : $('body')).find('select[name="animal_id"]').each(function () {
-            $(this).select2({
-                minimumInputLength: 2,
-                language: 'pt-BR',
+            $(this).select2(select2Defaults({
                 placeholder: 'Digite para buscar o animal (pet)',
                 dropdownParent: parent_modal.length > 0 ? parent_modal : null,      
                 ajax: {
@@ -47,7 +57,6 @@ $(document).ready(function () {
                     },
                     processResults: function (response) {
                         var results = [];
-                        console.log(response);
                         $.each(response.data, function (i, v) {
                             var o = {};
                             o.id = v.id;
@@ -64,7 +73,7 @@ $(document).ready(function () {
                         };
                     },
                 },
-            }).on('select2:select', function (e) {
+            })).on('select2:select', function (e) {
             var data = e.params.data;
 
             $('input[name="cliente_id"]').val(data.cliente_id);
@@ -86,50 +95,50 @@ $(document).ready(function () {
     function getFuncionariosForCrecheSelect2() {
         const parent_modal = $('#modal_novo_agendamento_creche');
 
-        $(parent_modal.length > 0 ? parent_modal : $('body')).find('select[name="colaborador_id"]').select2({
-            minimumInputLength: 2,
-            language: 'pt-BR',
-            placeholder: 'Digite para buscar o colaborador',
-            dropdownParent: parent_modal.length > 0 ? parent_modal : null,
-            ajax: {
-                cache: true,
-                url: path_url + 'api/funcionarios/pesquisa',
-                dataType: 'json',
-                data: function (params) {
-                    console.clear();
-                    var query = {
-                        pesquisa: params.term,
-                        empresa_id: $('#empresa_id').val(),
-                    };
-                    return query;
+        $(parent_modal ? parent_modal : $('body')).find('select[name="colaborador_id"]').each(function () {
+            $(this).select2(select2Defaults({
+                placeholder: 'Digite para buscar o colaborador',
+                dropdownParent: parent_modal.length > 0 ? parent_modal : null,
+                ajax: {
+                    cache: true,
+                    url: path_url + 'api/funcionarios/pesquisa',
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            pesquisa: params.term,
+                            empresa_id: $('#empresa_id').val(),
+                        };
+                    },
+                    processResults: function (response) {
+                        var results = [];
+
+                        $.each(response, function (i, v) {
+                            results.push({
+                                id: v.id,
+                                text: v.nome + ' - Cargo: ' + v.cargo,
+                                value: v.id,
+                                nome: v.nome,
+                            });
+                        });
+
+                        return { results: results };
+                    },
                 },
-                processResults: function (response) {
-                    var results = [];
+            })).on('select2:select', function (e) {
+                var data = e.params.data;
 
-                    $.each(response, function (i, v) {
-                        var o = {};
-                        o.id = v.id;
+                $('input[name="id_colaborador"]').val(data.id);
+                $('input[name="nome_colaborador"]').val(data.nome ?? null);
+            });
 
-                        o.text =
-                            v.nome +
-                            ' - Cargo: ' +
-                            v.cargo;
-                        o.value = v.id;
-                        results.push(o);
-                    });
-                    return {
-                        results: results,
-                    };
-                },
-            },
-        })
-        const selected_colaborador = $('input[name="id_colaborador"]').val();
-        const label_colaborador = $('input[name="nome_colaborador"]').val();
+            const selected_colaborador = $('input[name="id_colaborador"]').val();
+            const label_colaborador = $('input[name="nome_colaborador"]').val();
 
-        if (selected_colaborador && label_colaborador) {
-            const option = new Option(label_colaborador, selected_colaborador, true, true);
-            $('select[name="colaborador_id"]').append(option).trigger('change');
-        }
+            if (selected_colaborador && label_colaborador) {
+                const option = new Option(label_colaborador, selected_colaborador, true, true);
+                $(this).append(option).trigger('change');
+            }
+        });
     }
     getFuncionariosForCrecheSelect2();
 
@@ -142,11 +151,8 @@ $(document).ready(function () {
                 $(element).select2('destroy');
             }
 
-            $(this).select2({
-                minimumInputLength: 2,
-                language: 'pt-BR',
+            $(this).select2(select2Defaults({
                 placeholder: 'Digite para buscar o serviço',
-                width: '100%',
                 dropdownParent: parent_modal.length > 0 ? parent_modal : null,
                 ajax: {
                     cache: true,
@@ -189,7 +195,7 @@ $(document).ready(function () {
                         };
                     },
                 },
-            }).on('select2:select', function (e) {
+            })).on('select2:select', function (e) {
                 const data = e.params.data;
                 let $row = $(this).closest('tr');
                 $row.find('.valor-servico').val('R$ ' + convertFloatToMoeda(data.valor)).trigger('blur');
@@ -509,11 +515,8 @@ $(document).ready(function () {
         const parent_modal = $('#modal_novo_agendamento_creche');
 
         $('select.produto_id').each((id, element) => {
-            $(element).select2({
-                minimumInputLength: 2,
-                language: 'pt-BR',
+            $(element).select2(select2Defaults({
                 placeholder: 'Digite para buscar o produto',
-                width: '100%',
                 dropdownParent: parent_modal.length ? parent_modal : null,
                 ajax: {
                     cache: true,
@@ -535,7 +538,7 @@ $(document).ready(function () {
                         };
                     },
                 },
-            }).on('select2:select', function (e) {
+            })).on('select2:select', function (e) {
                 const data = e.params.data;
                 let $row = $(this).closest('tr');
                 $row.find('.qtd-produto').val('1');
@@ -575,6 +578,7 @@ $(document).ready(function () {
         
         if (is_index_view) return;
 
+        const parent_modal = $('#modal_novo_agendamento_creche');
         const turma_input = $('select[name="turma_id"]');
 
         const data_entrada = $('input[name="data_entrada"]');
@@ -592,10 +596,11 @@ $(document).ready(function () {
         const data_entrada_time = `${data_entrada.val()} ${horario_entrada_input.val()}`;
         const data_saida_time = `${data_saida.val()} ${horario_saida_input.val()}`;
 
-        turma_input.select2({
+        turma_input.select2(select2Defaults({
             placeholder: 'Selecione um turma',
-            width: '100%',
+            dropdownParent: parent_modal.length > 0 ? parent_modal : null,
             ajax: {
+                cache: true,
                 url: path_url + 'api/turmas/',
                 dataType: 'json',
                 data: function (params) {
@@ -618,7 +623,7 @@ $(document).ready(function () {
                 }
             }
 
-        }).on('select2:select', function (e) {
+        })).on('select2:select', function (e) {
             const turma = e.params.data;
             const capacidade_turma_input = $('input[name="capacidade_turma"]');
 
@@ -1222,6 +1227,7 @@ $(document).ready(function () {
 
         if (is_index_view) return;
 
+        const parent_modal = $('#modal_novo_agendamento_creche');
         const turma_input = $('select[name="turma_id"]');
 
         const data_entrada_input = $('input[name="data_entrada"]');
@@ -1239,10 +1245,11 @@ $(document).ready(function () {
         const data_entrada_time = `${data_entrada_input.val()} ${horario_entrada_input.val()}`;
         const data_saida_time = `${data_saida_input.val()} ${horario_saida_input.val()}`;
 
-        turma_input.select2({
+        turma_input.select2(select2Defaults({
             placeholder: 'Selecione uma turma',
-            width: '100%',
+            dropdownParent: parent_modal.length > 0 ? parent_modal : null,
             ajax: {
+                cache: true,
                 url: path_url + 'api/turmas/',
                 dataType: 'json',
                 data: function (params) {
@@ -1265,7 +1272,7 @@ $(document).ready(function () {
                 }
             }
 
-        }).on('select2:select', function (e) {
+        })).on('select2:select', function (e) {
             const turma = e.params.data;
             const capacidade_turma_input = $('input[name="capacidade_turma"]');
 

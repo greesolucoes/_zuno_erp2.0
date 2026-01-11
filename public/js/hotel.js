@@ -72,13 +72,23 @@ $(`
 /**
  * Configura o select2 do animal
  */
+function select2Defaults(options = {}) {
+    return Object.assign(
+        {
+            minimumInputLength: 2,
+            language: 'pt-BR',
+            width: '100%',
+            theme: 'bootstrap4',
+        },
+        options
+    );
+}
+
 function setAnimalSelect2() {
     const parent_modal = $('#modal_novo_agendamento_hotel');
     
     $(parent_modal ? parent_modal : $('body')).find('select[name="animal_id"]').each(function () {
-        $(this).select2({
-            minimumInputLength: 2,
-            language: 'pt-BR',
+        $(this).select2(select2Defaults({
             placeholder: 'Digite para buscar o animal (pet)',
             dropdownParent: parent_modal.length > 0 ? parent_modal : null,      
             ajax: {
@@ -110,7 +120,7 @@ function setAnimalSelect2() {
                     };
                 },
             },
-        }).on('select2:select', function (e) {
+        })).on('select2:select', function (e) {
             var data = e.params.data;
 
             $('input[name="cliente_id"]').val(data.cliente_id);
@@ -133,50 +143,50 @@ setAnimalSelect2();
 function setColaboradorSelect2() {
     const parent_modal = $('#modal_novo_agendamento_hotel');
 
-    $(parent_modal.length > 0 ? parent_modal : $('body')).find('select[name="colaborador_id"]').select2({
-        minimumInputLength: 2,
-        language: 'pt-BR',
-        placeholder: 'Digite para buscar o colaborador',
-        dropdownParent: parent_modal.length > 0 ? parent_modal : null,
-        ajax: {
-            cache: true,
-            url: path_url + 'api/funcionarios/pesquisa',
-            dataType: 'json',
-            data: function (params) {
-                console.clear();
-                var query = {
-                    pesquisa: params.term,
-                    empresa_id: $('#empresa_id').val(),
-                };
-                return query;
+    $(parent_modal ? parent_modal : $('body')).find('select[name="colaborador_id"]').each(function () {
+        $(this).select2(select2Defaults({
+            placeholder: 'Digite para buscar o colaborador',
+            dropdownParent: parent_modal.length > 0 ? parent_modal : null,
+            ajax: {
+                cache: true,
+                url: path_url + 'api/funcionarios/pesquisa',
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        pesquisa: params.term,
+                        empresa_id: $('#empresa_id').val(),
+                    };
+                },
+                processResults: function (response) {
+                    var results = [];
+
+                    $.each(response, function (i, v) {
+                        results.push({
+                            id: v.id,
+                            text: v.nome + ' - Cargo: ' + v.cargo,
+                            value: v.id,
+                            nome: v.nome,
+                        });
+                    });
+
+                    return { results: results };
+                },
             },
-            processResults: function (response) {
-                var results = [];
+        })).on('select2:select', function (e) {
+            var data = e.params.data;
 
-                $.each(response, function (i, v) {
-                    var o = {};
-                    o.id = v.id;
+            $('input[name="id_colaborador"]').val(data.id);
+            $('input[name="nome_colaborador"]').val(data.nome ?? null);
+        });
 
-                    o.text =
-                        v.nome +
-                        ' - Cargo: ' +
-                        v.cargo;
-                    o.value = v.id;
-                    results.push(o);
-                });
-                return {
-                    results: results,
-                };
-            },
-        },
-    })
-    const selected_colaborador = $('input[name="id_colaborador"]').val();
-    const label_colaborador = $('input[name="nome_colaborador"]').val();
+        const selected_colaborador = $('input[name="id_colaborador"]').val();
+        const label_colaborador = $('input[name="nome_colaborador"]').val();
 
-    if (selected_colaborador && label_colaborador) {
-        const option = new Option(label_colaborador, selected_colaborador, true, true);
-        $('select[name="colaborador_id"]').append(option);
-    }
+        if (selected_colaborador && label_colaborador) {
+            const option = new Option(label_colaborador, selected_colaborador, true, true);
+            $(this).append(option).trigger('change');
+        }
+    });
 }
 setColaboradorSelect2();
 
@@ -189,11 +199,8 @@ function getServicosForHotelSelect2 () {
             $(element).select2('destroy');
         }
 
-        $(this).select2({
-            minimumInputLength: 2,
-            language: 'pt-BR',
+        $(this).select2(select2Defaults({
             placeholder: 'Digite para buscar o serviço',
-            width: '100%',
             dropdownParent: parent_modal.length > 0 ? parent_modal : null,
             ajax: {
                 cache: true,
@@ -236,7 +243,7 @@ function getServicosForHotelSelect2 () {
                     };
                 },
             },
-        }).on('select2:select', function (e) {
+        })).on('select2:select', function (e) {
             const data = e.params.data;
             let $row = $(this).closest('tr');
             $row.find('.valor-servico').val('R$ ' + convertFloatToMoeda(data.valor)).trigger('blur');
@@ -400,11 +407,8 @@ function getProdutosForHotelSelect2 () {
     const parent_modal = $('#modal_novo_agendamento_hotel');
 
     $('select.produto_id').each((id, element) => {
-        $(element).select2({
-            minimumInputLength: 2,
-            language: 'pt-BR',
+        $(element).select2(select2Defaults({
             placeholder: 'Digite para buscar o produto',
-            width: '100%',
             dropdownParent: parent_modal.length ? parent_modal : null,
             ajax: {
                 cache: true,
@@ -426,7 +430,7 @@ function getProdutosForHotelSelect2 () {
                     };
                 },
             },
-        }).on('select2:select', function (e) {
+        })).on('select2:select', function (e) {
             const data = e.params.data;
             let $row = $(this).closest('tr');
             $row.find('.qtd-produto').val('1');
@@ -854,6 +858,7 @@ function handleQuartoInput () {
 
     if (is_index_view) return;
 
+    const parent_modal = $('#modal_novo_agendamento_hotel');
     const quarto_input = $('select[name="quarto_id"]');
 
     const checkin_input = $('input[name="checkin"]');
@@ -871,10 +876,11 @@ function handleQuartoInput () {
     const checkin_time = `${checkin_input.val()} ${checkin_hour_input.val()}`;
     const checkout_time = `${checkout_input.val()} ${checkout_hour_input.val()}`;
 
-    quarto_input.select2({
+    quarto_input.select2(select2Defaults({
         placeholder: 'Selecione um quarto',
-        width: '100%',
+        dropdownParent: parent_modal.length > 0 ? parent_modal : null,
         ajax: {
+            cache: true,
             url: path_url + 'api/quartos/',
             dataType: 'json',
             data: function (params) {
@@ -897,7 +903,7 @@ function handleQuartoInput () {
             }
         }
 
-    }).on('select2:select', function (e) {
+    })).on('select2:select', function (e) {
         const quarto = e.params.data;
         const capacidade_quarto_input = $('input[name="capacidade_quarto"]');
 

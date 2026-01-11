@@ -14,7 +14,7 @@
             @include('components.petshop.hoteis.tabs.hotel_info_geral')
         </div>
 
-        <hr>
+        <hr class="mt-3">
 
         <h6>Agendamento</h6>
         <div class="col-12">
