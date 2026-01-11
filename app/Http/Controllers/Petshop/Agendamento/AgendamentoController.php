@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Petshop\Agendamento;
 use App\Http\Controllers\Controller;
 use App\Models\CategoriaServico;
 use App\Models\Funcionamento;
-use App\Models\Role;
 use App\Models\Servico;
 use App\Models\User;
 use App\Models\Nfce;
@@ -88,10 +87,6 @@ class AgendamentoController extends Controller
         // 3. Unir as coleções transformadas
         $salas = $quartos->merge($salasDeAula);
 
-        $roles = Role::orderBy('name', 'desc')
-            ->where('empresa_id', request()->empresa_id)
-            ->get();
-
          $categorias = CategoriaServico::where(function ($q) {
             $q->where('empresa_id', request()->empresa_id);
             $q->orWhereNull('empresa_id');
@@ -111,7 +106,6 @@ class AgendamentoController extends Controller
             'agendamentos',
             'servicos',
             'clientes',
-            'roles',
             'categorias',
             'segmento',
             'salas',

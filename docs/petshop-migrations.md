@@ -185,6 +185,13 @@ Cadastros e eventos base do módulo Hotel:
   - FKs opcionais: `servico_id` → `servicos.id`, `prestador_id` → `funcionarios.id`, `fornecedor_id` → `fornecedores.id`
   - Campos: `inicio`, `fim`, `descricao`
 
+### 4.7) Domínio “Creche/Escola” (salas)
+Cadastro base usado para agenda/ocupação:
+- `sala_de_aulas`
+  - FKs: `empresa_id` → `empresas.id`
+  - FKs: `colaborador_id` → `funcionarios.id` (nullable)
+  - Campos: `nome`, `descricao`, `capacidade`
+
 ## 5) Sequência de migrations (o “como vamos implementar”)
 Pré-requisito:
 - Fechar decisão de “Filial” (item 3.1).

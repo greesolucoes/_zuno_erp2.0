@@ -69,6 +69,10 @@ class Menu
 						'rota' => route('listaDePrecos.index')
 					],
 					[
+						'nome' => 'Divisão de Grade',
+						'rota' => route('divisaoGrade.index')
+					],
+					[
 						'nome' => 'Categorias de Contas',
 						'rota' => route('categoria-conta.index')
 					],
@@ -88,6 +92,10 @@ class Menu
 					[
 						'nome' => 'Usuários',
 						'rota' => route('usuarios.index')
+					],
+					[
+						'nome' => 'Cidades',
+						'rota' => route('cidades.index')
 					]
 				]
 			],
@@ -463,47 +471,78 @@ class Menu
 						'nome' => 'Gráficos',
 						'rota' => route('graficos.index')
 					],
+					[
+						'nome' => 'Boletos',
+						'rota' => route('boletos.index')
+					],
+					[
+						'nome' => 'Remessa de Boletos',
+						'rota' => route('remessa-boletos.index')
+					],
+					[
+						'nome' => 'Suprimento de Caixa',
+						'rota' => route('suprimentoCaixa.index')
+					],
+					[
+						'nome' => 'Sangria de Caixa',
+						'rota' => route('sangriaCaixa.index')
+					],
+					[
+						'nome' => 'Vendas em Crédito',
+						'rota' => route('vendasEmCredito.index')
+					],
+					[
+						'nome' => 'Financeiro (Config)',
+						'rota' => route('financeiro.index')
+					],
 				]
 			],
-
-		//	[
-		//		'titulo' => 'CTe',
-		//		'icone' => 'bx bx-bus',
-		//		'subs' => [
-		//			[
-		//				'nome' => 'Lista',
-		//				'rota' => route('cte.index')
-		//			],
-		//			[
-		//				'nome' => 'Nova',
-		//				'rota' => route('cte.create'),
-		//			],
-		//			[
-		//				'nome' => 'Categorias de Despesa',
-		//				'rota' => route('categoriaDespesa.index')
-		//			],
-					// [
-					// 	'nome' => 'Manifesto',
-					// 	'rota' => route('cte.manifesto')
-					// ],
-
-		//		]
-		//	],
-
-		//	[
-		//		'titulo' => 'CTe Os',
-		//		'icone' => 'bx bx-current-location',
-		//		'subs' => [
-		//			[
-		//				'nome' => 'Lista',
-		//				'rota' => route('cteOs.index')
-		//			],
-		//			[
-		//				'nome' => 'Nova',
-		//				'rota' => route('cteOs.create'),
-		//			],
-		//		]
-		//	],
+			[
+				'titulo' => 'Fiscal',
+				'icone' => 'bx bx-receipt',
+				'subs' => [
+					[
+						'nome' => 'NF-e',
+						'rota' => route('nferemessa.index')
+					],
+					[
+						'nome' => 'NFC-e',
+						'rota' => route('nfce.index')
+					],
+					[
+						'nome' => 'NFS-e',
+						'rota' => route('nfse.index')
+					],
+					[
+						'nome' => 'CT-e',
+						'rota' => route('cte.index')
+					],
+					[
+						'nome' => 'CT-e OS',
+						'rota' => route('cteOs.index')
+					],
+					[
+						'nome' => 'MDF-e',
+						'rota' => route('mdfe.index')
+					],
+					[
+						'nome' => 'Manifesto (DFe)',
+						'rota' => route('dfe.index')
+					],
+					[
+						'nome' => 'Contingência',
+						'rota' => route('contigencia.index')
+					],
+					[
+						'nome' => 'Sintegra',
+						'rota' => route('sintegra.index')
+					],
+					[
+						'nome' => 'IBPT',
+						'rota' => route('ibpt.index')
+					],
+				]
+			],
 
 			[
 				'titulo' => 'Relatórios',
@@ -520,51 +559,192 @@ class Menu
 				]
 			],
 
-		//	[
-		//		'titulo' => 'Locação',
-		//		'icone' => 'bx bx-bookmark',
-		//		'subs' => [
-		//			[
-		//				'nome' => 'Nova Locação',
-		//				'rota' => route('locacao.create')
-		//			],
-		//			[
-		//				'nome' => 'Listar',
-		//				'rota' => route('locacao.index')
-		//			]
-		//		]
-		//	],
-
-		//	[
-		//		'titulo' => 'Pedidos',
-		//		'icone' => 'bx bx-purchase-tag',
-		//		'subs' => [
-		//			[
-		//				'nome' => 'Abrir Comandas',
-		//				'rota' => route('pedidos.index')
-		//			],
-		//			[
-		//				'nome' => 'Adicionais',
-		//				'rota' => route('deliveryComplemento.index')
-		//			],
-		//			[
-		//				'nome' => 'Telas de Pedido',
-		//				'rota' => '/telasPedido'
-		//			],
-		//			[
-		//				'nome' => 'Controle de Pedidos',
-		//				'rota' => route('controleCozinha.selecionar')
-		//			],
-		//			[
-		//				'nome' => 'Cadastrar Mesas',
-		//				'rota' => route('mesas.index')
-		//			],
-		//			[
-		//				'nome' => 'Controle de Comandas',
-		//				'rota' => route('pedidos.controleComandas')
-		//			],
-		//		]
-		//	],
+			[
+				'titulo' => 'Pedidos',
+				'icone' => 'bx bx-purchase-tag',
+				'subs' => [
+					[
+						'nome' => 'Abrir Comandas',
+						'rota' => route('pedidos.index')
+					],
+					[
+						'nome' => 'Telas de Pedido',
+						'rota' => route('telasPedido.index')
+					],
+					[
+						'nome' => 'Controle de Pedidos',
+						'rota' => route('controleCozinha.selecionar')
+					],
+					[
+						'nome' => 'Mesas',
+						'rota' => route('mesas.index')
+					],
+					[
+						'nome' => 'Tamanhos de Pizza',
+						'rota' => route('tamanhosPizza.index')
+					],
+					[
+						'nome' => 'Código de Desconto',
+						'rota' => route('codigoDesconto.index')
+					],
+					[
+						'nome' => 'Categorias de Despesa',
+						'rota' => route('categoriaDespesa.index')
+					],
+					[
+						'nome' => 'Adicionais (Delivery)',
+						'rota' => route('deliveryComplemento.index')
+					],
+				]
+			],
+			[
+				'titulo' => 'Delivery',
+				'icone' => 'bx bx-map',
+				'subs' => [
+					[
+						'nome' => 'Categorias',
+						'rota' => route('categoriaDelivery.index')
+					],
+					[
+						'nome' => 'Categorias Master',
+						'rota' => route('categoriaMasterDelivery.index')
+					],
+					[
+						'nome' => 'Produtos',
+						'rota' => route('produtoDelivery.index')
+					],
+					[
+						'nome' => 'Destaques',
+						'rota' => route('destaquesDelivery.index')
+					],
+					[
+						'nome' => 'Carrossel',
+						'rota' => route('carrosselDelivery.index')
+					],
+					[
+						'nome' => 'Funcionamento',
+						'rota' => route('funcionamentoDelivery.index')
+					],
+					[
+						'nome' => 'Bairros',
+						'rota' => route('bairrosDelivery.index')
+					],
+					[
+						'nome' => 'Bairros por Loja',
+						'rota' => route('bairrosDeliveryLoja.index')
+					],
+					[
+						'nome' => 'Cidades',
+						'rota' => route('cidadeDelivery.index')
+					],
+					[
+						'nome' => 'Endereços',
+						'rota' => route('enderecoDelivery.index')
+					],
+					[
+						'nome' => 'Clientes',
+						'rota' => route('clientesDelivery.index')
+					],
+				]
+			],
+			[
+				'titulo' => 'Ecommerce',
+				'icone' => 'bx bx-store',
+				'subs' => [
+					[
+						'nome' => 'Configurações',
+						'rota' => route('configEcommerce.index')
+					],
+					[
+						'nome' => 'Categorias',
+						'rota' => route('categoriaEcommerce.index')
+					],
+					[
+						'nome' => 'Produtos',
+						'rota' => route('produtoEcommerce.index')
+					],
+					[
+						'nome' => 'Produtos em Destaque',
+						'rota' => route('produtosDestaque.index')
+					],
+					[
+						'nome' => 'Carrossel',
+						'rota' => route('carrosselEcommerce.index')
+					],
+					[
+						'nome' => 'Cupons',
+						'rota' => route('cuponsEcommerce.index')
+					],
+					[
+						'nome' => 'Pedidos',
+						'rota' => route('pedidosEcommerce.index')
+					],
+					[
+						'nome' => 'Clientes',
+						'rota' => route('clienteEcommerce.index')
+					],
+					[
+						'nome' => 'Contato',
+						'rota' => route('contatoEcommerce.index')
+					],
+					[
+						'nome' => 'Informativos',
+						'rota' => route('informativoEcommerce.index')
+					],
+					[
+						'nome' => 'Blog - Posts',
+						'rota' => route('postBlog.index')
+					],
+					[
+						'nome' => 'Blog - Autores',
+						'rota' => route('autorPost.index')
+					],
+					[
+						'nome' => 'Blog - Categorias',
+						'rota' => route('categoriaPosts.index')
+					],
+					[
+						'nome' => 'Categorias (Loja)',
+						'rota' => route('categoriaDeLoja.index')
+					],
+				]
+			],
+			[
+				'titulo' => 'Locação',
+				'icone' => 'bx bx-bookmark',
+				'subs' => [
+					[
+						'nome' => 'Locações',
+						'rota' => route('locacao.index')
+					],
+				]
+			],
+			[
+				'titulo' => 'NumverShop',
+				'icone' => 'bx bx-store-alt',
+				'subs' => [
+					[
+						'nome' => 'Configurações',
+						'rota' => route('nuvemshop.index')
+					],
+					[
+						'nome' => 'Categorias',
+						'rota' => route('nuvemshop-categoria.index')
+					],
+					[
+						'nome' => 'Produtos',
+						'rota' => route('nuvemshop-produtos.index')
+					],
+					[
+						'nome' => 'Pedidos',
+						'rota' => route('nuvemshop-pedidos.index')
+					],
+					[
+						'nome' => 'Clientes',
+						'rota' => route('nuvemshop-clientes.index')
+					],
+				]
+			],
 
 				[
 					'titulo' => 'Configurações',
@@ -597,6 +777,74 @@ class Menu
 					[
 						'nome' => 'Ticket',
 						'rota' => route('tickets.index')
+					],
+					[
+						'nome' => 'Contrato',
+						'rota' => route('contrato.index')
+					],
+					[
+						'nome' => 'Etiquetas',
+						'rota' => route('etiquetas.index')
+					],
+					[
+						'nome' => 'Vídeos',
+						'rota' => route('videos.index')
+					],
+					[
+						'nome' => 'Push',
+						'rota' => route('push.index')
+					],
+					[
+						'nome' => 'Alertas',
+						'rota' => route('alertas.index')
+					],
+					[
+						'nome' => 'Pesquisa',
+						'rota' => route('pesquisa.index')
+					],
+					[
+						'nome' => 'Erros (Log)',
+						'rota' => route('errosLog.index')
+					],
+					[
+						'nome' => 'Atualizações do Sistema',
+						'rota' => route('appUpdate.index')
+					],
+					[
+						'nome' => 'Perfis de Acesso',
+						'rota' => route('perfilAcesso.index')
+					],
+					[
+						'nome' => 'Empresas',
+						'rota' => route('empresas.index')
+					],
+					[
+						'nome' => 'Planos',
+						'rota' => route('planos.index')
+					],
+					[
+						'nome' => 'Planos Pendentes',
+						'rota' => route('planosPendentes.index')
+					],
+					[
+						'nome' => 'Representantes',
+						'rota' => route('representantes.index')
+					],
+					[
+						'nome' => 'Filiais',
+						'rota' => route('filial.index')
+					],
+					[
+						'nome' => 'Representantes (REP)',
+						'rota' => route('rep.index')
+					],
+					[
+						'nome' => 'Contadores',
+						'rota' => route('contadores.index')
+					],
+					[
+						'nome' => 'Tickets (Super)',
+						'rota' => route('ticketsSuper.index')
 					],
 				]
 			],
