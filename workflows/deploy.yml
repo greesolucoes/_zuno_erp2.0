@@ -1,0 +1,63 @@
+name: Deploy ZunoPet (Producao)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to server
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          APP_DIR:  ${{ secrets.APP_DIR }}
+        run: |
+          ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "APP_DIR='${APP_DIR}' bash -s" << 'EOF'
+            set -e
+
+            sudo sync && echo 1 | sudo tee /proc/sys/vm/drop_caches
+            sudo sync && echo 2 | sudo tee /proc/sys/vm/drop_caches
+            sudo sync && echo 3 | sudo tee /proc/sys/vm/drop_caches
+
+            cd "$APP_DIR" || exit 1
+
+            # GARANTE que é repo git
+            test -d .git || { echo "ERRO: $APP_DIR nao tem .git (nao é repo)."; exit 1; }
+
+            echo "Atualizando repositório..."
+            git fetch
+            git checkout -f main
+            git pull
+
+            echo "Instalando dependências..."
+            composer install --no-dev --prefer-dist --no-interaction --no-progress
+            composer dump-autoload -o
+
+            echo "Rodando migrações..."
+            php artisan migrate --force
+
+            echo "Rodando comandos de otimização..."
+            php artisan optimize:clear
+
+            echo "Instalando dependências do frontend..."
+            npm ci
+            npm run build
+
+            echo "Limpando cache do sistema..."
+            sync && echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
+
+            echo "Restart services..."
+            sudo systemctl restart php-fpm || true
+            sudo systemctl restart nginx || true
+
+            echo "Deploy concluído com sucesso!"
+          EOF

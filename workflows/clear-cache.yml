@@ -1,0 +1,17 @@
+name: Clear Cache
+
+on:
+  workflow_run:
+    workflows:
+      - Deploy to Server # Nome do workflow de deploy
+    types:
+      - completed
+
+jobs:
+  clear_cache:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clear application cache
+        run: |
+          curl -X GET https://app.diprosoft.com.br/clear-all

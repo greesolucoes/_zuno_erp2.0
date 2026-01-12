@@ -1,0 +1,52 @@
+name: Deploy to Server Homolog
+
+on:
+  push:
+    branches:
+      - dev # Ou o nome do seu branch principal
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.HOMOLOG_SSH_PRIVATE_KEY }}
+
+      - name: Deploy to server
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@23.21.61.184 << 'EOF'
+           set -e  # Faz o script parar se algum comando falhar
+          # Limpar o cache inativo do sistema
+           sudo sync && echo 1 | sudo tee /proc/sys/vm/drop_caches
+           sudo sync && echo 2 | sudo tee /proc/sys/vm/drop_caches
+           sudo sync && echo 3 | sudo tee /proc/sys/vm/drop_caches
+           sudo su
+           cd /var/www/diprosoft || exit 1
+
+           echo "Atualizando repositório..."
+           git fetch
+           git checkout -f dev
+           git pull || { echo "Erro ao puxar alterações!"; exit 1; }
+
+           echo "Instalando dependências..."
+           composer install --no-dev --prefer-dist
+           composer dump-autoload
+
+           echo "Rodando migrações..."
+           php artisan migrate --force
+
+           echo "Rodando comandos de otimização..."
+           php artisan optimize:clear
+
+           echo "Instalando dependências do frontend..."
+           npm ci
+           npm run build
+
+           echo "Limpando cache do sistema..."
+           sync && echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
+
+           echo "Deploy concluído com sucesso!"
+          EOF
