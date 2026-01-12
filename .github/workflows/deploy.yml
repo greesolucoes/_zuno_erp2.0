@@ -48,9 +48,9 @@ jobs:
             echo "Rodando comandos de otimização..."
             php artisan optimize:clear
 
-            echo "Instalando dependências do frontend..."
-            npm ci
-            npm run build
+            #echo "Instalando dependências do frontend..."
+            #npm ci
+            #npm run build
 
             echo "Limpando cache do sistema..."
             sync && echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
