@@ -1,4 +1,4 @@
-name: Deploy ZunoPet (Producao)
+name: Deploy ZunoPet (Prod)
 
 on:
   push:
