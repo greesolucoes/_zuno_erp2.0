@@ -34,6 +34,121 @@ $(function () {
     .addClass("required");
 });
 
+/**
+ * Bootstrap 5 não expõe `$.fn.tooltip` por padrão, mas o projeto usa chamadas via jQuery
+ * (`$el.tooltip('dispose')`, etc) em vários arquivos. Esse wrapper mantém compatibilidade.
+ */
+(function () {
+    if (!window.jQuery || !window.bootstrap || !window.bootstrap.Tooltip) return;
+    if (jQuery.fn.tooltip) return;
+
+    jQuery.fn.tooltip = function (configOrMethod) {
+        return this.each(function () {
+            const element = this;
+
+            if (typeof configOrMethod === "string") {
+                const instance = window.bootstrap.Tooltip.getInstance(element);
+                if (!instance) return;
+
+                if (typeof instance[configOrMethod] === "function") {
+                    instance[configOrMethod]();
+                }
+                return;
+            }
+
+            window.bootstrap.Tooltip.getOrCreateInstance(element, configOrMethod || {});
+        });
+    };
+})();
+
+/**
+ * Exibe tooltip de validação/ajuda em um elemento (jQuery/DOM).
+ */
+window.initializeTooltip = function (target, message, options) {
+    if (!window.jQuery) return;
+
+    const $el = target instanceof jQuery ? target : $(target);
+    if (!$el || !$el.length) return;
+
+    const config = Object.assign(
+        {
+            title: message,
+            trigger: "manual",
+            placement: "top",
+            container: "body",
+        },
+        options || {}
+    );
+
+    try {
+        $el.attr("title", message);
+        $el.tooltip("dispose");
+        $el.tooltip(config);
+        if (config.trigger === "manual") {
+            $el.tooltip("show");
+        }
+    } catch (e) {
+        // silencioso: tooltip não deve quebrar o fluxo do formulário
+    }
+};
+
+/**
+ * Converte uma data (Date|string) para formato DB: YYYY-MM-DD HH:mm:ss
+ */
+if (!window.convertDateToDb) {
+    window.convertDateToDb = function (date) {
+        let dateObj = null;
+
+        if (date instanceof Date) {
+            dateObj = date;
+        } else if (typeof date === "string") {
+            const normalized = date.includes("T") ? date : date.replace(" ", "T");
+            dateObj = new Date(normalized);
+        } else {
+            dateObj = new Date(date);
+        }
+
+        if (!dateObj || Number.isNaN(dateObj.getTime())) return "";
+
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+        const day = String(dateObj.getDate()).padStart(2, "0");
+        const hours = String(dateObj.getHours()).padStart(2, "0");
+        const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+        const seconds = String(dateObj.getSeconds()).padStart(2, "0");
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
+}
+
+
+/**
+ * Desabilita um campo mas mantém seu valor no submit via input hidden (compat legado).
+ */
+if (!window.disableWithHidden) {
+    window.disableWithHidden = function (element) {
+        if (!window.jQuery) return;
+
+        const $el = element instanceof jQuery ? element : $(element);
+        if (!$el || !$el.length) return;
+
+        const name = $el.attr("name");
+        if (!name) return;
+
+        $(`input[type="hidden"][name="${name}"][data-disable-with-hidden="1"]`).remove();
+
+        const hidden = $("<input>", {
+            type: "hidden",
+            name,
+            value: $el.val(),
+            "data-disable-with-hidden": "1",
+        });
+
+        $el.after(hidden);
+        $el.prop("disabled", true);
+    };
+}
+
 // $(function(){
 //     $(".select2").select2({
 //         language: "pt-BR",

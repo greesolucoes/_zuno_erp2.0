@@ -8,7 +8,7 @@
         <!--favicon-->
         <link rel="icon" href="/favicon.png" type="image/x-icon" />
 
-
+        <link href="/assets/vendor/flatpickr/flatpickr.min.css" rel="stylesheet" type="text/css" />
         <link href="/assets/css/simplebar.css" rel="stylesheet" />
         <link href="/assets/css/tagsinput.css" rel="stylesheet" />
         <link href="/assets/css/perfect-scrollbar.css" rel="stylesheet" />
@@ -373,10 +373,13 @@
 <script src="/assets/js/select2.min.js"></script>
 <script src="/assets/js/app.js"></script>
 <script src="/js/main.js"></script>
+<script src="/js/main_petshop.js"></script>
 <script src="/js/theme.js"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
 <script type="text/javascript" src="/js/noticacao.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/pt.js"></script>
+<script src="/assets/vendor/flatpickr/flatpickr.min.js"></script>
+<script src="/assets/js/pages/demo.flatpickr.js"></script>
 @yield('js')
 
 <script type="text/javascript">
@@ -406,6 +409,8 @@
     @endif
 
 </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @if(session('user_contador'))
 @include('modals._empresa_contador', ['not_submit' => true])

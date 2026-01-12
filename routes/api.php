@@ -69,8 +69,50 @@ Route::middleware(['hashEmpresa'])->group(function () {
     });
 
 
-    Route::group(['prefix' => 'agendamentos'], function () {
-        Route::get('/all', 'API\\AgendamentoController@all');
+Route::group(['prefix' => 'agendamentos'], function () {
+    Route::get('/all', 'API\\AgendamentoController@all');
+    Route::get('/search-agendamentos', 'API\\Petshop\\AgendamentoController@searchAgendamentos');
+});
+
+Route::group(['prefix' => 'petshop/agendamentos'], function () {
+    Route::post('/search', 'API\\Petshop\\AgendamentoController@searchAgendamentos');
+});
+
+    Route::group(['prefix' => 'funcionarios'], function () {
+        Route::get('/pesquisa', 'API\\Petshop\\FuncionarioController@pesquisa');
+    });
+
+    Route::group(['prefix' => 'petshop'], function () {
+        Route::get('/servicos', 'API\\Petshop\\ServicoController@pesquisa');
+    });
+
+    Route::group(['prefix' => 'quartos'], function () {
+        Route::get('/', 'API\\Petshop\\QuartoController@search');
+        Route::get('/check-quarto-free', 'API\\Petshop\\QuartoController@checkQuartoIsFree');
+    });
+
+    Route::group(['prefix' => 'turmas'], function () {
+        Route::get('/', 'API\\Petshop\\TurmaController@search');
+        Route::get('/check-turma-free', 'API\\Petshop\\TurmaController@checkTurmaIsFree');
+    });
+
+    Route::group(['prefix' => 'esteticas'], function () {
+        Route::get('/get-jornada', 'API\\Petshop\\EsteticaController@getJornada');
+        Route::get('/get-current-agendamentos', 'API\\Petshop\\EsteticaController@getCurrentAgendamentos');
+    });
+
+    Route::group(['prefix' => 'animais'], function () {
+        Route::get('/', 'API\\Petshop\\AnimalController@search');
+        Route::get('/especies', 'API\\Petshop\\AnimalController@searchEspecie');
+        Route::post('/store-especie', 'API\\Petshop\\AnimalController@storeEspecie');
+        Route::get('/racas', 'API\\Petshop\\AnimalController@searchRaca');
+        Route::post('/store-raca', 'API\\Petshop\\AnimalController@storeRaca');
+        Route::get('/pelagens', 'API\\Petshop\\AnimalController@searchPelagem');
+        Route::post('/store-pelagem', 'API\\Petshop\\AnimalController@storePelagem');
+
+        Route::get('/pesquisa', 'API\\AnimalController@pesquisa');
+        Route::post('/store', 'API\\AnimalController@store');
+        Route::post('/update', 'API\\AnimalController@update');
     });
 
     Route::group(['prefix' => 'servicos'], function () {
@@ -163,6 +205,7 @@ Route::group(['prefix' => 'conta-receber'], function () {
 });
 
 Route::group(['prefix' => 'produtos'], function () {
+    Route::get('/', 'API\\ProdutoController@pesquisa');
     Route::get('/getBarcode', 'API\\ProdutoController@getBarcode');
     Route::post('/store', 'API\\ProdutoController@store');
     Route::get('/pesquisa', 'API\\ProdutoController@pesquisa');
@@ -566,5 +609,3 @@ Route::group(['prefix' => '/controle_comandas'], function(){
     Route::get('/pedido/{id}', 'ControleComanda\\HomeController@pedido')->middleware('authAppComanda');
 
 });
-
-

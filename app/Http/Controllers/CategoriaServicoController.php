@@ -27,6 +27,9 @@ class CategoriaServicoController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge([
+            'empresa_id' => $request->empresa_id ?? request()->empresa_id
+        ]);
         $this->_validate($request);
         try {
             DB::transaction(function () use ($request) {
@@ -51,6 +54,9 @@ class CategoriaServicoController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->merge([
+            'empresa_id' => $request->empresa_id ?? request()->empresa_id
+        ]);
         $this->_validate($request);
         $item = CategoriaServico::findOrFail($id);
         try {
@@ -68,6 +74,7 @@ class CategoriaServicoController extends Controller
     private function _validate(Request $request)
     {
         $rules = [
+            'empresa_id' => 'required',
             'nome' => 'required|max:50'
         ];
         $messages = [

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="512" height="512">
+<rect x="15" y="75.25" style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" width="482" height="361.499"/>
+<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="15" y1="135.5" x2="497" y2="135.5"/>
+<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="75.25" y1="75.25" x2="75.25" y2="135.5"/>
+<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="135.5" y1="75.25" x2="135.5" y2="135.5"/>
+<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="195.75" y1="75.25" x2="195.75" y2="135.5"/>
+<path style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" d="M175.708,306.382&#10;&#9;c0,16.638-13.487,30.125-30.125,30.125h0c-16.638,0-30.125-13.487-30.125-30.125v-44.25c0-16.638,13.487-30.125,30.125-30.125h0&#10;&#9;c16.638,0,30.125,13.487,30.125,30.125"/>
+<polyline style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" points="336.292,351.507 336.292,232.007 &#10;&#9;338.292,232.007 366.417,292.257 394.542,232.007 396.542,232.007 396.542,351.507 "/>
+<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="225.875" y1="351.507" x2="225.875" y2="292.257"/>
+<line style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" x1="286.768" y1="347.994" x2="256" y2="292.257"/>
+<path style="fill:none;stroke:#f0851d;stroke-width:30;stroke-miterlimit:10;" d="M256,292.257h-30.125v-60.25H256&#10;&#9;c16.638,0,30.125,13.487,30.125,30.125v0C286.125,278.769,272.638,292.257,256,292.257z"/>
+</svg>

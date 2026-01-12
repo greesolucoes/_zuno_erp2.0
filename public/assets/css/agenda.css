@@ -1,0 +1,481 @@
+.btn-group {
+    gap: 6px;
+}
+.btn-primary:disabled,
+.btn-primary:active {
+    background-color: #322142 !important;
+    border-color: #322142 !important;
+    color: #fff !important;
+    opacity: 0.50;
+}
+
+.fc-list-event-graphic {
+  display: none !important;
+}
+
+.bg-primary {
+  background-color: #600eb8 !important;
+}
+
+.bg-warning {
+  background-color: #f68e38 !important;
+}
+
+.card {
+  background-color: #fbfbfb !important;
+}
+.card-body {
+  padding: 14px !important;
+}
+
+#agenda-status-select .dropdown-item.active {
+  background-color: rgba(0, 0, 0, 0.8);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.fc-toolbar.fc-header-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fc-toolbar.fc-header-toolbar > * {
+  flex: 1;
+}
+.fc-toolbar.fc-header-toolbar > *:nth-child(2) {
+  text-align: center;
+}
+.fc-toolbar.fc-header-toolbar > *:nth-child(3) {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.fc .fc-toolbar-title {
+  color: #48185b !important;
+}
+
+.fc-daygrid-dot-event .fc-event-title {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.fc-h-event .fc-event-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.selected-service-button {
+  opacity: 0.50;
+  pointer-events: none;
+}
+
+.fc-daygrid-event,
+.fc-list-event {
+  background-color: #fcfcfc;
+}
+
+.fc-list-event {
+  border-radius: 7px;
+}
+.fc-list-day-cushion {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.fc-list-table {
+  border-collapse: separate !important;
+  border-spacing: 0 20px !important; 
+}
+
+.fc-list-table:first-child {
+  border-collapse: unset !important;
+}
+
+.fc-list-event:hover {
+  background-color: #f1f1f1;
+  scale: 1.0150;
+  transition: all 150ms ease-in;
+}
+.agendamento-hover {
+  scale: 1.0150;
+  transition: all 150ms ease-in;
+}
+
+.fc-daygrid-day-frame {
+  cursor: pointer;
+}
+
+.estado-agendado-area {
+  background-color: #322142;
+}
+.btn-agendado {
+  border: 2px solid #322142;
+  color: #322142;
+}
+
+.btn-modal-status {
+  padding: 10px !important;
+  font-size: 14px !important;
+}
+
+.estado-em-andamento-area {
+  background-color: #0a7cff;
+}
+.btn-em-andamento {
+  border: 2px solid #0a7cff;
+  color: #0a7cff;
+}
+
+.estado-pendente-aprovacao-area {
+  background-color: #efc90b;
+}
+.btn-pendente-aprovacao {
+  border: 2px solid #efc90b;
+  color: #efc90b;
+}
+
+.estado-concluido-area {
+  background-color: #28A745;
+}
+.btn-concluido {
+  border: 2px solid #28A745;
+  color: #28A745;
+}
+
+.estado-cancelado-area{
+  background-color: #f40707;
+}
+.btn-cancelado {
+  border: 2px solid #f40707;
+  color: #f40707;
+}
+
+.estado-rejeitado-area{
+  background-color: #b82e2e;
+}
+.btn-rejeitado {
+  border: 2px solid #b82e2e;
+  color: #b82e2e;
+}
+
+.btn-agendamento-secondary {
+  border: 2px solid #48185b;
+  background-color: transparent !important;
+  color: #48185b;
+
+  i {
+    color: #48185b;
+  }  
+}
+
+.btn-agendamento-secondary:hover,
+.btn-agendamento-checklist:hover {
+  background-color: #48185b !important;
+  color: #fff !important;
+  opacity: 1;
+
+  i {
+    color: #fff !important;
+  }
+}
+
+.btn-agendamento-checklist {
+  border: 2px solid #48185b;
+  background-color: transparent !important;
+  color: #48185b;
+  padding: 2px 6px !important;
+  border-radius: 50% !important;
+
+  i {
+    color: #48185b;
+  }
+}
+
+.btn-agendado,
+.btn-em-andamento,
+.btn-concluido,
+.btn-cancelado,
+.btn-rejeitado,
+.btn-pendente-aprovacao {
+  padding: 5px 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  font-weight: 520;
+  font-size: 13.5px;
+  transition: all 150ms ease-in;
+}
+
+.btn-agendado.selected,
+.btn-agendado:hover {
+  color: #fff;
+  background-color: #3d1167;
+}
+.btn-em-andamento.selected,
+.btn-em-andamento:hover {
+  color: #fff;
+  background-color: #0a7cff;
+}
+.btn-concluido.selected,
+.btn-concluido:hover {
+  color: #fff;
+  background-color: #28A745;
+}
+.btn-cancelado.selected,
+.btn-cancelado:hover {
+  color: #fff;
+  background-color: #f40707;
+}
+.btn-rejeitado.selected,
+.btn-rejeitado:hover {
+  color: #fff;
+  background-color: #b82e2e;
+}
+.btn-pendente-aprovacao.selected,
+.btn-pendente-aprovacao:hover {
+  color: #fff;
+  background-color: #efc90b;
+}
+
+.selected:hover {
+  opacity: 0.8;
+}
+
+.fc-event,
+.fc .fc-list-table td {
+  padding: 0px 5px;
+  cursor: pointer !important;
+}
+
+.fc-daygrid-day-frame:hover {
+  background: #16166b10;
+  position: relative;
+}
+
+.fc-daygrid-day-top {
+  margin-top: 5px;
+}
+
+.fc-daygrid-day:hover .fc-daygrid-day-top::after {
+  content: 'Clique para agendar';
+  display: block;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 6px;
+  font-size: clamp(8px, 1.5vh, 14px);
+  border-radius: 4px;
+  color: #000;
+  text-align: center;
+  margin: auto;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.fc-daygrid-event-dot {
+  display: none !important;
+}
+
+.agendamento-container-list b {
+  color: #48185b
+}
+
+.fc .fc-list-table {
+  max-width: 400px;
+}
+
+.fc-list-day-text {
+  color: #48185b !important;
+}
+
+.fc-list-event-title {
+  border-left: hidden !important;
+}
+
+.connect-line {
+  height: 20px;
+  width: 3px;
+}
+.connect-row {
+  height: 3px;
+  width: 50px;
+}
+.connect-circle {
+  height: 7px;
+  width: 7px;
+  border-radius: 50%;
+}
+
+.horario-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-right: 10px;
+  border-right: 2px solid #ccc;
+  padding: 10px;
+  height: 100%;
+}
+
+.pet-info {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #ccc;
+}
+
+.month-status {
+  color: #fff;
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.day-status {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top-right-radius: 5px;
+  padding: 3px;
+  text-align: center;
+  color: #fff;
+  width: 75px;
+}
+
+.pet-label-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.fc-daygrid-day-events {
+  pointer-events: none !important;
+}
+
+.fc-daygrid-event-harness,
+.agendamento-container {
+  pointer-events: auto !important;
+}
+
+#custom-tooltip {
+  position: absolute;
+  max-width: 400px;
+  width: 100%;
+  z-index: 999;
+  background: #fcfcfc;
+  color: #fff;
+  border: 1px solid #aaa;
+  box-shadow: 2px 3px 2px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  font-size: 0.9rem;
+  pointer-events: none !important;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+#custom-tooltip.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.show-more-btn {
+  display: block;
+  margin: 4px auto 0;
+  background: #48185b;
+  color: #fff;
+  border: none;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  pointer-events: auto !important;
+  z-index: 11;
+  position: relative;
+}
+
+.show-more-btn:hover {
+  background: #8754b7;
+}
+
+.without-agendamentos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 100%;
+  color: #56327a;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.without-agendamentos img {
+  max-width: 100px;
+  width: 100%;
+  object-fit: cover;
+  margin: 0 auto;
+}
+
+.without-agendamentos p {
+  font-size: 17px;
+}
+
+.servico-item, 
+.produto-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #48185b;
+  margin-top: 15px;
+}
+
+.mc__anexo {
+    max-width: 100%;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    overflow: hidden;
+}
+
+.mc__anexo-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.mc__anexo-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 343px;
+  position: relative;
+}
+
+.mc__anexo-container > .add-image-btn {
+    max-width: calc(50% - 5px);
+}
+
+.plano-agendamento-card {
+  border-bottom-left-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+}

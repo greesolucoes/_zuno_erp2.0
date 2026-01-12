@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Usuario;
 use App\Models\Tributacao;
+use Illuminate\Support\Facades\Route;
 
 class Menu
 {
@@ -68,6 +69,10 @@ class Menu
 						'rota' => route('listaDePrecos.index')
 					],
 					[
+						'nome' => 'Divisão de Grade',
+						'rota' => route('divisaoGrade.index')
+					],
+					[
 						'nome' => 'Categorias de Contas',
 						'rota' => route('categoria-conta.index')
 					],
@@ -87,6 +92,10 @@ class Menu
 					[
 						'nome' => 'Usuários',
 						'rota' => route('usuarios.index')
+					],
+					[
+						'nome' => 'Cidades',
+						'rota' => route('cidades.index')
 					]
 				]
 			],
@@ -212,6 +221,237 @@ class Menu
 				]
 			],
 			[
+				'titulo' => 'Pet Shop',
+				'icone' => 'bx bx-bone',
+				'subs' => [
+					[
+						'nome' => 'Pets',
+						'rota' => $this->safeRoute('animais.pacientes.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Espécies',
+						'rota' => $this->safeRoute('animais.especies.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Raças',
+						'rota' => $this->safeRoute('animais.racas.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Pelagens',
+						'rota' => $this->safeRoute('animais.pelagens.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Cliente Plano',
+						'rota' => $this->safeRoute('petshop.planos.usuario.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Cliente Avulso (Portal)',
+						'rota' => $this->safeRoute('petshop.planos.usuarios-avulso.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Gerenciar Planos',
+						'rota' => $this->safeRoute('petshop.gerenciar.planos'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Médicos',
+						'rota' => $this->safeRoute('vet.medicos.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Salas de Atendimento',
+						'rota' => $this->safeRoute('vet.salas-atendimento.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Salas de Internação',
+						'rota' => $this->safeRoute('vet.salas-internacao.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Checklist',
+						'rota' => $this->safeRoute('vet.checklist.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Alergias',
+						'rota' => $this->safeRoute('vet.allergies.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Condições crônicas',
+						'rota' => $this->safeRoute('vet.chronic-conditions.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Medicamentos',
+						'rota' => $this->safeRoute('vet.medicines.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Vacinas',
+						'rota' => $this->safeRoute('vacina.vacinas.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Modelo de Atendimento',
+						'rota' => $this->safeRoute('vet.modelos-atendimento.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Modelo de Avaliação',
+						'rota' => $this->safeRoute('vet.assessment-models.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Modelo de Prescrição',
+						'rota' => $this->safeRoute('vet.prescription-models.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Atendimentos',
+						'rota' => $this->safeRoute('vet.atendimentos.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Prontuários (Fila)',
+						'rota' => $this->safeRoute('vet.records.queue'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Prontuários (Histórico)',
+						'rota' => $this->safeRoute('vet.records.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Exames',
+						'rota' => $this->safeRoute('vet.exams.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Prescrições',
+						'rota' => $this->safeRoute('vet.prescriptions.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Vacinações (Painel)',
+						'rota' => $this->safeRoute('vet.vaccinations.panel'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Vacinações (Histórico)',
+						'rota' => $this->safeRoute('vet.vaccinations.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Aplicar Vacinação',
+						'rota' => $this->safeRoute('vet.vaccinations.scheduled'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Internações (Histórico)',
+						'rota' => $this->safeRoute('vet.hospitalizations.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Veterinário - Ocupação de Leitos',
+						'rota' => $this->safeRoute('vet.hospitalizations.occupancy'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Tele-entregas',
+						'rota' => $this->safeRoute('tele_entregas.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Tele-entregas - Tipos',
+						'rota' => $this->safeRoute('tipos_tele_entregas.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Hotel - Reservas',
+						'rota' => $this->safeRoute('hoteis.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Hotel - Quartos',
+						'rota' => $this->safeRoute('quartos.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Hotel - Eventos de Quarto',
+						'rota' => $this->safeRoute('quartos.eventos.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Hotel - Monitoramento (Hotel)',
+						'rota' => $this->safeRoute('hotel.monitoramento.hotel'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Hotel - Monitoramento (Quartos)',
+						'rota' => $this->safeRoute('hotel.monitoramento.quartos'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Creche - Reservas',
+						'rota' => $this->safeRoute('creches.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Creche - Turmas',
+						'rota' => $this->safeRoute('turmas.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Creche - Eventos de Turma',
+						'rota' => $this->safeRoute('turmas.eventos.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Creche - Monitoramento (Creche)',
+						'rota' => $this->safeRoute('creche.monitoramento.creche'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Creche - Monitoramento (Salas)',
+						'rota' => $this->safeRoute('creche.monitoramento.salas'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Estética - Gerenciar',
+						'rota' => $this->safeRoute('esteticas.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Estética - Pendentes',
+						'rota' => $this->safeRoute('petshop.esteticista.agendamentos.pendente'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Estética - Pendentes (Avulso)',
+						'rota' => $this->safeRoute('petshop.esteticista.agendamentos.pendente-avulso'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Agenda',
+						'rota' => $this->safeRoute('petshop.agenda.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Configurações Pet Shop',
+						'rota' => $this->safeRoute('petshop.config.index'),
+						'mostrar_sempre' => true,
+					],
+				]
+			],
+			[
 				'titulo' => 'Financeiro',
 				'icone' => 'bx bx-dollar',
 				'subs' => [
@@ -231,44 +471,75 @@ class Menu
 						'nome' => 'Gráficos',
 						'rota' => route('graficos.index')
 					],
+					[
+						'nome' => 'Boletos',
+						'rota' => route('boletos.index')
+					],
+					[
+						'nome' => 'Remessa de Boletos',
+						'rota' => route('remessa-boletos.index')
+					],
+					[
+						'nome' => 'Suprimento de Caixa',
+						'rota' => route('suprimentoCaixa.index')
+					],
+					[
+						'nome' => 'Sangria de Caixa',
+						'rota' => route('sangriaCaixa.index')
+					],
+					[
+						'nome' => 'Vendas em Crédito',
+						'rota' => route('vendasEmCredito.index')
+					],
+					[
+						'nome' => 'Financeiro (Config)',
+						'rota' => route('financeiro.index')
+					],
 				]
 			],
-
 			[
-				'titulo' => 'CTe',
-				'icone' => 'bx bx-bus',
+				'titulo' => 'Fiscal',
+				'icone' => 'bx bx-receipt',
 				'subs' => [
 					[
-						'nome' => 'Lista',
+						'nome' => 'NF-e',
+						'rota' => route('nferemessa.index')
+					],
+					[
+						'nome' => 'NFC-e',
+						'rota' => route('nfce.index')
+					],
+					[
+						'nome' => 'NFS-e',
+						'rota' => route('nfse.index')
+					],
+					[
+						'nome' => 'CT-e',
 						'rota' => route('cte.index')
 					],
 					[
-						'nome' => 'Nova',
-						'rota' => route('cte.create'),
-					],
-					[
-						'nome' => 'Categorias de Despesa',
-						'rota' => route('categoriaDespesa.index')
-					],
-					// [
-					// 	'nome' => 'Manifesto',
-					// 	'rota' => route('cte.manifesto')
-					// ],
-
-				]
-			],
-
-			[
-				'titulo' => 'CTe Os',
-				'icone' => 'bx bx-current-location',
-				'subs' => [
-					[
-						'nome' => 'Lista',
+						'nome' => 'CT-e OS',
 						'rota' => route('cteOs.index')
 					],
 					[
-						'nome' => 'Nova',
-						'rota' => route('cteOs.create'),
+						'nome' => 'MDF-e',
+						'rota' => route('mdfe.index')
+					],
+					[
+						'nome' => 'Manifesto (DFe)',
+						'rota' => route('dfe.index')
+					],
+					[
+						'nome' => 'Contingência',
+						'rota' => route('contigencia.index')
+					],
+					[
+						'nome' => 'Sintegra',
+						'rota' => route('sintegra.index')
+					],
+					[
+						'nome' => 'IBPT',
+						'rota' => route('ibpt.index')
 					],
 				]
 			],
@@ -289,21 +560,6 @@ class Menu
 			],
 
 			[
-				'titulo' => 'Locação',
-				'icone' => 'bx bx-bookmark',
-				'subs' => [
-					[
-						'nome' => 'Nova Locação',
-						'rota' => route('locacao.create')
-					],
-					[
-						'nome' => 'Listar',
-						'rota' => route('locacao.index')
-					]
-				]
-			],
-
-			[
 				'titulo' => 'Pedidos',
 				'icone' => 'bx bx-purchase-tag',
 				'subs' => [
@@ -312,24 +568,180 @@ class Menu
 						'rota' => route('pedidos.index')
 					],
 					[
-						'nome' => 'Adicionais',
-						'rota' => route('deliveryComplemento.index')
-					],
-					[
 						'nome' => 'Telas de Pedido',
-						'rota' => '/telasPedido'
+						'rota' => route('telasPedido.index')
 					],
 					[
 						'nome' => 'Controle de Pedidos',
 						'rota' => route('controleCozinha.selecionar')
 					],
 					[
-						'nome' => 'Cadastrar Mesas',
+						'nome' => 'Mesas',
 						'rota' => route('mesas.index')
 					],
 					[
-						'nome' => 'Controle de Comandas',
-						'rota' => route('pedidos.controleComandas')
+						'nome' => 'Tamanhos de Pizza',
+						'rota' => route('tamanhosPizza.index')
+					],
+					[
+						'nome' => 'Código de Desconto',
+						'rota' => route('codigoDesconto.index')
+					],
+					[
+						'nome' => 'Categorias de Despesa',
+						'rota' => route('categoriaDespesa.index')
+					],
+					[
+						'nome' => 'Adicionais (Delivery)',
+						'rota' => route('deliveryComplemento.index')
+					],
+				]
+			],
+			[
+				'titulo' => 'Delivery',
+				'icone' => 'bx bx-map',
+				'subs' => [
+					[
+						'nome' => 'Categorias',
+						'rota' => route('categoriaDelivery.index')
+					],
+					[
+						'nome' => 'Categorias Master',
+						'rota' => route('categoriaMasterDelivery.index')
+					],
+					[
+						'nome' => 'Produtos',
+						'rota' => route('produtoDelivery.index')
+					],
+					[
+						'nome' => 'Destaques',
+						'rota' => route('destaquesDelivery.index')
+					],
+					[
+						'nome' => 'Carrossel',
+						'rota' => route('carrosselDelivery.index')
+					],
+					[
+						'nome' => 'Funcionamento',
+						'rota' => route('funcionamentoDelivery.index')
+					],
+					[
+						'nome' => 'Bairros',
+						'rota' => route('bairrosDelivery.index')
+					],
+					[
+						'nome' => 'Bairros por Loja',
+						'rota' => route('bairrosDeliveryLoja.index')
+					],
+					[
+						'nome' => 'Cidades',
+						'rota' => route('cidadeDelivery.index')
+					],
+					[
+						'nome' => 'Endereços',
+						'rota' => route('enderecoDelivery.index')
+					],
+					[
+						'nome' => 'Clientes',
+						'rota' => route('clientesDelivery.index')
+					],
+				]
+			],
+			[
+				'titulo' => 'Ecommerce',
+				'icone' => 'bx bx-store',
+				'subs' => [
+					[
+						'nome' => 'Configurações',
+						'rota' => route('configEcommerce.index')
+					],
+					[
+						'nome' => 'Categorias',
+						'rota' => route('categoriaEcommerce.index')
+					],
+					[
+						'nome' => 'Produtos',
+						'rota' => route('produtoEcommerce.index')
+					],
+					[
+						'nome' => 'Produtos em Destaque',
+						'rota' => route('produtosDestaque.index')
+					],
+					[
+						'nome' => 'Carrossel',
+						'rota' => route('carrosselEcommerce.index')
+					],
+					[
+						'nome' => 'Cupons',
+						'rota' => route('cuponsEcommerce.index')
+					],
+					[
+						'nome' => 'Pedidos',
+						'rota' => route('pedidosEcommerce.index')
+					],
+					[
+						'nome' => 'Clientes',
+						'rota' => route('clienteEcommerce.index')
+					],
+					[
+						'nome' => 'Contato',
+						'rota' => route('contatoEcommerce.index')
+					],
+					[
+						'nome' => 'Informativos',
+						'rota' => route('informativoEcommerce.index')
+					],
+					[
+						'nome' => 'Blog - Posts',
+						'rota' => route('postBlog.index')
+					],
+					[
+						'nome' => 'Blog - Autores',
+						'rota' => route('autorPost.index')
+					],
+					[
+						'nome' => 'Blog - Categorias',
+						'rota' => route('categoriaPosts.index')
+					],
+					[
+						'nome' => 'Categorias (Loja)',
+						'rota' => route('categoriaDeLoja.index')
+					],
+				]
+			],
+			[
+				'titulo' => 'Locação',
+				'icone' => 'bx bx-bookmark',
+				'subs' => [
+					[
+						'nome' => 'Locações',
+						'rota' => route('locacao.index')
+					],
+				]
+			],
+			[
+				'titulo' => 'NumverShop',
+				'icone' => 'bx bx-store-alt',
+				'subs' => [
+					[
+						'nome' => 'Configurações',
+						'rota' => route('nuvemshop.index')
+					],
+					[
+						'nome' => 'Categorias',
+						'rota' => route('nuvemshop-categoria.index')
+					],
+					[
+						'nome' => 'Produtos',
+						'rota' => route('nuvemshop-produtos.index')
+					],
+					[
+						'nome' => 'Pedidos',
+						'rota' => route('nuvemshop-pedidos.index')
+					],
+					[
+						'nome' => 'Clientes',
+						'rota' => route('nuvemshop-clientes.index')
 					],
 				]
 			],
@@ -366,10 +778,83 @@ class Menu
 						'nome' => 'Ticket',
 						'rota' => route('tickets.index')
 					],
+					[
+						'nome' => 'Contrato',
+						'rota' => route('contrato.index')
+					],
+					[
+						'nome' => 'Etiquetas',
+						'rota' => route('etiquetas.index')
+					],
+					[
+						'nome' => 'Vídeos',
+						'rota' => route('videos.index')
+					],
+					[
+						'nome' => 'Push',
+						'rota' => route('push.index')
+					],
+					[
+						'nome' => 'Alertas',
+						'rota' => route('alertas.index')
+					],
+					[
+						'nome' => 'Pesquisa',
+						'rota' => route('pesquisa.index')
+					],
+					[
+						'nome' => 'Erros (Log)',
+						'rota' => route('errosLog.index')
+					],
+					[
+						'nome' => 'Atualizações do Sistema',
+						'rota' => route('appUpdate.index')
+					],
+					[
+						'nome' => 'Perfis de Acesso',
+						'rota' => route('perfilAcesso.index')
+					],
+					[
+						'nome' => 'Empresas',
+						'rota' => route('empresas.index')
+					],
+					[
+						'nome' => 'Planos',
+						'rota' => route('planos.index')
+					],
+					[
+						'nome' => 'Planos Pendentes',
+						'rota' => route('planosPendentes.index')
+					],
+					[
+						'nome' => 'Representantes',
+						'rota' => route('representantes.index')
+					],
+					[
+						'nome' => 'Filiais',
+						'rota' => route('filial.index')
+					],
+					[
+						'nome' => 'Representantes (REP)',
+						'rota' => route('rep.index')
+					],
+					[
+						'nome' => 'Contadores',
+						'rota' => route('contadores.index')
+					],
+					[
+						'nome' => 'Tickets (Super)',
+						'rota' => route('ticketsSuper.index')
+					],
 				]
 			],
 
 		];
+	}
+
+	private function safeRoute($routeName)
+	{
+		return Route::has($routeName) ? route($routeName) : '';
 	}
 
 	public function getMenu()
