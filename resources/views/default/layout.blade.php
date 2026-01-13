@@ -6,7 +6,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!--favicon-->
-        <link rel="icon" href="/favicon.png" type="image/x-icon" />
+        <link rel="icon" href="/favicon.svg" type="image/x-icon" />
 
         <link href="/assets/vendor/flatpickr/flatpickr.min.css" rel="stylesheet" type="text/css" />
         <link href="/assets/css/simplebar.css" rel="stylesheet" />
@@ -54,9 +54,7 @@
             <div class="sidebar-wrapper" data-simplebar="true">
                 <div class="sidebar-header">
                     <div>
-                        <a href="{{ route('graficos.index') }}">
-                            <img src="/logos/default.png" class="logo-icon" alt="logo icon">
-                        </a>
+                        
                     </div>
                     <div class="toggle-icon ms-auto"><i class='bx bx-first-page'></i>
                     </div>
