@@ -1,0 +1,300 @@
+/* ----- Classes para definir cores de texto ----- */
+.txt-white { color: var(--white1) !important; }
+.txt-black { color: var(--black1) !important; }
+.txt-blue1 { color: var(--blue1) !important; }
+.txt-blue2 { color: var(--blue2) !important; }
+.txt-blue3 { color: var(--blue3) !important; }
+.txt-blue4 { color: var(--blue4) !important; }
+.txt-grey1 { color: var(--grey1) !important; }
+.txt-grey2 { color: var(--grey2) !important; }
+.txt-grey3 { color: var(--grey3) !important; }
+.txt-grey4 { color: var(--grey4) !important; }
+.txt-grey5 { color: var(--grey5) !important; }
+.txt-grey6 { color: var(--grey6) !important; }
+.txt-blue1-light { color: var(--blue1-light) !important; }
+.txt-blue2-light { color: var(--blue2-light) !important; }
+.txt-blue3-light { color: var(--blue3-light) !important; }
+.txt-blue4-light { color: var(--blue4-light) !important; }
+.txt-grey1-light { color: var(--grey1-light) !important; }
+.txt-grey2-light { color: var(--grey2-light) !important; }
+.txt-grey3-light { color: var(--grey3-light) !important; }
+.txt-grey4-light { color: var(--grey4-light) !important; }
+.txt-grey5-light { color: var(--grey5-light) !important; }
+.txt-grey6-light { color: var(--grey6-light) !important; }
+.txt-blue-absolute { color: var(--blue-absolute) !important; }
+.txt-blue2-absolute { color: var(--blue2-absolute) !important; }
+.txt-grey-absolute { color: var(--grey-absolute) !important; }
+.txt-red-absolute { color: var(--red-absolute) !important; }
+.txt-green-absolute { color: var(--green-absolute) !important; }
+.txt-orange-absolute { color: var(--orange-absolute) !important; }
+.txt-white-absolute { color: var(--white-absolute) !important; }
+.txt-yellow-absolute { color: var(--yellow-absolute) !important; }
+.txt-light-red-absolute { color: var(--light-red-absolute) !important; }
+.txt-black-absolute { color: var(--black-absolute) !important; }
+
+/* ----- Classes para definir cores de fundo ----- */
+.bg-white { background-color: var(--white1) !important; }
+.bg-black { background-color: var(--black1) !important; }
+.bg-blue1 { background-color: var(--blue1) !important; }
+.bg-blue2 { background-color: var(--blue2) !important; }
+.bg-blue3 { background-color: var(--blue3) !important; }
+.bg-blue4 { background-color: var(--blue4) !important; }
+.bg-grey1 { background-color: var(--grey1) !important; }
+.bg-grey2 { background-color: var(--grey2) !important; }
+.bg-grey3 { background-color: var(--grey3) !important; }
+.bg-grey4 { background-color: var(--grey4) !important; }
+.bg-grey5 { background-color: var(--grey5) !important; }
+.bg-grey6 { background-color: var(--grey6) !important; }
+.bg-white-light { background-color: var(--white1-light) !important; }
+.bg-blue1-light { background-color: var(--blue1-light) !important; }
+.bg-blue2-light { background-color: var(--blue2-light) !important; }
+.bg-blue3-light { background-color: var(--blue3-light) !important; }
+.bg-blue4-light { background-color: var(--blue4-light) !important; }
+.bg-grey1-light { background-color: var(--grey1-light) !important; }
+.bg-grey2-light { background-color: var(--grey2-light) !important; }
+.bg-grey3-light { background-color: var(--grey3-light) !important; }
+.bg-grey4-light { background-color: var(--grey4-light) !important; }
+.bg-grey5-light { background-color: var(--grey5-light) !important; }
+.bg-grey6-light { background-color: var(--grey6-light) !important; }
+.bg-blue-absolute { background-color: var(--blue-absolute) !important; }
+.bg-blue2-absolute { background-color: var(--blue2-absolute) !important; }
+.bg-grey-absolute { background-color: var(--grey-absolute) !important; }
+.bg-red-absolute { background-color: var(--red-absolute) !important; }
+.bg-green-absolute { background-color: var(--green-absolute) !important; }
+.bg-orange-absolute { background-color: var(--orange-absolute) !important; }
+.bg-white-absolute { background-color: var(--white-absolute) !important; }
+.bg-yellow-absolute { background-color: var(--yellow-absolute) !important; }
+.bg-light-red-absolute { background-color: var(--light-red-absolute) !important; }
+.bg-black-absolute { background-color: var(--black-absolute) !important; }
+
+/* ----- Classes para definir cores de borda ----- */
+.border-white { border-color: var(--white1) !important; }
+.border-black { border-color: var(--black1) !important; }
+.border-blue1 { border-color: var(--blue1) !important; }
+.border-blue2 { border-color: var(--blue2) !important; }
+.border-blue3 { border-color: var(--blue3) !important; }
+.border-blue4 { border-color: var(--blue4) !important; }
+.border-grey1 { border-color: var(--grey1) !important; }
+.border-grey2 { border-color: var(--grey2) !important; }
+.border-grey3 { border-color: var(--grey3) !important; }
+.border-grey4 { border-color: var(--grey4) !important; }
+.border-grey5 { border-color: var(--grey5) !important; }
+.border-grey6 { border-color: var(--grey6) !important; }
+.border-white-light { border-color: var(--white1-light) !important; }
+.border-blue1-light { border-color: var(--blue1-light) !important; }
+.border-blue2-light { border-color: var(--blue2-light) !important; }
+.border-blue3-light { border-color: var(--blue3-light) !important; }
+.border-blue4-light { border-color: var(--blue4-light) !important; }
+.border-grey1-light { border-color: var(--grey1-light) !important; }
+.border-grey2-light { border-color: var(--grey2-light) !important; }
+.border-grey3-light { border-color: var(--grey3-light) !important; }
+.border-grey4-light { border-color: var(--grey4-light) !important; }
+.border-grey5-light { border-color: var(--grey5-light) !important; }
+.border-grey6-light { border-color: var(--grey6-light) !important; }
+.border-blue-absolute { border-color: var(--blue-absolute) !important; }
+.border-blue2-absolute { border-color: var(--blue2-absolute) !important; }
+.border-grey-absolute { border-color: var(--grey-absolute) !important; }
+.border-red-absolute { border-color: var(--red-absolute) !important; }
+.border-green-absolute { border-color: var(--green-absolute) !important; }
+.border-orange-absolute { border-color: var(--orange-absolute) !important; }
+.border-white-absolute { border-color: var(--white-absolute) !important; }
+.border-yellow-absolute { border-color: var(--yellow-absolute) !important; }
+.border-light-red-absolute { border-color: var(--light-red-absolute) !important; }
+.border-black-absolute { border-color: var(--black-absolute) !important; }
+
+/* ----- Comportamentos especiais das classes de definição de cores com base no componente ----- */
+.txt-blue1:hover {
+	color: var(--blue2) !important;
+	font-weight: 500;
+}
+
+button.bg-blue1:hover, a.bg-blue1:hover,
+button.bg-blue-absolute:hover, a.bg-blue-absolute:hover {
+	background-color: var(--blue2-light) !important;
+}
+
+button.bg-blue2.bg-blue-absolute-hover:hover, a.bg-blue2.bg-blue-absolute-hover:hover {
+	background-color: var(--blue-absolute) !important;
+}
+
+button.bg-blue2-absolute:hover, a.bg-blue2-absolute:hover {
+	background-color: var(--blue1) !important;
+}
+
+button.bg-green-absolute:hover, a.bg-green-absolute:hover {
+	background-color: var(--green-absolute-hover) !important;
+}
+
+button.bg-orange-absolute:hover, a.bg-orange-absolute:hover {
+	background-color: var(--orange-absolute-hover) !important;
+}
+
+button.bg-red-absolute:hover, a.bg-red-absolute:hover {
+	background-color: var(--red-absolute-hover) !important;
+}
+
+a:hover,
+button:hover {
+	text-decoration: none;
+	transition: background-color .3s;
+	-webkit-transition: background-color .3s;
+}
+
+.white-space-normal {
+	white-space: normal;
+}
+
+.content-margin {
+	padding-top: 3.5rem;
+}
+
+@media (min-width: 768px) {
+	.col-md-6-space .col-md-6 {
+		width: 49%;
+	}
+
+	.col-md-4-space .col-md-4 {
+		width: 32%;
+	}
+}
+
+@media (min-width: 992px) {
+	.col-lg-6-space .col-lg-6 {
+		width: 49%;
+	}
+
+	.col-lg-4-space .col-lg-4 {
+		width: 32%;
+	}
+}
+
+@media (min-width: 992px) {
+	.col-lg-6-space .col-lg-6 {
+		width: 49%;
+	}
+
+	.col-lg-4-space .col-lg-4 {
+		width: 32%;
+	}
+}
+
+@media (min-width: 1200px) {
+	.col-xl-6-space .col-xl-6 {
+		width: 49%;
+	}
+
+	.col-xl-4-space .col-xl-4 {
+		width: 32%;
+	}
+}
+
+.container-msg p,
+.container-msg-modal p {
+	width: 100%;
+	text-align: center;
+	display: block;
+}
+
+.container-msg .alert .close svg,
+.container-msg-modal .alert .close svg {
+	background-color: var(--white-absolute);
+	padding: 0.4rem 0.6rem;
+	border-radius: 50%;
+	color: var(--black-absolute);
+}
+
+.container-msg .alert.alert-warning .close svg,
+.container-msg-modal .alert.alert-warning .close svg {
+	color: var(--yellow-absolute);
+}
+
+.container-msg .alert.alert-info .close svg,
+.container-msg-modal .alert.alert-info .close svg {
+	color: var(--blue-absolute);
+}
+
+.container-msg .alert.alert-danger .close svg,
+.container-msg-modal .alert.alert-danger .close svg {
+	color: var(--red-absolute);
+}
+
+.container-msg .alert.alert-success .close svg,
+.container-msg-modal .alert.alert-success .close svg {
+	color: var(--green-absolute);
+}
+
+/* Classes especiais utilizadas na versão anterior por algumas funções */
+.ocultar,
+.informacoes_config,
+.linhaPadraoHidden {
+	display: none !important;
+}
+
+#print-area,
+.statusTexto,
+.grupos,
+.locais {
+	display: none;
+}
+
+.statusIndicador:hover + .statusTexto {
+	display: block;
+}
+
+.disabled-btn {
+	pointer-events: none;
+	touch-action: none;
+	opacity: .65;
+}
+
+.centraliza {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	position: relative !important;
+	width: 100%;
+	margin: 0 auto !important;
+}
+
+.negrito {
+	font-weight: 700;
+}
+
+.informacoes_add_print {
+	border: var(--black-absolute) solid 0.1rem;
+	-webkit-border-radius: 0.3rem;
+	-moz-border-radius: 0.3rem;
+	border-radius: 0.3rem;
+	padding: 1rem;
+	margin: 1rem;
+}
+
+.informacoes_add_print .fw-normal {
+	font-weight: normal;
+	font-size: 1.2em !important;
+}
+
+.informacoes_add_print h1 {
+	font-size: 1.8rem;
+	font-weight: 700;
+}
+
+.page-header:after, .page-header:before {
+	width: auto;
+	height: auto;
+}
+
+.bullet-item:before {
+	content: "\2022";
+	margin-right: 0.6rem;
+}
+
+.hidden-checkbox {
+	visibility: visible !important;
+	cursor: pointer !important;
+	position: absolute !important;
+	width: 100% !important;
+	right: 0 !important;
+	height: 100% !important;
+}

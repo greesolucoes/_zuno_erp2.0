@@ -1,0 +1,47 @@
+i.circle-status-green {
+    color: #5cb85c;
+}
+
+i.circle-status-dark-green {
+	color: darkgreen;
+}
+
+i.circle-status-pink {
+	color: #FF007F;
+}
+
+i.circle-status-red {
+    color: #d9534f;
+}
+
+i.circle-status-yellow {
+    color: #f0ad4e;
+}
+
+i.circle-status-white {
+    color: #5bc0de;
+}
+
+i.circle-status-tea{
+    color: #00897B;
+}
+
+i.circle-status-black{
+    color: #141414;
+}
+
+i.circle-status-purple{
+    color: #5a0099;
+}
+
+i.circle-status-blue{
+	color: #4871f7;
+}
+
+i.circle-status-grey{
+	color: #666;
+}
+
+.tooltip{
+    max-width: 120px !important;
+}

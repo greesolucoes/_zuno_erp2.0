@@ -1,0 +1,58 @@
+.btn{
+    white-space: normal !important;
+    word-wrap: break-word;
+}
+
+.tr-gray{
+    background-color: #ecf0f1;
+}
+
+.table {
+    width: 100%;
+    max-width: none !important;
+}
+
+.modal-xl{
+    min-width: 93%;
+}
+ /*width */
+::-webkit-scrollbar {
+    right: 2px;
+    height: 6px;
+    width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 6px;
+    background-clip: content-box;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-radius: 6px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.nav {
+    margin-bottom: 10px;
+}
+
+.table-responsive{
+    overflow-x: auto;
+}
+
+ul.nav.nav-tabs[role="tablist"] {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.page-header{
+    padding-top: 20px;
+}

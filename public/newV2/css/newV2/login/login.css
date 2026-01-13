@@ -1,0 +1,412 @@
+body {
+	overflow: hidden;
+}
+
+/* ------ SLIDE IMAGENS ------ */
+.login .banner-slider .slick-slide {
+	height: 100vh;
+}
+
+.login .banner-slider .slide-item img {
+	height: 100%;
+	width: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+/* ------ SLIDE TEXTOS (CONTEUDO) ------ */
+.login .slide-content {
+	padding-bottom: 8%;
+}
+
+.login .slide-content .banner-content .slide-text {
+	opacity: 0;
+	position: absolute;
+	z-index: 0;
+}
+
+.login .slide-content .banner-content .slide-text.ativo {
+	opacity: 1;
+	transition: 2s ease;
+	transition-property: opacity;
+	z-index: 1;
+}
+
+.login .slide-content .banner-content .slide-text h1,
+.login .slide-content .banner-content .slide-text h1 span {
+	font-weight: 700;
+	font-size: 4rem;
+}
+
+.login .slide-content .banner-content .slide-text p {
+	font-weight: 400;
+	font-size: 2.5rem;
+}
+
+.login .slide-content .banner-content .slide-text a {
+	font-weight: 700;
+	font-size: 2.2rem;
+	text-transform: uppercase;
+	border-radius: 0.5rem;
+	padding: 0.8rem 0 0.8rem 0;
+	width: 100%;
+}
+
+/* ------ SLIDE NAVIGATION ------ */
+.login .slide-content .slider-nav {
+	display: flex;
+	align-items: center;
+	z-index: 2;
+	border-radius: 2.7rem;
+	padding: 1rem 2rem 1rem 2rem;
+	margin: 0;
+	gap: 1.5rem;
+}
+
+.login .slide-content .slider-nav .dots-nav {
+	margin: 0;
+	padding: 0;
+	display: flex;
+	gap: 1rem;
+}
+
+.login .slide-content .slider-nav .dots-nav .nav-btn {
+	width: 1rem;
+	height: 1rem;
+	background-color: var(--grey1);;
+	border-radius: 50%;
+	cursor: pointer;
+	box-shadow: 0 0 0.2rem rgba(255, 255, 255, 0.5);
+	transition: 0.3s ease;
+}
+
+.login .slide-content .slider-nav .dots-nav li::marker {
+	content: '';
+}
+
+.login .slide-content .slider-nav .dots-nav .slick-active .nav-btn {
+	background-color: var(--blue1);
+}
+
+.login .slide-content .slider-nav .dots-nav li .nav-btn:hover {
+	transform: scale(1.2);
+	background-color: var(--blue1);
+}
+
+.login .slide-content .slider-nav :is(.btn-next, .btn-prev) {
+	background: none;
+	border: none;
+	color: var(--black-absolute);
+	display: flex;
+	align-items: center;
+}
+
+.login .slide-content .slider-nav :is(.btn-next, .btn-prev) svg {
+	font-size: 1.3rem;
+}
+
+/* ------ SLIDE MOBILE ------ */
+.login .login-banner-mobile .slick-track {
+	gap: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.login .login-banner-mobile .slide-banner .slide-card {
+	background-color: var(--grey3);
+	padding: 3rem;
+	border-radius: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	width: 100%;
+	height: 22rem;
+}
+
+.login .login-banner-mobile .slide-banner .slide-card .slide-text-content h1 {
+	font-size: 2rem;
+}
+
+.login .login-banner-mobile .slide-banner .slide-card .slide-button {
+	background-color: transparent;
+	color: var(--blue1);
+	border: 0.2rem solid var(--blue1);
+	border-radius: 0.5rem;
+	padding: 0.7rem 6rem;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	font-weight: 700;
+	text-transform: uppercase;
+	width: 100%;
+	text-decoration: none;
+}
+
+.login .login-banner-mobile .slide-banner .slide-card .slide-button:hover {
+	background-color: var(--blue1) !important;
+	color: var(--white-absolute) !important;
+}
+
+.login .login-banner-mobile .slider-arrow-mobile {
+	pointer-events: none;
+}
+
+.login .login-banner-mobile .slider-arrow-mobile .btn-prev {
+	margin-left: -1.2rem;
+}
+
+.login .login-banner-mobile .slider-arrow-mobile .btn-next {
+	margin-right: -1.5rem;
+}
+
+.login .login-banner-mobile .slider-arrow-mobile .slide-arrows {
+	width: auto;
+	padding: 1.1rem 1.3rem;
+	border-radius: 50%;
+	background-color: var(--blue2-absolute);
+	color: var(--white-absolute);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	pointer-events: auto;
+	cursor: pointer;
+}
+
+.login .login-banner-mobile .slider-arrow-mobile .slide-arrows svg {
+	font-size: 1.2rem;
+}
+
+/* ------ FORM LOGIN ------ */
+.login .login-form {
+	border-radius: 2.8rem;
+}
+
+.login .login-form label {
+	font-size: 1.4rem;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+.login .login-form input {
+	height: 3.5rem;
+	font-size: 1.6rem;
+	border: 0.05rem solid var(--grey3);
+}
+
+.login .login-form input::placeholder {
+	color: var(--grey-absolute);
+	font-size: 1.4rem;
+}
+
+.login .login-form button:not(.exibir-senha) {
+	width: 100%;
+	border-radius: 0.5rem;
+	border: none;
+	padding: 0.8rem;
+	text-transform: uppercase;
+}
+
+.login .help-text a {
+	color: #95A4AD;
+	font-size: 1.4rem;
+}
+
+.login .help-text a:hover {
+	color: var(--blue2);
+}
+/* ------ LOGO ------ */
+.login .sap-logo {
+	z-index: 1;
+	bottom: 3%;
+	right: 3%;
+	max-width: 16rem;
+}
+/* ------ COMPONENTES EXTRAS ------ */
+.login #messageBoxLogin {
+	position: absolute;
+	right: 1rem;
+	top: 1rem;
+	z-index: 10;
+	max-width: 40%;
+}
+
+.select2-container .select2-selection {
+	border-radius: 0.5rem;
+	background-color: var(--grey3);
+	border: none;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+	font-size: 1.4rem;
+	color: var(--blue2);
+}
+
+.select2-container--default .select2-results>.select2-results__options {
+	max-height: 20rem;
+	background-color: var(--grey3);
+}
+
+.select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar {
+	width: 0.6rem;
+}
+
+.select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar-track {
+	background-color: var(--grey1);
+}
+
+.select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar-thumb {
+	background-color: var(--grey4);
+}
+
+.select2-container--open .select2-dropdown--below {
+	border: none;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field {
+	border: none;
+	background-color: var(--grey3);
+	color: var(--blue2);
+}
+
+.select2-search--dropdown {
+	background-color: var(--grey3);
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+	background-color: var(--blue1-light);
+	color: var(--white-absolute);
+}
+
+.select2-container--default .select2-results__option[aria-selected=true] {
+	background-color: var(--blue1-light);
+	color: var(--white-absolute);
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+	border-style: none;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__clear {
+	display: none;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+	height: 0;
+	position: absolute;
+	top: 14%;
+	right: 8%;
+	width: 0;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow::after {
+	content: '\f077';
+	font-family: 'Font Awesome 5 Free', sans-serif;
+	font-weight: 900;
+	font-size: 1.2rem;
+	color: var(--blue2);
+}
+
+.select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow::after {
+	content: '\f078';
+	font-family: 'Font Awesome 5 Free', sans-serif;
+	font-weight: 900;
+	font-size: 1.2rem;
+	color: var(--blue2);
+}
+
+.banner-notebook,
+.banner-desktop,
+.banner-2k,
+.banner-4k {
+	display: none !important;
+}
+
+@media (min-width: 3000px) {
+	.banner-4k {
+		display: block !important;
+	}
+}
+
+@media (max-width: 2999px) and (min-width: 2000px) {
+	.banner-2k {
+		display: block !important;
+	}
+}
+
+@media (max-width: 1999px) and (min-width: 1401px) {
+	.banner-desktop {
+		display: block !important;
+	}
+}
+
+@media (max-width: 1400px) {
+	.login .slide-content .banner-content .slide-text h1,
+	.login .slide-content .banner-content .slide-text h1 span {
+		font-size: 3rem;
+	}
+
+	.login .slide-content .banner-content .slide-text p {
+		font-size: 2rem;
+	}
+
+	.login .slide-content .banner-content .slide-text a {
+		font-size: 1.8rem;
+	}
+
+	.banner-notebook {
+		display: block !important;
+	}
+}
+
+@media (min-width: 1200px) {
+	.login .slide-content {
+		padding-right: 10%;
+		padding-bottom: 4%;
+	}
+}
+
+@media (min-width: 1400px) {
+	.login .slide-content {
+		padding-bottom: 10%;
+	}
+}
+
+@media (min-width: 1600px) {
+	.login .slide-content {
+		padding-bottom: 5%;
+	}
+}
+
+@media (max-width: 1119px) {
+	.login .sap-logo {
+		max-width: 12rem;
+	}
+}
+@media (max-width: 991px) {
+	.login .login-content {
+		overflow: auto;
+	}
+
+	.login .login-content::-webkit-scrollbar {
+		width: 0.5rem;
+	}
+
+	.login .login-content::-webkit-scrollbar-track {
+		background-color: var(--grey1);
+	}
+
+	.login .login-content::-webkit-scrollbar-thumb {
+		background-color: var(--grey4);
+	}
+}
+
+@media (max-width: 380px) {
+	.px-5 {
+		padding-right: 1rem!important;
+		padding-left: 1rem!important;
+	}
+}

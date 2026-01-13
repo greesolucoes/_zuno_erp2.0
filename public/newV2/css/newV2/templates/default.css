@@ -1,0 +1,67 @@
+body::-webkit-scrollbar {
+	width: 1rem;
+}
+
+body::-webkit-scrollbar-track {
+	background-color: var(--grey1);
+}
+
+body::-webkit-scrollbar-thumb {
+	background-color: var(--grey4);
+}
+
+header {
+	height: 9vh;
+}
+
+main {
+	min-height: 91vh;
+}
+
+main .sidebar-menu {
+	width: 30rem;
+	display: block;
+	transition: width 1s;
+}
+
+main .sidebar-menu.minimized {
+	width: 5rem;
+	display: block;
+}
+
+main .content-view {
+	width: calc(100% - 30rem);
+}
+
+main .sidebar-menu.minimized ~ .content-view {
+	width: calc(100% - 5rem);
+}
+
+@media (max-width: 991px) {
+	main .content-view {
+		width: 100%;
+		transition: width 0.7s;
+	}
+
+	main .sidebar-menu {
+		width: 0;
+		height: 0;
+		overflow: hidden;
+		visibility: hidden;
+		opacity: 0;
+		transition: width 0.7s, opacity 0.3s, visibility 0.5s;
+	}
+
+	main .sidebar-menu.exibir-mobile {
+		width: 100%;
+		height: auto;
+		visibility: visible;
+		opacity: 1;
+		transition: width 0.8s, opacity 1.2s, visibility 1.5s;
+	}
+
+	main .sidebar-menu.exibir-mobile ~ .content-view {
+		display: none;
+		overflow: hidden;
+	}
+}

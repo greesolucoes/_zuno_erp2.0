@@ -1,0 +1,47 @@
+:is(svg, i).circle-status-green {
+	color: #5cb85c;
+}
+
+svg.circle-status-dark-green {
+	color: darkgreen;
+}
+
+svg.circle-status-pink {
+	color: #FF007F;
+}
+
+svg.circle-status-red {
+	color: #d9534f;
+}
+
+svg.circle-status-yellow {
+	color: #f0ad4e;
+}
+
+svg.circle-status-white {
+	color: #5bc0de;
+}
+
+svg.circle-status-tea{
+	color: #00897B;
+}
+
+svg.circle-status-black{
+	color: #141414;
+}
+
+svg.circle-status-purple{
+	color: #5a0099;
+}
+
+svg.circle-status-blue{
+	color: #4871f7;
+}
+
+svg.circle-status-grey{
+	color: #666;
+}
+
+.tooltip{
+	max-width: 12rem !important;
+}

@@ -1,0 +1,53 @@
+.dataTables_wrapper {
+	width: 100%;
+}
+
+table.dataTable thead tr th {
+	text-align: center;
+}
+
+div.dataTables_wrapper div.dataTables_length select, .dataTables_wrapper .dataTables_filter input {
+	border: 1px solid #E3E3E3;
+	border-radius: 30px;
+	color: #2c2c2c;
+	background-color: transparent;
+	padding-left: 10px;
+}
+
+div.dataTables_wrapper div.dataTables_length select {
+	width: 75px;
+}
+
+table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover,
+table.dataTable.hover tbody tr:hover.selected, table.dataTable.display tbody tr:hover.selected,
+table.dataTable tbody tr.selected,
+table.dataTable tbody tr.odd.selected, table.dataTable tbody tr.even.selected,
+table.dataTable.stripe > tbody > tr.odd.selected > *, table.dataTable.display > tbody > tr.odd.selected > *,
+table.dataTable.display > tbody > tr.odd.selected > .sorting_1, table.dataTable.order-column.stripe > tbody > tr.odd.selected > .sorting_1,
+table.dataTable.display > tbody > tr.even.selected > .sorting_1, table.dataTable.order-column.stripe > tbody > tr.even.selected > .sorting_1,
+table.dataTable.order-column > tbody tr.selected > .sorting_1, table.dataTable.order-column > tbody tr.selected > .sorting_2, table.dataTable.order-column > tbody tr.selected > .sorting_3, table.dataTable.display > tbody tr.selected > .sorting_1, table.dataTable.display > tbody tr.selected > .sorting_2, table.dataTable.display > tbody tr.selected > .sorting_3,
+table.dataTable tbody tr.selected, table.dataTable tbody tr.selected td,
+table.dataTable tbody tr.odd.selected, table.dataTable tbody tr.odd.selected td,
+table.dataTable tbody tr.even.selected, table.dataTable tbody tr.even.selected td,
+table.dataTable.stripe>tbody>tr.odd.selected>*, table.dataTable.display>tbody>tr.odd.selected>*,
+table.dataTable.stripe>tbody>tr.even.selected>*, table.dataTable.display>tbody>tr.even.selected>*,
+table.dataTable.hover>tbody>tr.selected:hover, table.dataTable.display>tbody>tr.selected:hover,
+table.dataTable.hover>tbody>tr.selected:hover>*, table.dataTable.display>tbody>tr.selected:hover>*,
+table.dataTable.stripe>tbody>tr.odd.selected>*, table.dataTable.display>tbody>tr.odd.selected>*,
+table.dataTable.stripe>tbody>tr.even.selected>*, table.dataTable.display>tbody>tr.even.selected>*,
+table.dataTable.table-hover>tbody>tr.selected:hover>*
+{
+	background-color: #B0BED9 !important;
+	box-shadow: none !important;
+	color: rgb(0, 0, 0) !important;
+}
+
+table.dataTable.row-border>tbody>tr.selected+tr.selected>td, table.dataTable.display>tbody>tr.selected+tr.selected>td {
+	border-top-color: #E3E3E3 !important;
+	color: rgb(0, 0, 0) !important;
+}
+
+table.dataTable tbody tr.selected a {
+	color: #FFF !important;
+}
+

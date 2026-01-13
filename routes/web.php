@@ -30,6 +30,7 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'login'], function () {
     Route::get('/', 'UserController@newAccess');
+    Route::get('/recuperar-senha', 'UserController@viewRecuperarSenha')->name('recuperarSenha.view');
     Route::get('/logoff', 'UserController@logoff')->name('logoff');
     Route::post('/request', 'UserController@request')->name('login.request')
     ->middleware('usuariosLogado');

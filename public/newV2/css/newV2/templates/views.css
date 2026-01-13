@@ -1,0 +1,969 @@
+main .view-header h1 {
+	color: var(--blue2);
+	font-size: 3rem;
+	font-weight: 700;
+}
+
+main .view-header .btn-voltar a {
+	color: var(--white1);
+	font-size: 1.4rem;
+	border-radius: 0.5rem;
+	padding: 0.3rem 1.5rem;
+	font-weight: 500;
+	text-transform: uppercase;
+}
+
+main .separador-view {
+	background-color: var(--grey1);
+	width: 100%;
+	height: 0.2rem;
+}
+
+main .section-title {
+	color: var(--blue2);
+	font-size: 2.5rem;
+	font-weight: 700;
+}
+
+main h3.section-title,
+main h4.section-title {
+	font-size: 2rem;
+}
+
+main h5.section-title {
+	font-size: 1.8rem;
+	margin-bottom: 0;
+}
+
+/* --- INPUTS --- */
+main .main-content input,
+main .main-content select.no-select2 {
+	border-radius: 0.5rem;
+	border: 0.1rem solid var(--grey1);
+	padding: 0.8rem 2rem;
+	background-color: var(--white1);
+	color: var(--blue2);
+	font-size: 1.6rem;
+}
+
+main .main-content select.no-select2 {
+	appearance: auto;
+}
+
+main .main-content :is(input[type="checkbox"], input[type="radio"]):not(.form-switch input) {
+	padding: 0;
+}
+
+main .main-content input[type="checkbox"]:focus {
+	border-color: var(--blue-absolute);
+	outline: 0;
+	box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
+}
+
+main .main-content input[type="file"] {
+	background-color: transparent;
+	border: none;
+	padding: 0;
+}
+
+main .main-content .input-number {
+	width: 7rem;
+	padding: 0.8rem 1rem;
+	font-size: 1.4rem;
+}
+
+main .main-content input:focus-within,
+main .main-content select:focus-within {
+	border: 0.1rem solid var(--blue4);
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	outline: 0 !important;
+	color: var(--blue2);
+}
+
+main .main-content input::placeholder,
+main .main-content select::placeholder {
+	color: var(--grey1);
+}
+
+/* --- BUTTONS --- */
+main .button-form {
+	border-radius: 0.5rem;
+	padding: 0.7rem 6rem;
+	border: none;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+main .button-form:hover {
+	transition: background-color 0.5s, color 0.5s;
+}
+
+main .main-content .confirm-button {
+	background-color: var(--green-absolute);
+	color: var(--white-absolute);
+}
+
+main .main-content .button-form.button-add,
+main .main-content .button-form.button-remove {
+	padding: 0.5rem 0.8rem;
+}
+
+main .main-content .button-form.button-action {
+	padding: 0.8rem 1rem;
+}
+
+main .main-content .button-form.button-add svg,
+main .main-content .button-form.button-remove svg {
+	font-size: 2.5rem;
+}
+
+main .main-content .confirm-button:hover {
+	background-color: var(--green-absolute-hover) !important;
+}
+
+main .main-content .danger-button {
+	background-color: var(--red-absolute);
+	color: var(--white-absolute);
+}
+
+main .main-content .danger-button:hover {
+	background-color: var(--red-absolute-hover) !important;
+}
+
+main .main-content .warning-button {
+	background-color: var(--yellow-absolute);
+	color: var(--blue2-absolute);
+}
+
+main .main-content .warning-button:hover {
+	background-color: var(--yellow-absolute-hover) !important;
+}
+
+main .main-content .primary-button {
+	background-color: var(--blue-absolute);
+	color: var(--white-absolute);
+}
+
+main .main-content .primary-button:hover {
+	background-color: var(--blue2-light) !important;
+}
+
+main .main-content .secondary-button {
+	background-color: transparent;
+	color: var(--blue-absolute);
+	border: 0.1rem solid var(--blue-absolute);
+}
+
+main .main-content .secondary-button:hover {
+	background-color: var(--blue-absolute) !important;
+	color: var(--white-absolute) !important;
+}
+
+main .main-content .primary-button-blue1 {
+	background-color: var(--blue1);
+	color: var(--white-absolute);
+}
+
+main .main-content .primary-button-blue1:hover {
+	background-color: var(--blue2-absolute) !important;
+	color: var(--white-absolute) !important;
+}
+
+main .main-content .primary-button-blue2 {
+	background-color: var(--blue2-absolute);
+	color: var(--white-absolute);
+}
+
+main .main-content .primary-button-blue2:hover {
+	background-color: var(--blue-absolute) !important;
+	color: var(--white-absolute) !important;
+}
+
+main .main-content .secondary-button-blue1 {
+	background-color: transparent;
+	color: var(--blue1);
+	border: 0.2rem solid var(--blue1);
+}
+
+main .main-content .secondary-button-blue1:hover {
+	background-color: var(--blue1) !important;
+	color: var(--white-absolute) !important;
+}
+
+main .main-content .secondary-button-blue1.active {
+	background-color: var(--blue1);
+	color: var(--white-absolute);
+	border: 0.2rem solid var(--blue1);
+}
+
+main .main-content .secondary-button-blue1-alt {
+	background-color: transparent;
+	color: var(--blue2);
+	border: 0.2rem solid var(--blue1);
+}
+
+main .main-content .secondary-button-blue1-alt:hover {
+	background-color: var(--blue1) !important;
+	color: var(--white-absolute) !important;
+}
+
+main .main-content .secondary-button-blue1-alt.active {
+	background-color: var(--blue1);
+	color: var(--blue2);
+	border: 0.2rem solid var(--blue1);
+}
+
+main .main-content .primary-outline-button-blue1 {
+	color: var(--blue1);
+	background-color: transparent;
+	border: 0.2rem solid var(--blue1);
+}
+
+main .main-content .primary-outline-button-blue1:hover {
+	color: var(--white-absolute);
+	background-color: var(--blue1);
+}
+
+main .main-content .export-button {
+	background-color: transparent;
+	color: var(--blue2);
+}
+
+main .main-content .export-button:hover {
+	background-color: var(--grey2);
+}
+
+main .button-form[disabled] {
+	background-color: var(--grey-absolute) !important;
+}
+
+main .button-form[disabled]:hover {
+	background-color: var(--grey-absolute) !important;
+	cursor: not-allowed;
+}
+
+main .button-form.export-button[disabled],
+main .button-form.export-button[disabled]:hover {
+	background-color: var(--grey2) !important;
+}
+
+/* --- BUSCAR FLAGS --- */
+main .main-content .search-flags input {
+	padding: 0.4rem 3.5rem;
+	border: 0.1rem solid var(--grey1);
+	border-radius: 0.5rem;
+}
+
+main .main-content .search-flags input:focus {
+	outline: none;
+}
+
+main .main-content .search-flags svg {
+	font-size: 1.3rem;
+}
+
+/* FLAGS */
+main .main-content .config-flags .form-check {
+	padding: 0.9rem 0;
+	border-top: 0.1rem solid var(--grey1);
+	border-radius: 0;
+}
+
+main .main-content .config-flags-sem-border .form-check {
+	border-top: 0 solid var(--grey1) !important;
+}
+
+main .main-content .config-flags .form-check label svg,
+main .main-content .configs-tab .tab-pane .form-check label svg {
+	font-size: 2.4rem;
+	color: var(--blue-absolute);
+	gap: 1rem;
+}
+
+@media (min-width: 768px) {
+	main .main-content .config-flags .form-check.col-md-6 {
+		width: 49%;
+	}
+}
+
+/* --- SELECT2 --- */
+main .select2-container .select2-selection {
+	border-color: var(--grey1) !important;
+}
+
+main .show-select-clear ~ .select2-container--default .select2-selection--single .select2-selection__clear {
+	display: block;
+}
+
+/* --- TABLES --- */
+main .table-responsive:focus-visible {
+	outline: none;
+}
+
+main .table-responsive::-webkit-scrollbar {
+	height: 1rem;
+	width: 1rem;
+}
+
+main .table-responsive::-webkit-scrollbar-track {
+	background-color: var(--grey1);
+}
+
+main .table-responsive::-webkit-scrollbar-thumb {
+	background-color: var(--grey4);
+}
+
+main .table:not(.dataTable, .tabela-monitoramento) td,
+main .table:not(.dataTable, .tabela-monitoramento) tr,
+main .table:not(.dataTable, .tabela-monitoramento) th {
+	background-color: transparent;
+	color: var(--blue2);
+}
+
+main .table:not(.dataTable, .tabela-monitoramento) tr.selected {
+	background-color: var(--blue-absolute) !important;
+	color: var(--white-absolute) !important;
+}
+
+main .table.table-border:not(.dataTable, .tabela-monitoramento) tr {
+	border-bottom: 0.1rem solid var(--grey1);
+}
+
+main .table.no-border-foot tfoot tr,
+main .table.no-border-foot tfoot tr td {
+	border: none;
+}
+
+main .table.table-border:not(.dataTable, .tabela-monitoramento) tbody tr:last-child {
+	border-bottom: 0.2rem solid var(--grey1);
+}
+
+main .table.table-border:not(.dataTable, .tabela-monitoramento) tfoot tr:last-child {
+	border: none;
+}
+
+main .table.table-border:not(.dataTable, .tabela-monitoramento) th {
+	border-bottom: 0.2rem solid var(--grey1);
+}
+
+main .table:not(.dataTable, .tabela-monitoramento) > thead > tr > th,
+main .table:not(.dataTable, .tabela-monitoramento) > tbody > tr > th,
+main .table:not(.dataTable, .tabela-monitoramento) > tfoot > tr > th,
+main .table:not(.dataTable, .tabela-monitoramento) > thead > tr > td,
+main .table:not(.dataTable, .tabela-monitoramento) > tbody > tr > td,
+main .table:not(.dataTable, .tabela-monitoramento) > tfoot > tr > td {
+	background-color: transparent;
+	color: var(--blue2);
+	padding: 1rem 2rem 1rem 1rem;
+}
+
+main .table:not(.dataTable, .tabela-monitoramento, .padding-first) > thead > tr > th:first-child,
+main .table:not(.dataTable, .tabela-monitoramento, .padding-first) > tbody > tr > th:first-child,
+main .table:not(.dataTable, .tabela-monitoramento, .padding-first) > tfoot > tr > th:first-child,
+main .table:not(.dataTable, .tabela-monitoramento, .padding-first) > thead > tr > td:first-child,
+main .table:not(.dataTable, .tabela-monitoramento, .padding-first) > tbody > tr > td:first-child,
+main .table:not(.dataTable, .tabela-monitoramento, .padding-first) > tfoot > tr > td:first-child {
+	padding-left: 0;
+}
+
+main .table:not(.dataTable, .tabela-monitoramento) .button-form {
+	padding: 0.7rem 1.2rem;
+}
+
+main .table:not(.dataTable, .tabela-monitoramento) .button-form svg {
+	font-size: 2rem;
+}
+
+main .table:not(.dataTable, .tabela-monitoramento) tbody tr.linha-selecionada-blue {
+	background-color: var(--blue-absolute);
+}
+
+main .table:not(.dataTable, .tabela-monitoramento) tbody tr.linha-selecionada-blue td {
+	color: var(--white-absolute);
+}
+
+main .table.table-border:not(.dataTable, .tabela-monitoramento) tr.linha-selecionada-blue {
+	border-color: var(--white-absolute);
+}
+
+main .table:not(.dataTable, .tabela-monitoramento).table-striped > tbody > tr:nth-of-type(odd) > * {
+	color: var(--blue2);
+	background-color: var(--grey3);
+}
+
+/* --- TABLES DE MONITORAMENTO --- */
+main .table.tabela-monitoramento > thead > tr > th,
+main .table.tabela-monitoramento > tbody > tr > th,
+main .table.tabela-monitoramento > tfoot > tr > th,
+main .table.tabela-monitoramento > thead > tr > td,
+main .table.tabela-monitoramento > tbody > tr > td,
+main .table.tabela-monitoramento > tfoot > tr > td {
+	padding: 1rem;
+}
+
+main .main-content .table.tabela-monitoramento td,
+main .main-content .table.tabela-monitoramento tr,
+main .main-content .table.tabela-monitoramento th {
+	color: var(--blue2);
+	text-align: center;
+	font-weight: 400;
+}
+
+main .table.tabela-monitoramento > tbody > tr > td {
+	background-color: var(--white1);
+}
+
+main .table.tabela-monitoramento > thead > tr > th {
+	background-color: var(--blue2-absolute);
+	color: var(--white-absolute) !important;
+}
+
+main .table.tabela-monitoramento > :not(caption) > * > * {
+	border-bottom: 0.6rem var(--grey3) solid;
+}
+
+main .table.tabela-monitoramento .td-data-monitoramento:hover {
+	cursor: pointer;
+	color: var(--blue2) !important;
+	background-color: var(--grey2) !important;
+	font-weight: 700;
+}
+
+table.tabela-monitoramento tbody tr td.dia {
+	color: var(--blue2);
+	padding: 0 !important;
+	transition: all 0.2s;
+}
+
+table.tabela-monitoramento tbody tr td.dia .dia-content {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	text-align: center;
+	flex-direction: column;
+	gap: 0.2rem;
+}
+
+table.tabela-monitoramento tbody tr td.dia .bar-status-dia {
+	display: block;
+	height: 0.8rem;
+	width: 90%;
+	margin-top: 0.2rem;
+	margin-bottom: 0.8rem;
+}
+
+table.tabela-monitoramento tbody tr td.dia .icons-dia {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.2rem;
+	width: 100%;
+	padding: 0.5rem 0.2rem;
+	height: 1.8rem;
+}
+
+table.tabela-monitoramento tbody tr td.dia .icons-dia svg {
+	font-size: 1.4rem;
+	width: 1.4rem;
+	height: 1.4rem;
+}
+
+table.tabela-monitoramento tbody tr td.dia .dia-calendario {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+}
+
+table.tabela-monitoramento.pointer-table {
+	cursor: pointer;
+}
+
+table.tabela-monitoramento tbody tr.linha-destacada th,
+table.tabela-monitoramento tbody tr.linha-destacada td {
+	color: var(--blue2) !important;
+	background-color: var(--grey2) !important;
+}
+
+table.tabela-monitoramento thead tr th.coluna-destacada,
+table.tabela-monitoramento tbody tr td.coluna-destacada {
+	color: var(--blue2) !important;
+	background-color: var(--grey2) !important;
+}
+
+table.tabela-monitoramento.apply-border-top > :not(caption) > * > * {
+	border-top: 0.6rem var(--grey3) solid;
+}
+
+/* --- DATA TABLE --- */
+main .data-visualization .table-controls .dataTable-length,
+main .data-visualization .table-controls .dataTable-search {
+	border: 0.1rem solid var(--grey1) !important;
+	border-radius: 1rem !important;
+	color: var(--blue2) !important;
+	background-color: var(--white1) !important;
+	font-size: 1.4rem;
+	appearance: none;
+}
+
+main .data-visualization .table-controls .dataTable-length {
+	padding: 0.8rem 3.5rem 1rem 1rem;
+}
+
+main .data-visualization .table-controls .dataTable-length:focus-visible {
+	outline: none;
+}
+
+main .data-visualization .table-controls .dataTable-search {
+	border-radius: 0.5rem !important;
+	padding: 1rem 1rem;
+}
+
+main .data-visualization .table-controls .dataTable-search {
+	padding: 0.6rem 1rem 0.6rem 3.5rem;
+}
+
+main .data-visualization .table-controls .dataTable-search-icon {
+	left: 1rem;
+	color: var(--grey1);
+}
+
+main .data-visualization .table-controls .table-search:after {
+	content: '\f078';
+	font-family: 'Font Awesome 5 Free', sans-serif;
+	font-weight: 900;
+	position: absolute;
+	color: var(--blue2);
+	left: 5rem;
+	font-size: 1.2rem;
+	pointer-events: none;
+}
+
+main .data-visualization.no-filters-buttons .dataTables_wrapper .dataTables_length,
+main .data-visualization.no-filters-buttons .dataTables_wrapper .dataTables_filter {
+	display: none;
+}
+
+@media (max-width: 576px) {
+	main .data-visualization .table-controls .dataTable-search {
+		padding-left: 5rem;
+	}
+}
+
+/* --- MODAL FLAGS --- */
+.ico-info-flag {
+	background-color: transparent;
+	border: 0.1rem solid var(--blue2);
+	border-radius: 0.3rem !important;
+	padding: 0 !important;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: initial !important;
+}
+
+.ico-info-flag:focus {
+	background-color: transparent !important;
+}
+
+.ico-info-flag:hover {
+	background-color: var(--blue-absolute) !important;
+}
+
+.ico-info-flag svg {
+	color: var(--blue2);
+	font-size: 1.1rem;
+	padding: 0.2rem 0.6rem;
+}
+
+.ico-info-flag:hover svg {
+	color: var(--white-absolute);
+}
+
+#explicacao-flag-modal {
+	position: fixed;
+	top: 1rem;
+	right: 1rem;
+	width: 35%;
+	padding: 1.5rem;
+	z-index: 9999;
+	border-radius: 1rem;
+	background: var(--white1);
+	box-shadow: 0 0 1rem 0.2rem rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+	transition: 0.5s all;
+}
+
+#explicacao-flag-modal h3 {
+	margin: 0 0 2rem;
+	font-size: 1.6rem;
+	font-weight: 700;
+	max-width: calc(100% - 5rem);
+}
+
+#explicacao-flag-modal p {
+	margin: 0;
+	text-align: justify;
+	color: var(--blue2);
+}
+
+.explicacao-flag-modal-hide {
+	transform: translateX(30rem);
+	opacity: 0;
+}
+
+.explicacao-flag-modal-unhide {
+	transform: translateX(0);
+	opacity: 1;
+}
+
+#btn-close-explicacao-flag-modal {
+	position: absolute;
+	top: 1rem;
+	right: 1.5rem;
+	width: 1rem;
+	height: 1rem;
+	cursor: pointer;
+	border: none;
+	background-color: unset;
+	font-size: 2rem;
+	font-weight: 700;
+	color: var(--blue2);
+	outline: none;
+}
+
+#explicacao-flag-modal-timer,
+#explicacao-flag-modal-timer-path {
+	width: 100%;
+	height: 0.7rem;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+#explicacao-flag-modal-timer {
+	background: var(--blue2);
+	border-radius: 0.2rem;
+	transition: 0.1s;
+}
+
+#explicacao-flag-modal-timer-path {
+	background: #e1e1e1;
+}
+
+/*--- COMPONENTES INDIVIDUAIS ---*/
+/* CASO NÃO SEJA UMA TABLE, MAS TEM SCROLL */
+main .main-content .informacoes_add::-webkit-scrollbar {
+	height: 1rem;
+	width: 1rem;
+}
+
+main .main-content .informacoes_add::-webkit-scrollbar-track {
+	background-color: var(--grey1);
+}
+
+main .main-content .informacoes_add::-webkit-scrollbar-thumb {
+	background-color: var(--grey4);
+}
+
+/* SELECAO DIA - CONCILIACAO */
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget table thead tr:first-child th {
+	padding: 0.5rem;
+}
+
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget table thead tr:first-child th:hover {
+	background-color: var(--grey3);
+}
+
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget {
+	background-color: var(--white1);
+	padding: 1rem;
+}
+
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget table thead tr .picker-switch {
+	color: var(--blue-absolute);
+	font-weight: 500;
+	text-transform: uppercase;
+}
+
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget .prev,
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget .next {
+	color: var(--blue2);
+	font-weight: 500;
+	text-transform: uppercase;
+	background-color: var(--grey3);
+}
+
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget table th.dow {
+	color: var(--blue-absolute);
+	padding: 1rem 0;
+	text-transform: uppercase;
+	font-size: 1.4rem;
+}
+
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget table td.day {
+	color: var(--blue2);
+	height: auto;
+	line-height: normal;
+	width: auto;
+	padding: 1rem 0;
+	font-size: 1.4rem;
+}
+
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget table td.active,
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget table td.active:hover {
+	background-color: var(--blue-absolute);
+	color: var(--white-absolute);
+}
+
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget table td.day:hover {
+	background-color: var(--blue-absolute);
+	color: var(--white-absolute);
+}
+
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget table td span.active {
+	background-color: var(--blue-absolute);
+	color: var(--white-absolute);
+	text-shadow: none;
+}
+
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget table td span:hover {
+	color: var(--white-absolute);
+	background-color: var(--blue-absolute);
+}
+
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget table td span.disabled,
+main .main-content .dia-conciliacao-calendario .bootstrap-datetimepicker-widget table td span.disabled:hover {
+	color: var(--grey1);
+}
+
+/* CONCILIAÇÃO - LABEL EXIBIÇÃO */
+main .main-content .label-conciliacao {
+	font-size: 1.8rem;
+	padding: 0.8rem 1.5rem;
+	border-radius: 0.5rem;
+	border: 0.1rem solid var(--grey1);
+}
+
+/* CONCILIAÇÃO - LEGENDA STATUS BAR */
+main .main-content .status-caption-bar {
+	height: 1.1rem;
+	width: 4rem;
+	border-radius: 0.2rem;
+}
+
+main .main-content .status-caption-bar.dark-color {
+	border: 0.1rem solid var(--grey2);
+}
+
+/* CARD GRAFICOS DASHBOARD */
+main .main-content .card-graphics{
+	border-radius: 1rem;
+	background-color: var(--white-absolute);
+}
+
+main .main-content .pe-md-20{
+	padding-right: 20rem !important;
+}
+
+/* CONCILIAÇÃO - HOVER NA DESCRIÇÃO DAS LEGENDAS */
+main .main-content .legenda-monitoramento .descricao-hover {
+	max-width: 25%;
+	margin-top: 16rem;
+	z-index: 999;
+	font-size: 1.4rem;
+	display: none;
+}
+
+main .main-content .legenda-monitoramento:hover .descricao-hover {
+	display: block;
+}
+
+@media (max-width: 1500px) {
+	main .main-content .legenda-monitoramento .descricao-hover {
+		max-width: 35%;
+	}
+}
+
+@media (max-width: 1200px) {
+	main .main-content .legenda-monitoramento .descricao-hover {
+		max-width: 45%;
+	}
+}
+
+@media (max-width: 991px) {
+	main .main-content .legenda-monitoramento .descricao-hover {
+		max-width: 60%;
+	}
+}
+
+@media (max-width: 576px) {
+	main .main-content .legenda-monitoramento .descricao-hover {
+		max-width: 90%;
+		margin-top: 20rem;
+	}
+}
+
+/* CONCILIAÇÃO - MONITORAMENTO DE SALDO */
+.monitoramentoSaldo table.tabela-monitoramento thead th {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+}
+
+.monitoramentoSaldo table.tabela-monitoramento tbody .info-filial,
+.monitoramentoSaldo table.tabela-monitoramento thead .info-header-filial {
+	position: sticky;
+	left: -1%;
+	z-index: 3;
+}
+
+.monitoramentoSaldo table.tabela-monitoramento thead .info-header-filial {
+	z-index: 4;
+}
+
+.monitoramentoSaldo table.tabela-monitoramento tbody tr:hover td {
+	background-color: var(--grey2);
+}
+
+@media (min-width: 1369px) {
+	.monitoramentoSaldo {
+		max-height: 58rem;
+	}
+}
+
+@media (max-width: 1368px) {
+	.monitoramentoSaldo {
+		max-height: 31rem;
+	}
+}
+
+/* TEXTAREA - DATA TABLE */
+main .main-content .textarea-datatable {
+	width: 100%;
+	padding: 1rem;
+	border: none;
+	background-color: transparent;
+	resize: none;
+	border: 0;
+	color: var(--blue2);
+}
+
+main .main-content .textarea-datatable::-webkit-scrollbar {
+	height: 1rem;
+	width: 1rem;
+}
+
+main .main-content .textarea-datatable::-webkit-scrollbar-track {
+	background-color: var(--grey1);
+}
+
+main .main-content .textarea-datatable::-webkit-scrollbar-thumb {
+	background-color: var(--grey4);
+}
+
+/* AJUSTE NO TAMANHO DE FORMATAÇÕES EM COMPONENTES ESPECÍFICOS */
+@media (min-width: 768px) {
+	.modal .modal-dialog .modal-content .col-md-6-space .col-md-6 {
+		width: 48%;
+	}
+}
+
+/* FILTROS CONCILIAÇÃO TURNO/CAIXA */
+table.dataTable .btn.btn-com-mov-caixa,
+table.table-exibe .btn.btn-com-mov {
+	background-color: var(--blue-absolute) !important;
+	color: var(--white-absolute) !important;
+}
+
+table.dataTable .btn.btn-com-mov-caixa,
+table.table-exibe .btn.btn-com-mov-caixa {
+	background-color: var(--green-absolute) !important;
+	color: var(--white-absolute) !important;
+}
+
+/* CARDS DASHBOARD */
+.container-card-dashboard {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 3rem;
+}
+
+.container-card-dashboard .card-dashboard {
+	background-color: var(--white1);
+	border-radius: 0.8rem;
+	padding: 2.5rem;
+	min-height: 35rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+.container-card-dashboard .card-dashboard .card-dashboard-title {
+	font-size: 2.5rem;
+}
+
+.container-card-dashboard .card-dashboard .card-dashboard-content {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
+.container-card-dashboard .card-dashboard .card-dashboard-content p {
+	width: 100%;
+}
+
+.container-card-dashboard .card-dashboard .card-dashboard-content p span {
+	display: inline-block;
+}
+
+.container-card-dashboard .card-dashboard .card-dashboard-btn {
+	width: 100%;
+}
+
+
+@media (min-width: 2400px) {
+	.container-card-dashboard {
+		grid-template-columns: repeat(5, 1fr) !important; /* 5 colunas */
+	}
+
+	.container-card-dashboard .card-dashboard .card-dashboard-title {
+		font-size: 2.2rem;
+	}
+}
+
+@media (max-width: 1700px) {
+	.container-card-dashboard {
+		grid-template-columns: repeat(3, 1fr); /* 3 colunas */
+	}
+
+	.container-card-dashboard .card-dashboard .card-dashboard-title {
+		font-size: 2.2rem;
+	}
+}
+
+@media (max-width: 1200px) {
+	.container-card-dashboard {
+		grid-template-columns: repeat(2, 1fr); /* 2 colunas */
+	}
+}
+
+@media (max-width: 600px) {
+	.container-card-dashboard {
+		grid-template-columns: 1fr; /* 1 coluna */
+	}
+
+	.container-card-dashboard .card-dashboard .card-dashboard-title {
+		font-size: 2.5rem;
+	}
+}

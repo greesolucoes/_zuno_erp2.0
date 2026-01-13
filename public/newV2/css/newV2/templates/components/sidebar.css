@@ -1,0 +1,175 @@
+.product-menu .sidebar-minimized {
+	width: 5rem;
+}
+
+.sidebar-menu .sidebar-minimized .icon-menu-minimized {
+	visibility: hidden;
+	opacity: 0;
+	transition: opacity 0.5s;
+	cursor: pointer;
+}
+
+.sidebar-menu.minimized .sidebar-minimized .icon-menu-minimized {
+	visibility: visible;
+	opacity: 1;
+	transition: opacity 0.5s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-bottom: 0.65rem;
+}
+
+.sidebar-menu.minimized .sidebar-minimized .icon-menu-minimized .icon {
+	font-size: 1.8rem;
+}
+
+.icon-menu-minimized:hover:after {
+	content: attr(data-content);
+	position: absolute;
+	top: -1rem;
+	right: auto;
+	background-color: var(--blue2-absolute);
+	color: var(--white-absolute);
+	padding: 1rem 1.5rem 1rem 2.5rem;
+	border-radius: 1.6rem;
+	z-index: 999;
+	font-weight: 600;
+	font-size: 1.4rem;
+	left: 2rem;
+}
+
+.product-menu .sidebar-expanded {
+	width: calc(100% - 5rem);
+	padding-left: 1.5rem;
+	opacity: 1;
+	visibility: visible;
+	transition: width 0.5s, opacity 0.8s, visibility 0.8s, padding-left 1s;
+}
+
+.sidebar-menu.minimized .sidebar-expanded {
+	padding-left: 0;
+	opacity: 0;
+	width: 0;
+	height: 0;
+	overflow: hidden;
+	visibility: hidden;
+	transition: width 0.8s, opacity 0.5s, visibility 0.8s, padding-left 1s;
+}
+
+.product-menu .btn-menu-expanded {
+	border-radius: 50%;
+	top: 0.5rem;
+	right: -1.2rem;
+	cursor: pointer;
+	transition: transform 0.5s;
+}
+
+.sidebar-menu.minimized .btn-menu-expanded {
+	transform: rotate(180deg);
+	transition: transform 0.5s;
+}
+
+.product-menu .solo-item {
+	color: var(--blue2);
+	cursor: pointer;
+}
+
+.product-menu .sidebar-expanded .btn-menu .parent-btn {
+	background-color: var(--grey3);
+	color: var(--blue2);
+}
+
+.product-menu .sidebar-expanded .btn-menu .parent-btn > .text-start {
+	font-size: 1.4rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+.product-menu .sidebar-expanded .btn-menu .icon-menu {
+	font-size: 1.8rem;
+}
+
+.product-menu .sidebar-expanded .btn-menu .parent-btn:hover,
+.product-menu .sidebar-expanded .btn-menu .parent-btn.btn-importacao:hover,
+.product-menu .solo-item:hover {
+	background-color: var(--grey2);
+	transition: all 0.4s;
+}
+
+.product-menu .sidebar-expanded .btn-menu .parent-btn.btn-importacao {
+	background-color: transparent;
+	color: var(--blue-absolute);
+	border: 0.1rem solid var(--blue-absolute) !important;
+}
+
+.product-menu .sidebar-expanded .btn-menu .parent-btn[aria-expanded="true"] {
+	background-color: var(--blue2-absolute);
+	color: var(--white-absolute);
+}
+
+.product-menu .sidebar-expanded .btn-menu .parent-btn.btn-importacao[aria-expanded="true"] {
+	background-color: var(--blue-absolute);
+	color: var(--white-absolute);
+	border: none;
+}
+
+.product-menu .sidebar-expanded .btn-menu .btn-sub-menu .child-btn {
+	background-color: var(--blue3);
+	color: var(--blue2);
+}
+
+.product-menu .sidebar-expanded .btn-menu .btn-sub-menu .child-btn.btn-importacao {
+	background-color: transparent;
+	color: var(--blue-absolute);
+	border: 0.1rem solid var(--blue-absolute) !important;
+	cursor: pointer;
+}
+
+.product-menu .sidebar-expanded .btn-menu .btn-sub-menu .child-btn[aria-expanded="true"] {
+	background-color: #758292;
+	color: var(--white-absolute);
+}
+
+.product-menu .sidebar-expanded .btn-menu .btn-sub-menu .btn-sub-menu-content a {
+	color: var(--blue2);
+}
+
+.product-menu .sidebar-expanded .btn-menu .btn-sub-menu .child-btn:hover,
+.product-menu .sidebar-expanded .btn-menu .btn-sub-menu .btn-sub-menu-content a:hover,
+.product-menu .sidebar-expanded .btn-menu .btn-sub-menu .child-btn.btn-importacao:hover {
+	background-color: #ABDFFF;
+	color: var(--blue2-absolute);
+	transition: all 0.4s;
+}
+
+.product-menu .sidebar-expanded .btn-menu .btn-sub-menu .btn-sub-menu-content a:before {
+	content: "\2022";
+	padding-right: 1rem;
+	color: var(--blue2);
+}
+
+.product-menu .sidebar-expanded .btn-menu .btn-sub-menu .btn-sub-menu-content a:hover:before {
+	color: var(--blue2-absolute);
+}
+
+.product-menu .sidebar-expanded .btn-menu .btn-sub-menu .btn-sub-menu-content a.ativo,
+.product-menu .sidebar-expanded .btn-menu .child-btn.ativo,
+.product-menu .solo-item.ativo {
+	background-color: var(--blue1);
+	color: var(--white-absolute);
+}
+
+.product-menu .sidebar-expanded .btn-menu .btn-sub-menu .btn-sub-menu-content a.ativo:before {
+	color: var(--white-absolute);
+}
+
+.product-menu .sidebar-expanded .separador-menu {
+	border-bottom: 0.1rem dashed var(--grey1);
+}
+
+@media (max-width: 991px) {
+	.product-menu .sidebar-expanded {
+		width: 100%;
+		padding-right: 1.5rem;
+	}
+}

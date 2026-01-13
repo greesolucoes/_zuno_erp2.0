@@ -1,0 +1,3 @@
+controlaTabelaSuite();
+criaTodosSelectsAjax();
+destroyTodosInitsSelects();

@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:ital,wght@0,200;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+html {
+	font-size: 62.5%;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('../../fonts/Roboto/Roboto-Thin.ttf') format('truetype');
+	font-weight: 100;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('../../fonts/Roboto/Roboto-ThinItalic.ttf') format('truetype');
+	font-weight: 100;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('../../fonts/Roboto/Roboto-Light.ttf') format('truetype');
+	font-weight: 300;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('../../fonts/Roboto/Roboto-LightItalic.ttf') format('truetype');
+	font-weight: 300;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('../../fonts/Roboto/Roboto-Regular.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('../../fonts/Roboto/Roboto-Italic.ttf') format('truetype');
+	font-weight: 400;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('../../fonts/Roboto/Roboto-Medium.ttf') format('truetype');
+	font-weight: 500;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('../../fonts/Roboto/Roboto-MediumItalic.ttf') format('truetype');
+	font-weight: 500;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('../../fonts/Roboto/Roboto-Bold.ttf') format('truetype');
+	font-weight: 700;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('../../fonts/Roboto/Roboto-BoldItalic.ttf') format('truetype');
+	font-weight: 700;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('../../fonts/Roboto/Roboto-Black.ttf') format('truetype');
+	font-weight: 900;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('../../fonts/Roboto/Roboto-BlackItalic.ttf') format('truetype');
+	font-weight: 900;
+	font-style: italic;
+}
+
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	font-weight: 400;
+	font-style: normal;
+	font-family: "Poppins", sans-serif;
+	font-size: 1.6rem;
+}
+
+:root {
+	--white1: #FFFFFF;
+	--black1: #313131;
+	--blue1: #8d4e91;
+	--blue2: #393d73;
+	--blue3: #F8FDFF;
+	--blue4: #8d4e91;
+	--grey1: #B1B3B6;
+	--grey2: #E6E7E8;
+	--grey3: #ECF2F5;
+	--grey4: #363B43;
+	--grey5: #C7C7C7;
+	--grey6: #E7EAED;
+	--blue-absolute: #8d4e91;
+	--blue2-absolute: #393d73;
+	--grey-absolute: #6D6D6D;
+	--red-absolute: #E63535;
+	--red-absolute-hover: #BD1919;
+	--green-absolute: #28c76f;
+	--green-absolute-hover: #209f59;
+	--orange-absolute: #F58220;
+	--orange-absolute-hover: #D56E16;
+	--white-absolute: #FFFFFF;
+	--white-transparent: #ffffffd6;
+	--yellow-absolute: #FAD506;
+	--yellow-absolute-hover: #EBCA0F;
+	--light-red-absolute: #FFC8C8;
+	--black-absolute: #171717;
+	/*VÃO TER CASOS QUE AS CORES ACIMA NÃO DEVEM SER INFLUENCIADAS PELO DARK-MODE*/
+	--white1-light: #FFFFFF;
+	--blue1-light: #c497c7;
+	--blue2-light: #455160;
+	--blue3-light: #F8FDFF;
+	--blue3-dark: #385B71;
+	--blue4-light: #b97dc2;
+	--grey1-light: #B1B3B6;
+	--grey2-light: #E6E7E8;
+	--grey3-light: #ECF2F5;
+	--grey4-light: #363B43;
+	--grey5-light: #C7C7C7;
+	--grey6-light: #E7EAED;
+}
+
+:root body.dark-mode {
+	--white1: #313131;
+	--black1: #FFFFFF;
+	--blue2: #ECF2F5;
+	--blue3: #385B71;
+	--blue4: #8a4595;
+	--grey2: #363E47;
+	--grey3: #282728;
+	--grey5: #282728;
+	--grey6: #282728;
+	--white-transparent: #313131d1;
+}
+
+p, h1, h2, h3, h4 {
+	margin: 0;
+}
+
+button:focus {
+	outline: none;
+}
+
+body {
+	background-color: var(--grey3);
+	color: var(--blue2);
+}
+
+.font-color-red {
+	color: #ff1203;
+}

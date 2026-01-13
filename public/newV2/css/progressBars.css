@@ -1,0 +1,7 @@
+.progress-costume{
+    padding: 5px 10px;
+}
+.progress-costume .progress{
+    margin-top: 5px;
+    background-color: #a7a7a7;
+}

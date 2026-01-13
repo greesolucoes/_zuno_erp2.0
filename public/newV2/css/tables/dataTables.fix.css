@@ -1,0 +1,118 @@
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+    background: transparent !important;
+    border: 0 none !important;
+    padding: 0;
+}
+table.dataTable td,
+table.dataTable th {
+    text-align: center;
+    vertical-align: middle !important;
+}
+
+.DTFC_LeftBodyLiner {
+    overflow-x: hidden;
+}
+.dataTables_scroll {
+    overflow:auto;
+}
+
+table.dataTable tbody tr.red td,
+table.dataTable tbody tr.red th {
+    background-color: #ffebee !important;
+    color: #757575;
+}
+table.dataTable tbody tr.red td[class*="sorting_"],
+table.dataTable tbody tr.red th[class*="sorting_"] {
+    background-color: #ffcdd2 !important;
+    color: #757575;
+}
+table.dataTable tbody tr.even.red td,
+table.dataTable tbody tr.even.red th {
+    background-color: #fae8eb !important;
+}
+table.dataTable tbody tr.even.red td[class*="sorting_"],
+table.dataTable tbody tr.even.red th[class*="sorting_"] {
+    background-color: #facacf !important;
+}
+
+table.dataTable tbody tr.yellow td,
+table.dataTable tbody tr.yellow th {
+    background-color: #FFF3E0 !important;
+    color: #757575;
+}
+table.dataTable tbody tr.yellow td[class*="sorting_"],
+table.dataTable tbody tr.yellow th[class*="sorting_"] {
+    background-color: #FFE0B2 !important;
+    color: #757575;
+}
+table.dataTable tbody tr.even.yellow td,
+table.dataTable tbody tr.even.yellow th {
+    background-color: #FFF3E0 !important;
+}
+table.dataTable tbody tr.even.yellow td[class*="sorting_"],
+table.dataTable tbody tr.even.yellow th[class*="sorting_"] {
+    background-color: #FFE0B2 !important;
+}
+
+table.dataTable tbody tr.green td,
+table.dataTable tbody tr.green th {
+    background-color: #E8F5E9 !important;
+    color: #757575;
+}
+table.dataTable tbody tr.green td[class*="sorting_"],
+table.dataTable tbody tr.green th[class*="sorting_"] {
+    background-color: #C8E6C9 !important;
+    color: #757575;
+}
+table.dataTable tbody tr.even.green td,
+table.dataTable tbody tr.even.green th {
+    background-color: #E8F5E9 !important;
+}
+table.dataTable tbody tr.even.green td[class*="sorting_"],
+table.dataTable tbody tr.even.green th[class*="sorting_"] {
+    background-color: #C8E6C9 !important;
+}
+
+table.dataTable tbody tr:hover:not(.selected) td,
+table.dataTable tbody tr:hover:not(.selected) th {
+    background-color: #f8f8fc !important;
+}
+table.dataTable tbody tr:hover:not(.selected) td[class*="sorting_"],
+table.dataTable tbody tr:hover:not(.selected) th[class*="sorting_"] {
+    background-color: #E8EAF6 !important;
+}
+
+
+/* dataTables CSS modification & positioning */
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_asc_disabled:before,
+table.dataTable thead .sorting_desc_disabled:before {
+    right: 0 !important;
+    content: "" !important;
+}
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:after,
+table.dataTable thead .sorting_asc_disabled:after,
+table.dataTable thead .sorting_desc_disabled:after {
+    right: 0 !important;
+    content: "" !important;
+}
+
+table.dataTable thead .sorting:after{
+    content: url("../../images/sort_both.png") !important;
+}
+table.dataTable thead .sorting_desc:after{
+    content: url("../../images/sort_desc.png") !important;
+}
+table.dataTable thead .sorting_asc:after{
+    content: url("../../images/sort_asc.png") !important;
+}
+
+@media only screen and (max-width: 420px) {
+    .dataTables_paginate.paging_simple_numbers ul.pagination li.paginate_button a.page-link{
+        padding: 6px 6px 6px 6px !important;
+    }
+}

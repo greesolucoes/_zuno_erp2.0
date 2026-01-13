@@ -696,6 +696,11 @@ class UserController extends Controller
     return redirect('/login');
   }
 
+  public function viewRecuperarSenha()
+  {
+    return view('login.recuperar_senha4');
+  }
+
   private function herdaSuper($novaEmpresa)
   {
     $usuario = Usuario::where('login', getSuper())

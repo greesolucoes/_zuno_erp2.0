@@ -1,0 +1,67 @@
+/* FIX SELECT2 */
+.select2-container .select2-selection {
+    min-height: 34px !important;
+    border-color: #e4e5e7 !important;
+    border-radius: 30px;
+}
+.has-error .select2-container .select2-selection {
+    border-color: #a94442 !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #333 !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    padding-top: 3px !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #333 transparent transparent transparent !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    margin-top: 2px !important;
+}
+.select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b{
+    border-color: transparent transparent #333 transparent !important;
+    margin-top: 0px !important;
+}
+.select2-container--default .select2-search--inline .select2-search__field{
+    margin-top: 7px !important;
+}
+/* resolve problema de padding deixando o texto colado a esqueda da caixa de seleção */
+input.select2-search__field{
+	padding-left: 10px !important;
+}
+/* FIX SELECT2 */
+
+div#navigation .select2-container .select2-selection {
+    min-height: 34px !important;
+    background-color: rgba(222, 222, 222, 0.3);
+    border: medium none;
+    border-radius: 30px;
+}
+div#navigation .has-error .select2-container .select2-selection {
+    border-color: #a94442 !important;
+}
+div#navigation .select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #333 !important;
+}
+div#navigation .select2-container--default .select2-selection--single .select2-selection__rendered {
+    padding-top: 3px !important;
+    color: white;
+}
+div#navigation .select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #333 transparent transparent transparent !important;
+}
+div#navigation .select2-container--default .select2-selection--single .select2-selection__arrow b {
+    margin-top: 2px !important;
+}
+div#navigation .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b{
+    border-color: transparent transparent #333 transparent !important;
+    margin-top: 0 !important;
+}
+div#navigation .select2-container--default .select2-search--inline .select2-search__field{
+    margin-top: 7px !important;
+}
+
+nav.navbar.navbar-expand-lg.navbar-absolute.bg-primary.fixed-top.bg-white span.select2.select2-container.select2-container--default span.select2-selection__rendered{
+    color: #000000 !important;
+}

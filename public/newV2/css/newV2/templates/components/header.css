@@ -1,0 +1,442 @@
+header nav {
+	background-color: var(--white1);
+	height: 9vh;
+}
+
+header nav .sidebar-line {
+	width: 5rem;
+	height: 100%;
+	background-color: var(--blue2-absolute);
+}
+
+header nav .header-width-adjust {
+	width: calc(100% - 5rem);
+}
+
+header nav .header-desktop button:focus-visible {
+	outline: none;
+}
+
+header nav .header-desktop .header-logos {
+	height: 5rem;
+}
+
+header nav .header-mobile .header-logos {
+	height: 4rem;
+}
+
+header nav .header-desktop .perfil .imagem-usuario {
+	max-height: 4.5rem;
+}
+
+
+.notification-dropdown {
+    width: 400px;        /* largura desejada */
+    overflow-y: auto;    /* ativa scroll vertical */
+}
+
+header nav .header-desktop .funcoes-sistema .notification-icon .notification-count {
+	content: '0';
+	background-color: var(--blue1);
+	color: var(--white-absolute);
+	position: absolute;
+	top: 0;
+	right: -0.4rem;
+	z-index: 9;
+	width: 1.4rem;
+	height: 1.4rem;
+	border-radius: 50%;
+	font-size: 1.1rem;
+	font-weight: 700;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+
+.funcoes-sistema .notification-count {
+	content: '0';
+	background-color: var(--blue1);
+	color: var(--white-absolute);
+	position: absolute;
+	top: 0;
+	right: -0.4rem;
+	z-index: 9;
+	width: 1.4rem;
+	height: 1.4rem;
+	border-radius: 50%;
+	font-size: 1.1rem;
+	font-weight: 700;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+
+
+header .header-mobile .funcoes-sistema .notification-icon .notification-count {
+	content: '0';
+	background-color: var(--blue1);
+	color: var(--white-absolute);
+	position: absolute;
+	top: 0;
+	right: -0.4rem;
+	z-index: 9;
+	width: 1.4rem;
+	height: 1.4rem;
+	border-radius: 50%;
+	font-size: 1.1rem;
+	font-weight: 700;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+
+/* ----------- CUSTOMIZAÇÃO DO SELECT ----------- */
+header nav .header-desktop .select2-container .select2-selection {
+	background-color: transparent;
+	border-radius: 1rem;
+}
+
+header nav .header-desktop .select2-container--default .select2-selection--single .select2-selection__placeholder {
+	font-size: 1.4rem;
+}
+
+header nav .header-desktop .select2-container--default .select2-selection--single .select2-selection__rendered {
+	font-size: 1.4rem;
+}
+
+header nav .header-desktop .select2-container--default .select2-selection--single .select2-selection__rendered {
+	padding-left: 4rem;
+	padding-right: 3.5rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+header nav .header-desktop .select2-dropdown {
+	border: 0.1rem solid var(--grey1);
+}
+
+/* SELECT - Alteração na aparência do scroll */
+.select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar-thumb {
+	background-color: var(--blue1-light) !important;
+}
+
+/* SELECT - Cores da Arrow */
+header nav .header-desktop .select2-container--default .select2-selection--single .select2-selection__arrow:after {
+	color: var(--blue1) !important;
+}
+
+header nav .header-desktop .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow:after {
+	color: var(--blue1) !important;
+}
+
+/* ----------- CUSTOMIZAÇÃO DO SELECT MOBILE ----------- */
+header .header-mobile .select2-container .select2-selection {
+	background-color: transparent;
+	border-radius: 1rem;
+}
+
+header .header-mobile .select2-container--default .select2-selection--single .select2-selection__placeholder {
+	font-size: 1.4rem;
+}
+
+header .header-mobile .select2-container--default .select2-selection--single .select2-selection__rendered {
+	font-size: 1.4rem;
+}
+
+header .header-mobile .select2-container--default .select2-selection--single .select2-selection__rendered {
+	padding-left: 4rem;
+	padding-right: 3.5rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+header .header-mobile .select2-dropdown {
+	border: 0.1rem solid var(--grey1);
+}
+
+/* SELECT - Alteração na aparência do scroll */
+.select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar-thumb {
+	background-color: var(--blue1-light) !important;
+}
+
+/* SELECT - Cores da Arrow */
+header .header-mobile .select2-container--default .select2-selection--single .select2-selection__arrow:after {
+	color: var(--blue1) !important;
+	align-items: center;
+}
+
+header .header-mobile .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow:after {
+	color: var(--blue1) !important;
+	align-items: center;
+}
+
+header .header-mobile .select2-container .select2-selection {
+	height: 4rem !important;
+	align-content: center;
+}
+
+/* Evita overflow do Select2 em containers flex (ex: filial com nomes longos) */
+header nav .header-desktop .selecao-filial,
+header .header-mobile .selecao-filial {
+	min-width: 0;
+}
+
+header nav .header-desktop .selecao-filial .select2-container,
+header .header-mobile .selecao-filial .select2-container {
+	width: 100% !important;
+	min-width: 0;
+	flex: 1 1 auto;
+}
+
+/* CUSTOMIZACAO DROPDOWN MOBILE */
+header .header-mobile .dropdown-menu h1 {
+	font-size: 1.6rem;
+}
+
+header .header-mobile .dropdown-menu a,
+header .header-mobile .dropdown-menu button {
+	font-size: 1.3rem;
+}
+
+header .header-mobile .dropdown-menu span {
+	font-size: 1.2rem;
+}
+
+header .header-mobile .dropdown-menu .dropdown-item:hover,
+header .header-mobile .dropdown-menu .dropdown-item:focus {
+	font-weight: 500 !important;
+	background-color: transparent;
+	cursor: pointer;
+}
+
+header .header-mobile .dropdown-menu.show {
+	display: flex;
+}
+
+header .header-mobile .dropdown-menu .separador {
+	height: 0.1rem;
+	width: 100%;
+}
+
+header .header-mobile .dropdown-menu[data-bs-popper] {
+	border-radius: 1rem;
+	left: auto;
+	box-shadow: rgba(17, 17, 26, 0.05) 0 0.1rem 0, rgba(17, 17, 26, 0.1) 0 0 0.8rem;
+}
+
+header .header-mobile .funcoes-sistema .dropdown-menu[data-bs-popper] {
+	top: 4rem;
+}
+
+header .header-mobile .perfil .dropdown-menu[data-bs-popper] {
+	top: 6rem;
+}
+
+header .header-mobile .dropdown-btn.show:after {
+	content: '\f111';
+	font-family: 'Font Awesome 5 Free', sans-serif;
+	font-weight: 900;
+	font-size: 1.2rem;
+	color: var(--blue-absolute);
+	position: absolute;
+}
+
+header .header-mobile .dropdown-btn.show:after {
+	bottom: -2.6rem;
+	right: 16%;
+	z-index: 9999;
+}
+
+header .header-mobile .dropdown-menu:before {
+	display: none;
+}
+
+
+/* CUSTOMIZACAO DROPDOWN */
+header nav .header-desktop .dropdown-menu h1 {
+	font-size: 1.6rem;
+}
+
+header nav .header-desktop .dropdown-menu a,
+header nav .header-desktop .dropdown-menu button {
+	font-size: 1.3rem;
+}
+
+header nav .header-desktop .dropdown-menu span {
+	font-size: 1.2rem;
+}
+
+header nav .header-desktop .dropdown-menu .dropdown-item:hover,
+header nav .header-desktop .dropdown-menu .dropdown-item:focus {
+	font-weight: 500 !important;
+	background-color: transparent;
+	cursor: pointer;
+}
+
+header nav .header-desktop .dropdown-menu.show {
+	display: flex;
+}
+
+header nav .header-desktop .dropdown-menu .separador {
+	height: 0.1rem;
+	width: 100%;
+}
+
+header nav .header-desktop .dropdown-menu[data-bs-popper] {
+	border-radius: 1rem;
+	left: auto;
+	box-shadow: rgba(17, 17, 26, 0.05) 0 0.1rem 0, rgba(17, 17, 26, 0.1) 0 0 0.8rem;
+}
+
+header nav .header-desktop .funcoes-sistema .dropdown-menu[data-bs-popper] {
+	top: 4rem;
+}
+
+header nav .header-desktop .perfil .dropdown-menu[data-bs-popper] {
+	top: 6rem;
+}
+
+header nav .header-desktop .dropdown-btn.show:after {
+	content: '\f111';
+	font-family: 'Font Awesome 5 Free', sans-serif;
+	font-weight: 900;
+	font-size: 1.2rem;
+	color: var(--blue-absolute);
+	position: absolute;
+}
+
+header nav .header-desktop .dropdown-btn.show:after {
+	bottom: -2.6rem;
+	right: 16%;
+	z-index: 9999;
+}
+
+header nav .header-desktop .dropdown-menu:before {
+	display: none;
+}
+
+/* Customização Modal Info Produto*/
+header .card-product .modal-content .logo {
+	width: 40%;
+}
+
+@media (max-width: 400px) {
+	header nav .header-mobile .header-logos {
+		height: 2.8rem;
+	}
+}
+
+@media (max-width: 767px) {
+	header .card-product .modal-content .product-banner {
+		height: 15rem;
+	}
+
+	header .card-product .modal-content .logo {
+		width: 50%;
+	}
+}
+
+@media (max-width: 1199px) {
+	header nav .header-width-adjust {
+		width: 100%;
+	}
+}
+
+/* HEADER MOBILE MENU*/
+header .header-mobile .modal-dialog .imagem-usuario-mobile{
+	width: 6.5rem !important;
+	padding: 1rem !important;
+}
+
+header .header-mobile .modal-dialog .funcoes-sistema .custom-modal {
+	position: fixed;
+	top: 7rem;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: var(--grey3) !important;
+	align-items: center;
+	z-index: 9999;
+}
+
+header .header-mobile .modal-dialog .funcoes-sistema .custom-modal-content {
+	background-color: #fff;
+	padding: 2rem;
+	margin-top: 8rem;
+	border-radius: 0.5rem;
+	box-shadow: 0 0 1.2rem rgba(0, 0, 0, 0.1);
+	max-width: 80%;
+}
+
+header .header-mobile .modal-dialog .funcoes-sistema .voltar-header{
+	margin-top: 5rem;
+	color: var(--white1);
+	border-radius: 0.5rem;
+	padding: 0.3rem 1.5rem;
+	font-weight: 500;
+	text-transform: uppercase;
+	border-color: transparent !important;
+}
+
+header .header-mobile .modal-dialog .funcoes-sistema .custom-modal-duvidas {
+	position: fixed;
+	top: 7rem;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: var(--grey3) !important;
+	align-items: center;
+	z-index: 9999;
+}
+
+header .header-mobile .modal-dialog .funcoes-sistema .separador{
+	height: 0.1rem;
+	width: 100%;
+}
+
+header .header-mobile .modal-dialog .funcoes-sistema .custom-modal-perfil{
+	position: fixed;
+	top: 7rem;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: var(--grey3) !important;
+	align-items: center;
+	z-index: 9999;
+}
+
+header .header-mobile .modal-dialog .funcoes-sistema .perfil-config{
+	width: 2.4rem !important;
+}
+
+header .header-mobile .modal-dialog .funcoes-sistema .perfil-itens{
+	font-size: 1.3rem !important;
+}
+
+header .header-mobile .modal-dialog .funcoes-sistema .theme-image{
+	color: var(--blue2) !important;
+}
+
+header .header-mobile .modal-dialog .funcoes-sistema .iconify {
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	font-size: 2.5rem !important;
+	height: 2.5rem !important;
+	width: 2.5rem !important;
+}
+
+header .header-desktop .funcoes-sistema .iconify {
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	font-size: 2.2rem !important;
+	height: 2.2rem !important;
+	width: 2.2rem !important;
+	color: var(--blue2) !important;
+}
