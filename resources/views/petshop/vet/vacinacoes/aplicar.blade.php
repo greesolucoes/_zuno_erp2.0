@@ -1,4 +1,4 @@
-@extends('default.layout', ['title' => 'Aplicar vacinação'])
+@extends('default.layout', ['title' => 'Aplicação de Vacinas'])
 
 @section('css')
     <style>
@@ -40,7 +40,7 @@
 
 @section('content')
 <x-form-page
-    title="Aplicar vacinação"
+    title="Aplicação de Vacinas"
     :back-url="route('vet.vaccinations.index', ['page' => request()->query('page', 1)])"
 >
     <div class="row g-4">

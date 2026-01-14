@@ -30,6 +30,17 @@
         return implode(' ', $parts);
     };
 
+    $badgeClass = static function (?string $variant): string {
+        return match ($variant) {
+            'success' => 'badge bg-success',
+            'warning' => 'badge bg-warning text-dark',
+            'danger' => 'badge bg-danger',
+            'info' => 'badge bg-info',
+            'secondary' => 'badge bg-secondary',
+            default => 'badge bg-primary',
+        };
+    };
+
     $dateLabel = Str::ucfirst($selectedDate->isoFormat('dddd, DD [de] MMMM'));
 @endphp
 
@@ -859,7 +870,10 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid vet-queue py-3">
+    <div class="page-content">
+        <div class="card border-top border-0 border-4 border-primary">
+            <div class="card-body p-4">
+                <div class="container-fluid vet-queue py-3">
         <div class="row g-3 align-items-center mb-2">
             <div class="col-12 col-lg">
                 <h1 class="vet-queue__title mb-1">Painel de vacinação</h1>
@@ -870,16 +884,17 @@
             <div class="col-12 col-lg-auto">
                 <form method="get" class="vet-queue__date-picker d-flex align-items-end gap-2 flex-wrap">
                     <div class="d-flex flex-column">
-                        <label for="queue-date">Escolher dia</label>
+                        <label class="form-label mb-1" for="queue-date">Escolher dia</label>
                         <input
                             id="queue-date"
                             type="date"
                             name="date"
                             value="{{ $selectedDate->format('Y-m-d') }}"
+                            class="form-control"
                         >
                     </div>
                     <button type="submit" class="btn btn-primary">
-                        <i class="ri-refresh-line me-1"></i>
+                        <i class="bx bx-refresh me-1"></i>
                         Atualizar visão
                     </button>
                 </form>
@@ -910,11 +925,11 @@
             </div>
             <div class="vet-queue__view-switch nav nav-pills" id="vet-queue-tab" role="tablist">
                 <button class="nav-link active" id="vet-queue-tab-board" data-bs-toggle="pill" data-bs-target="#vet-queue-pane-board" type="button" role="tab" aria-controls="vet-queue-pane-board" aria-selected="true">
-                    <i class="ri-layout-grid-line me-1"></i>
+                    <i class="bx bx-grid-alt me-1"></i>
                     Quadro Kanban
                 </button>
                 <button class="nav-link" id="vet-queue-tab-calendar" data-bs-toggle="pill" data-bs-target="#vet-queue-pane-calendar" type="button" role="tab" aria-controls="vet-queue-pane-calendar" aria-selected="false">
-                    <i class="ri-calendar-line me-1"></i>
+                    <i class="bx bx-calendar me-1"></i>
                     Agenda diária
                 </button>
             </div>
@@ -961,7 +976,7 @@
                                             <div class="vet-queue__column-subtitle">{{ $column['subtitle'] }}</div>
                                         </div>
                                         <span class="vet-queue__pill vet-queue__pill--{{ $column['variant'] }}">
-                                            <i class="ri-team-line"></i>
+                                            <i class="bx bx-group"></i>
                                             {{ $columnItems->count() }}
                                         </span>
                                     </div>
@@ -1004,35 +1019,35 @@
                                                         <div class="vet-queue__chips mt-2">
                                                             @if ($item['scheduled_for'])
                                                                 <span class="vet-queue__chip vet-queue__chip--neutral">
-                                                                    <i class="ri-time-line"></i>
+                                                                    <i class="bx bx-time"></i>
                                                                     {{ $item['scheduled_for'] }}
                                                                 </span>
                                                             @endif
 
                                                             @if ($waitingMinutes > 0)
                                                                 <span class="vet-queue__chip vet-queue__chip--warning">
-                                                                    <i class="ri-hourglass-line"></i>
+                                                                    <i class="bx bx-hourglass"></i>
                                                                     Aguardando {{ $formatMinutes($waitingMinutes) }}
                                                                 </span>
                                                             @endif
 
                                                             @if ($minutesToStart !== null && $minutesToStart > 0)
                                                                 <span class="vet-queue__chip vet-queue__chip--info">
-                                                                    <i class="ri-calendar-check-line"></i>
+                                                                    <i class="bx bx-calendar-check"></i>
                                                                     Começa em {{ $formatMinutes($minutesToStart) }}
                                                                 </span>
                                                             @endif
 
                                                             @if ($elapsedMinutes)
                                                                 <span class="vet-queue__chip vet-queue__chip--success">
-                                                                    <i class="ri-syringe-line"></i>
+                                                                    <i class="bx bx-vial"></i>
                                                                     Em aplicação há {{ $formatMinutes($elapsedMinutes) }}
                                                                 </span>
                                                             @endif
 
                                                             @if ($isEmergency)
                                                                 <span class="vet-queue__chip vet-queue__chip--danger">
-                                                                    <i class="ri-flashlight-line"></i>
+                                                                    <i class="bx bxs-bolt"></i>
                                                                     Prioridade: {{ $item['priority'] }}
                                                                 </span>
                                                             @endif
@@ -1042,7 +1057,7 @@
 
                                                 @if ($notes)
                                                     <div class="vet-queue__card-notes">
-                                                        <i class="ri-information-line me-1"></i>
+                                                        <i class="bx bx-info-circle me-1"></i>
                                                         {{ Str::limit($notes, 140) }}
                                                     </div>
                                                 @endif
@@ -1062,21 +1077,21 @@
                                                     <div class="d-flex flex-column align-items-end gap-2">
                                                         @if (!empty($item['tutor']))
                                                             <div class="vet-queue__tutor">
-                                                                <i class="ri-user-heart-line"></i>
+                                                                <i class="bx bx-user"></i>
                                                                 {{ $item['tutor'] }}
                                                             </div>
                                                         @endif
                                                         <a href="{{ route('vet.vaccinations.apply', ['vacinacao' => $item['id']]) }}"
                                                             class="btn btn-success btn-sm">
-                                                            <i class="ri-syringe-line me-1"></i>
-                                                            Aplicar vacinação
+                                                            <i class="bx bx-vial me-1"></i>
+                                                            Aplicação de Vacinas
                                                         </a>
                                                     </div>
                                                 </div>
                                             </article>
                                         @empty
                                             <div class="vet-queue__empty">
-                                                <i class="ri-emotion-line fs-4 d-block mb-2"></i>
+                                                <i class="bx bx-meh fs-4 d-block mb-2"></i>
                                                 {{ $column['empty'] }}
                                             </div>
                                         @endforelse
@@ -1100,7 +1115,7 @@
 
                     @if ($current)
                         <div class="vet-queue__highlight vet-queue__highlight--info">
-                            <strong><i class="ri-syringe-line me-1"></i> Aplicação em andamento</strong>
+                            <strong><i class="bx bx-vial me-1"></i> Aplicação em andamento</strong>
                             <div>{{ $current['patient']['name'] }} com {{ $current['veterinarian']['name'] }}</div>
                             <small>Iniciada há {{ $formatMinutes($current['elapsed_minutes'] ?? 0) }}</small>
                         </div>
@@ -1108,7 +1123,7 @@
 
                     @if ($next)
                         <div class="vet-queue__highlight vet-queue__highlight--success">
-                            <strong><i class="ri-roadster-fill me-1"></i> Próximo a vacinar</strong>
+                            <strong><i class="bx bx-chevrons-right me-1"></i> Próximo a vacinar</strong>
                             <div>{{ $next['patient']['name'] }} • {{ $next['service'] }}</div>
                             @if (!empty($next['scheduled_for']))
                                 <small>Previsto para {{ $next['scheduled_for'] }}</small>
@@ -1120,7 +1135,7 @@
 
                     @if ($delayed)
                         <div class="vet-queue__highlight vet-queue__highlight--warning">
-                            <strong><i class="ri-time-line me-1"></i> Atenção ao atraso</strong>
+                            <strong><i class="bx bx-time me-1"></i> Atenção ao atraso</strong>
                             <div>{{ $delayed['patient']['name'] }} aguarda há {{ $formatMinutes($delayed['waiting_minutes'] ?? 0) }}</div>
                             <small>Responsável: {{ $delayed['veterinarian']['name'] }}</small>
                         </div>
@@ -1128,7 +1143,7 @@
 
                     @if ($priority)
                         <div class="vet-queue__highlight vet-queue__highlight--danger">
-                            <strong><i class="ri-alert-line me-1"></i> Prioridade crítica</strong>
+                            <strong><i class="bx bx-error me-1"></i> Prioridade crítica</strong>
                             <div>{{ $priority['patient']['name'] }} • {{ $priority['priority'] }}</div>
                             <small>Contato do tutor: {{ $priority['tutor'] }}</small>
                         </div>
@@ -1155,9 +1170,9 @@
                                         <div>
                                             <div class="vet-queue__doctor-name">{{ $board['name'] }}</div>
                                             <div class="vet-queue__doctor-stats">
-                                                <span><i class="ri-time-line"></i> {{ $board['waiting'] }} em espera</span>
-                                                <span><i class="ri-syringe-line"></i> {{ $board['in_progress'] }} em aplicação</span>
-                                                <span><i class="ri-calendar-check-line"></i> {{ $board['upcoming'] }} próximos</span>
+                                                <span><i class="bx bx-time"></i> {{ $board['waiting'] }} em espera</span>
+                                                <span><i class="bx bx-vial"></i> {{ $board['in_progress'] }} em aplicação</span>
+                                                <span><i class="bx bx-calendar-check"></i> {{ $board['upcoming'] }} próximos</span>
                                             </div>
                                         </div>
                                         <span class="vet-queue__pill vet-queue__pill--primary">{{ $board['total_today'] }} hoje</span>
@@ -1165,14 +1180,14 @@
 
                                     @if (!empty($board['active']))
                                         <div class="vet-queue__doctor-active">
-                                            <i class="ri-pulse-line"></i>
+                                            <i class="bx bx-pulse"></i>
                                             {{ $board['active']['patient']['name'] }} em aplicação
                                         </div>
                                     @endif
 
                                     @if (!empty($board['next']))
                                         <div class="vet-queue__doctor-next">
-                                            <i class="ri-arrow-right-line"></i>
+                                            <i class="bx bx-right-arrow-alt"></i>
                                             Próximo: {{ $board['next']['patient']['name'] }}
                                             @if (!empty($board['next']['scheduled_for']))
                                                 às {{ $board['next']['scheduled_for'] }}
@@ -1230,45 +1245,45 @@
                                         @forelse ($hour['events'] as $event)
                                             <article class="vet-calendar__event-card vet-calendar__event-card--{{ $event['status_color'] ?? 'primary' }}{{ !empty($event['is_delayed']) ? ' is-delayed' : '' }}">
                                                 <header class="vet-calendar__event-header">
-                                                    <span class="vet-calendar__event-time"><i class="ri-time-line me-1"></i>{{ $event['start_time'] }} - {{ $event['end_time'] }}</span>
+                                                    <span class="vet-calendar__event-time"><i class="bx bx-time me-1"></i>{{ $event['start_time'] }} - {{ $event['end_time'] }}</span>
                                                     <span class="vet-calendar__event-duration">{{ $event['duration_label'] }}</span>
                                                 </header>
                                                 <div class="vet-calendar__event-body">
                                                     <div class="vet-calendar__event-patient">{{ $event['patient'] }}</div>
                                                     @if (!empty($event['service']))
-                                                        <div class="vet-calendar__event-service"><i class="ri-syringe-line me-1"></i>{{ $event['service'] }}</div>
+                                                        <div class="vet-calendar__event-service"><i class="bx bx-vial me-1"></i>{{ $event['service'] }}</div>
                                                     @endif
                                                     @if (!empty($event['tutor']))
-                                                        <div class="vet-calendar__event-tutor"><i class="ri-user-smile-line me-1"></i>{{ $event['tutor'] }}</div>
+                                                        <div class="vet-calendar__event-tutor"><i class="bx bx-user me-1"></i>{{ $event['tutor'] }}</div>
                                                     @endif
                                                 </div>
                                                 <footer class="vet-calendar__event-footer">
                                                     <div class="vet-calendar__event-meta">
                                                         @if (!empty($event['veterinarian']))
-                                                            <span><i class="ri-user-heart-line me-1"></i>{{ $event['veterinarian'] }}</span>
+                                                            <span><i class="bx bx-user-check me-1"></i>{{ $event['veterinarian'] }}</span>
                                                         @endif
                                                         @if (!empty($event['room']))
-                                                            <span><i class="ri-home-smile-line me-1"></i>{{ $event['room'] }}</span>
+                                                            <span><i class="bx bx-home me-1"></i>{{ $event['room'] }}</span>
                                                         @endif
                                                     </div>
                                                     <div class="vet-calendar__event-tags">
-                                                        <span class="badge bg-{{ $event['status_color'] ?? 'primary' }}-subtle text-{{ $event['status_color'] ?? 'primary' }}">{{ $event['category_label'] }}</span>
+                                                        <span class="{{ $badgeClass($event['status_color'] ?? 'primary') }}">{{ $event['category_label'] }}</span>
                                                         @if (!empty($event['priority']))
-                                                            <span class="badge bg-danger-subtle text-danger"><i class="ri-flashlight-fill me-1"></i>{{ $event['priority'] }}</span>
+                                                            <span class="badge bg-danger"><i class="bx bxs-bolt me-1"></i>{{ $event['priority'] }}</span>
                                                         @endif
                                                         @if (!empty($event['is_delayed']))
-                                                            <span class="badge bg-danger-subtle text-danger"><i class="ri-alert-line me-1"></i>Atraso</span>
+                                                            <span class="badge bg-danger"><i class="bx bx-error me-1"></i>Atraso</span>
                                                         @elseif (!empty($event['waiting_minutes']) && $event['waiting_minutes'] > 0 && (($event['minutes_to_start'] ?? 0) <= 0))
-                                                            <span class="badge bg-warning-subtle text-warning"><i class="ri-time-line me-1"></i>Aguardando {{ $formatMinutes($event['waiting_minutes']) }}</span>
+                                                            <span class="badge bg-warning text-dark"><i class="bx bx-time me-1"></i>Aguardando {{ $formatMinutes($event['waiting_minutes']) }}</span>
                                                         @elseif (!empty($event['minutes_to_start']) && $event['minutes_to_start'] > 0)
-                                                            <span class="badge bg-info-subtle text-info"><i class="ri-calendar-check-line me-1"></i>Começa em {{ $formatMinutes($event['minutes_to_start']) }}</span>
+                                                            <span class="badge bg-info text-white"><i class="bx bx-calendar-check me-1"></i>Começa em {{ $formatMinutes($event['minutes_to_start']) }}</span>
                                                         @endif
                                                     </div>
                                                 </footer>
                                             </article>
                                         @empty
                                             <div class="vet-calendar__hour-free">
-                                                <i class="ri-sparkling-2-line"></i>
+                                                <i class="bx bx-wind"></i>
                                                 Horário livre
                                             </div>
                                         @endforelse
@@ -1278,7 +1293,7 @@
                         </div>
                     @else
                         <div class="vet-calendar__empty">
-                            <i class="ri-calendar-event-line d-block mb-2"></i>
+                            <i class="bx bx-calendar-event d-block mb-2"></i>
                             Nenhum horário definido para esta data.
                             @if ($calendarView['summary']['unscheduled'] > 0)
                                 <span class="d-block mt-2">Ainda há {{ $calendarView['summary']['unscheduled'] }} vacinações aguardando definição.</span>
@@ -1289,7 +1304,7 @@
                     @if (!empty($calendarView['unscheduled']))
                         <div class="vet-calendar__unscheduled">
                             <div class="vet-calendar__unscheduled-title">
-                                <i class="ri-compass-3-line"></i>
+                                <i class="bx bx-compass"></i>
                                 Sem horário definido
                                 <span>{{ $calendarView['summary']['unscheduled'] }}</span>
                             </div>
@@ -1299,16 +1314,16 @@
                                         <div class="vet-calendar__unscheduled-patient">{{ $event['patient'] }}</div>
                                         <div class="vet-calendar__unscheduled-meta">
                                             @if (!empty($event['service']))
-                                                <span><i class="ri-syringe-line me-1"></i>{{ $event['service'] }}</span>
+                                                <span><i class="bx bx-vial me-1"></i>{{ $event['service'] }}</span>
                                             @endif
                                             @if (!empty($event['veterinarian']))
-                                                <span><i class="ri-user-heart-line me-1"></i>{{ $event['veterinarian'] }}</span>
+                                                <span><i class="bx bx-user-check me-1"></i>{{ $event['veterinarian'] }}</span>
                                             @endif
                                         </div>
                                         <div class="d-flex gap-2 flex-wrap">
-                                            <span class="badge bg-{{ $event['status_color'] ?? 'primary' }}-subtle text-{{ $event['status_color'] ?? 'primary' }}">{{ $event['category_label'] }}</span>
+                                            <span class="{{ $badgeClass($event['status_color'] ?? 'primary') }}">{{ $event['category_label'] }}</span>
                                             @if (!empty($event['priority']))
-                                                <span class="badge bg-danger-subtle text-danger"><i class="ri-alert-line me-1"></i>{{ $event['priority'] }}</span>
+                                                <span class="badge bg-danger"><i class="bx bx-error me-1"></i>{{ $event['priority'] }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -1316,6 +1331,9 @@
                             </div>
                         </div>
                     @endif
+                </div>
+            </div>
+        </div>
                 </div>
             </div>
         </div>

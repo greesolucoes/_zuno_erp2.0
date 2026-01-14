@@ -16,7 +16,6 @@ $menu = $menu->preparaMenu();
 			@php
 				$groups = [
 					'cadastros' => ['label' => 'Cadastros', 'items' => []],
-					'planos' => ['label' => 'Planos', 'items' => []],
 					'veterinario' => ['label' => 'Atd. Veterinário', 'items' => []],
 					'hotel' => ['label' => 'Hotel', 'items' => []],
 					'creche' => ['label' => 'Creche', 'items' => []],
@@ -28,7 +27,7 @@ $menu = $menu->preparaMenu();
 
 				foreach (($m['subs'] ?? []) as $subItem) {
 					$name = $subItem['nome'] ?? '';
-					if (in_array($name, ['Agenda', 'Configurações Pet Shop'], true)) {
+					if (in_array($name, ['Agenda'], true)) {
 						$standaloneItems[] = $subItem;
 						continue;
 					}
@@ -52,8 +51,11 @@ $menu = $menu->preparaMenu();
 						if (\Illuminate\Support\Str::startsWith($name, 'Tele-entregas - ')) {
 							$label = trim(substr($name, strlen('Tele-entregas - ')));
 						}
+					} elseif ($name === 'Configurações Pet Shop') {
+						$groupKey = 'estetica';
+						$label = 'Configurações';
 					} elseif (in_array($name, ['Cliente Plano', 'Cliente Avulso (Portal)', 'Gerenciar Planos'], true)) {
-						$groupKey = 'planos';
+						$groupKey = 'estetica';
 					} elseif (in_array($name, ['Pets', 'Espécies', 'Raças', 'Pelagens'], true)) {
 						$groupKey = 'cadastros';
 					} else {
@@ -97,9 +99,192 @@ $menu = $menu->preparaMenu();
 						<i class="bx bx-circle" style="font-size: 10px;"></i>{{ $group['label'] }}
 					</a>
 					<ul>
-						@foreach($items as $subItem)
-							{!! $renderLeaf($subItem) !!}
-						@endforeach
+						@if(($group['label'] ?? '') === 'Atd. Veterinário')
+							@php
+								$panelItems = [];
+								$historyItems = [];
+								$otherVetItems = [];
+
+								foreach ($items as $subItem) {
+									$label = (string) ($subItem['nome'] ?? '');
+									if (\Illuminate\Support\Str::startsWith($label, 'Painel - ')) {
+										$subItem['nome'] = trim(substr($label, strlen('Painel - ')));
+										$panelItems[] = $subItem;
+										continue;
+									}
+									if (\Illuminate\Support\Str::startsWith($label, 'Histórico - ')) {
+										$subItem['nome'] = trim(substr($label, strlen('Histórico - ')));
+										$historyItems[] = $subItem;
+										continue;
+									}
+									$otherVetItems[] = $subItem;
+								}
+							@endphp
+
+							@if(count($panelItems) > 0)
+								<li>
+									<a href="javascript:;" class="has-arrow">
+										<i class="bx bx-circle" style="font-size: 10px;"></i>Painel
+									</a>
+									<ul>
+										@foreach($panelItems as $subItem)
+											{!! $renderLeaf($subItem) !!}
+										@endforeach
+									</ul>
+								</li>
+							@endif
+
+							@if(count($historyItems) > 0)
+								<li>
+									<a href="javascript:;" class="has-arrow">
+										<i class="bx bx-circle" style="font-size: 10px;"></i>Histórico
+									</a>
+									<ul>
+										@foreach($historyItems as $subItem)
+											{!! $renderLeaf($subItem) !!}
+										@endforeach
+									</ul>
+								</li>
+							@endif
+
+							@foreach($otherVetItems as $subItem)
+								{!! $renderLeaf($subItem) !!}
+							@endforeach
+						@else
+							@if(($group['label'] ?? '') === 'Hotel')
+								@php
+									$adminItems = [];
+									$otherHotelItems = [];
+
+									foreach ($items as $subItem) {
+										$label = (string) ($subItem['nome'] ?? '');
+										if (\Illuminate\Support\Str::startsWith($label, 'Administração - ')) {
+											$subItem['nome'] = trim(substr($label, strlen('Administração - ')));
+											$adminItems[] = $subItem;
+											continue;
+										}
+										$otherHotelItems[] = $subItem;
+									}
+								@endphp
+
+								@foreach($otherHotelItems as $subItem)
+									{!! $renderLeaf($subItem) !!}
+								@endforeach
+
+								@if(count($adminItems) > 0)
+									<li>
+										<a href="javascript:;" class="has-arrow">
+											<i class="bx bx-circle" style="font-size: 10px;"></i>Administração
+										</a>
+										<ul>
+											@foreach($adminItems as $subItem)
+												{!! $renderLeaf($subItem) !!}
+											@endforeach
+										</ul>
+									</li>
+								@endif
+							@elseif(($group['label'] ?? '') === 'Creche')
+								@php
+									$adminItems = [];
+									$otherCrecheItems = [];
+
+									foreach ($items as $subItem) {
+										$label = (string) ($subItem['nome'] ?? '');
+										if (\Illuminate\Support\Str::startsWith($label, 'Administração - ')) {
+											$subItem['nome'] = trim(substr($label, strlen('Administração - ')));
+											$adminItems[] = $subItem;
+											continue;
+										}
+										$otherCrecheItems[] = $subItem;
+									}
+								@endphp
+
+								@foreach($otherCrecheItems as $subItem)
+									{!! $renderLeaf($subItem) !!}
+								@endforeach
+
+								@if(count($adminItems) > 0)
+									<li>
+										<a href="javascript:;" class="has-arrow">
+											<i class="bx bx-circle" style="font-size: 10px;"></i>Administração
+										</a>
+										<ul>
+											@foreach($adminItems as $subItem)
+												{!! $renderLeaf($subItem) !!}
+											@endforeach
+										</ul>
+									</li>
+								@endif
+							@elseif(($group['label'] ?? '') === 'Estética')
+								@php
+									$planItems = [];
+									$appointmentItems = [];
+									$manageItems = [];
+									$otherEsteticaItems = [];
+
+									foreach ($items as $subItem) {
+										$label = (string) ($subItem['nome'] ?? '');
+
+										if (\Illuminate\Support\Str::startsWith($label, 'Plano - ')) {
+											$subItem['nome'] = trim(substr($label, strlen('Plano - ')));
+											$planItems[] = $subItem;
+											continue;
+										}
+
+										if (\Illuminate\Support\Str::startsWith($label, 'Agendamentos - ')) {
+											$subItem['nome'] = trim(substr($label, strlen('Agendamentos - ')));
+											$appointmentItems[] = $subItem;
+											continue;
+										}
+
+										if ($label === 'Gerenciar') {
+											$manageItems[] = $subItem;
+											continue;
+										}
+
+										$otherEsteticaItems[] = $subItem;
+									}
+								@endphp
+
+								@foreach($manageItems as $subItem)
+									{!! $renderLeaf($subItem) !!}
+								@endforeach
+
+								@if(count($planItems) > 0)
+									<li>
+										<a href="javascript:;" class="has-arrow">
+											<i class="bx bx-circle" style="font-size: 10px;"></i>Plano
+										</a>
+										<ul>
+											@foreach($planItems as $subItem)
+												{!! $renderLeaf($subItem) !!}
+											@endforeach
+										</ul>
+									</li>
+								@endif
+
+								@if(count($appointmentItems) > 0)
+									<li>
+										<a href="javascript:;" class="has-arrow">
+											<i class="bx bx-circle" style="font-size: 10px;"></i>Agendamentos
+										</a>
+										<ul>
+											@foreach($appointmentItems as $subItem)
+												{!! $renderLeaf($subItem) !!}
+											@endforeach
+										</ul>
+									</li>
+								@endif
+
+								@foreach($otherEsteticaItems as $subItem)
+									{!! $renderLeaf($subItem) !!}
+								@endforeach
+							@else
+								@foreach($items as $subItem)
+									{!! $renderLeaf($subItem) !!}
+								@endforeach
+							@endif
+						@endif
 					</ul>
 				</li>
 			@endforeach

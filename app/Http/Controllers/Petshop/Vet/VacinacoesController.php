@@ -68,8 +68,8 @@ class VacinacoesController extends Controller
                 Vacinacao::STATUS_ATRASADO,
             ],
             'view_mode' => 'scheduled',
-            'page_title' => 'Aplicar Vacinação',
-            'table_title' => 'Aplicar vacinação',
+            'page_title' => 'Aplicação de Vacinas',
+            'table_title' => 'Aplicação de Vacinas',
         ]);
     }
 
@@ -905,10 +905,10 @@ class VacinacoesController extends Controller
     {
         if (!$companyId) {
             return [
-                ['label' => 'Vacinações agendadas', 'value' => 0, 'icon' => 'ri-calendar-check-line', 'variant' => 'primary'],
-                ['label' => 'Doses aplicadas no mês', 'value' => 0, 'icon' => 'ri-shield-check-line', 'variant' => 'success'],
-                ['label' => 'Lotes próximos da validade', 'value' => 0, 'icon' => 'ri-error-warning-line', 'variant' => 'warning'],
-                ['label' => 'Pendências críticas', 'value' => 0, 'icon' => 'ri-alert-line', 'variant' => 'danger'],
+                ['label' => 'Vacinações agendadas', 'value' => 0, 'icon' => 'bx bx-calendar-check', 'variant' => 'primary'],
+                ['label' => 'Doses aplicadas no mês', 'value' => 0, 'icon' => 'bx bx-shield', 'variant' => 'success'],
+                ['label' => 'Lotes próximos da validade', 'value' => 0, 'icon' => 'bx bx-calendar-exclamation', 'variant' => 'warning'],
+                ['label' => 'Pendências críticas', 'value' => 0, 'icon' => 'bx bx-error', 'variant' => 'danger'],
             ];
         }
 
@@ -943,10 +943,10 @@ class VacinacoesController extends Controller
             ->count();
 
         return [
-            ['label' => 'Vacinações agendadas', 'value' => $scheduled, 'icon' => 'ri-calendar-check-line', 'variant' => 'primary'],
-            ['label' => 'Doses aplicadas no mês', 'value' => $appliedThisMonth, 'icon' => 'ri-shield-check-line', 'variant' => 'success'],
-            ['label' => 'Lotes próximos da validade', 'value' => $nearExpiry, 'icon' => 'ri-error-warning-line', 'variant' => 'warning'],
-            ['label' => 'Pendências críticas', 'value' => $overdue, 'icon' => 'ri-alert-line', 'variant' => 'danger'],
+            ['label' => 'Vacinações agendadas', 'value' => $scheduled, 'icon' => 'bx bx-calendar-check', 'variant' => 'primary'],
+            ['label' => 'Doses aplicadas no mês', 'value' => $appliedThisMonth, 'icon' => 'bx bx-shield', 'variant' => 'success'],
+            ['label' => 'Lotes próximos da validade', 'value' => $nearExpiry, 'icon' => 'bx bx-calendar-exclamation', 'variant' => 'warning'],
+            ['label' => 'Pendências críticas', 'value' => $overdue, 'icon' => 'bx bx-error', 'variant' => 'danger'],
         ];
     }
 
@@ -1347,14 +1347,14 @@ class VacinacoesController extends Controller
             [
                 'label' => 'Aguardando',
                 'value' => $waiting->count(),
-                'icon' => 'ri-time-line',
+                'icon' => 'bx bx-time',
                 'variant' => 'warning',
                 'description' => $waitingDescription,
             ],
             [
                 'label' => 'Em aplicação',
                 'value' => $inProgress->count(),
-                'icon' => 'ri-syringe-line',
+                'icon' => 'bx bx-vial',
                 'variant' => 'info',
                 'description' => $inProgress->count()
                     ? 'Aplicações em execução neste momento.'
@@ -1363,7 +1363,7 @@ class VacinacoesController extends Controller
             [
                 'label' => 'Próximas doses',
                 'value' => $upcoming->count(),
-                'icon' => 'ri-calendar-check-line',
+                'icon' => 'bx bx-calendar-check',
                 'variant' => 'primary',
                 'description' => $nextScheduled
                     ? 'Próxima dose às ' . ($nextScheduled['scheduled_for'] ?? '—')
@@ -1372,7 +1372,7 @@ class VacinacoesController extends Controller
             [
                 'label' => 'Concluídas',
                 'value' => $completed->count(),
-                'icon' => 'ri-checkbox-circle-line',
+                'icon' => 'bx bx-check-circle',
                 'variant' => 'success',
                 'description' => $delayedCount > 0
                     ? $delayedCount . ' vacinação(ões) com atraso.'
@@ -1579,19 +1579,19 @@ class VacinacoesController extends Controller
             [
                 'label' => 'Em aplicação',
                 'variant' => 'info',
-                'icon' => 'ri-syringe-line',
+                'icon' => 'bx bx-vial',
                 'count' => $summary['in_progress'],
             ],
             [
                 'label' => 'Aguardando',
                 'variant' => 'warning',
-                'icon' => 'ri-time-line',
+                'icon' => 'bx bx-time',
                 'count' => $summary['waiting'],
             ],
             [
                 'label' => 'Próximas doses',
                 'variant' => 'primary',
-                'icon' => 'ri-calendar-schedule-line',
+                'icon' => 'bx bx-calendar-plus',
                 'count' => $summary['upcoming'],
             ],
         ];

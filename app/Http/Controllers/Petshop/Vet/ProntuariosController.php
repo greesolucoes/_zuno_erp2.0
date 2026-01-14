@@ -2552,14 +2552,14 @@ class ProntuariosController extends Controller
             [
                 'label' => 'Em espera',
                 'value' => $waiting->count(),
-                'icon' => 'ri-time-line',
+                'icon' => 'bx bx-time',
                 'variant' => 'warning',
                 'description' => $waitingDescription,
             ],
             [
                 'label' => 'Em atendimento',
                 'value' => $inProgress->count(),
-                'icon' => 'ri-stethoscope-line',
+                'icon' => 'bx bx-plus-medical',
                 'variant' => 'info',
                 'description' => $inProgress->count()
                     ? 'Consultas em andamento neste momento.'
@@ -2568,7 +2568,7 @@ class ProntuariosController extends Controller
             [
                 'label' => 'Próximos horários',
                 'value' => $upcoming->count(),
-                'icon' => 'ri-calendar-check-line',
+                'icon' => 'bx bx-calendar-check',
                 'variant' => 'primary',
                 'description' => $nextUpcoming
                     ? 'Próximo paciente às ' . ($nextUpcoming['scheduled_for'] ?? '—')
@@ -2577,7 +2577,7 @@ class ProntuariosController extends Controller
             [
                 'label' => 'Finalizados',
                 'value' => $completed->count(),
-                'icon' => 'ri-checkbox-circle-line',
+                'icon' => 'bx bx-check-circle',
                 'variant' => 'success',
                 'description' => 'Pontualidade geral: ' . $onTimeRate . '%',
             ],

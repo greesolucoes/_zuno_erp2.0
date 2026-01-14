@@ -300,17 +300,17 @@ class Menu
 				'icone' => 'bx bx-bone',
 				'subs' => [
 					[
-						'nome' => 'Cliente Plano',
+						'nome' => 'Estética - Plano - Usuários do Plano',
 						'rota' => $this->safeRoute('petshop.planos.usuario.index'),
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Cliente Avulso (Portal)',
+						'nome' => 'Estética - Plano - Usuários Avulso',
 						'rota' => $this->safeRoute('petshop.planos.usuarios-avulso.index'),
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Gerenciar Planos',
+						'nome' => 'Estética - Plano - Planos',
 						'rota' => $this->safeRoute('petshop.gerenciar.planos'),
 						'mostrar_sempre' => true,
 					],
@@ -320,12 +320,12 @@ class Menu
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Veterinário - Prontuários (Fila)',
+						'nome' => 'Veterinário - Painel - Prontuário',
 						'rota' => $this->safeRoute('vet.records.queue'),
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Veterinário - Prontuários (Histórico)',
+						'nome' => 'Veterinário - Histórico - Prontuário',
 						'rota' => $this->safeRoute('vet.records.index'),
 						'mostrar_sempre' => true,
 					],
@@ -340,40 +340,40 @@ class Menu
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Veterinário - Vacinações (Painel)',
+						'nome' => 'Veterinário - Painel - Vacinação',
 						'rota' => $this->safeRoute('vet.vaccinations.panel'),
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Veterinário - Vacinações (Histórico)',
+						'nome' => 'Veterinário - Histórico - Vacinação',
 						'rota' => $this->safeRoute('vet.vaccinations.index'),
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Veterinário - Aplicar Vacinação',
+						'nome' => 'Veterinário - Aplicação de Vacinas',
 						'rota' => $this->safeRoute('vet.vaccinations.scheduled'),
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Veterinário - Internações (Histórico)',
+						'nome' => 'Veterinário - Histórico - Internação',
 						'rota' => $this->safeRoute('vet.hospitalizations.index'),
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Veterinário - Ocupação de Leitos',
+						'nome' => 'Veterinário - Painel - Leitos',
 						'rota' => $this->safeRoute('vet.hospitalizations.occupancy'),
 						'mostrar_sempre' => true,
 					],
-					[
-						'nome' => 'Tele-entregas',
-						'rota' => $this->safeRoute('tele_entregas.index'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Tele-entregas - Tipos',
-						'rota' => $this->safeRoute('tipos_tele_entregas.index'),
-						'mostrar_sempre' => true,
-					],
+					##[
+					##	'nome' => 'Tele-entregas',
+					##	'rota' => $this->safeRoute('tele_entregas.index'),
+					##	'mostrar_sempre' => true,
+					##],
+					##[
+					##	'nome' => 'Tele-entregas - Tipos',
+					##	'rota' => $this->safeRoute('tipos_tele_entregas.index'),
+					##	'mostrar_sempre' => true,
+					##],
 					[
 						'nome' => 'Hotel - Reservas',
 						'rota' => $this->safeRoute('hoteis.index'),
@@ -385,17 +385,17 @@ class Menu
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Hotel - Eventos de Quarto',
+						'nome' => 'Hotel - Administração - Eventos',
 						'rota' => $this->safeRoute('quartos.eventos.index'),
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Hotel - Monitoramento (Hotel)',
+						'nome' => 'Hotel - Administração - Monitorar Hotel',
 						'rota' => $this->safeRoute('hotel.monitoramento.hotel'),
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Hotel - Monitoramento (Quartos)',
+						'nome' => 'Hotel - Administração - Monitorar Quartos',
 						'rota' => $this->safeRoute('hotel.monitoramento.quartos'),
 						'mostrar_sempre' => true,
 					],
@@ -410,17 +410,17 @@ class Menu
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Creche - Eventos de Turma',
+						'nome' => 'Creche - Administração - Eventos',
 						'rota' => $this->safeRoute('turmas.eventos.index'),
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Creche - Monitoramento (Creche)',
+						'nome' => 'Creche - Administração - Monitorar Creche',
 						'rota' => $this->safeRoute('creche.monitoramento.creche'),
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Creche - Monitoramento (Salas)',
+						'nome' => 'Creche - Administração - Monitorar Salas',
 						'rota' => $this->safeRoute('creche.monitoramento.salas'),
 						'mostrar_sempre' => true,
 					],
@@ -430,12 +430,12 @@ class Menu
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Estética - Pendentes',
+						'nome' => 'Estética - Agendamentos - Pendentes',
 						'rota' => $this->safeRoute('petshop.esteticista.agendamentos.pendente'),
 						'mostrar_sempre' => true,
 					],
 					[
-						'nome' => 'Estética - Pendentes (Avulso)',
+						'nome' => 'Estética - Agendamentos - Pendentes (Avulso)',
 						'rota' => $this->safeRoute('petshop.esteticista.agendamentos.pendente-avulso'),
 						'mostrar_sempre' => true,
 					],
