@@ -103,6 +103,89 @@ $menu = $menu->preparaMenu();
 					</ul>
 				</li>
 			@endforeach
+		@elseif(($m['titulo'] ?? '') === 'Cadastros')
+			@php
+				$groups = [
+					'comercial' => ['label' => 'Comercial', 'items' => []],
+					'pessoas_logistica' => ['label' => 'Pessoas & Logística', 'items' => []],
+					'financeiro' => ['label' => 'Financeiro', 'items' => []],
+					'sistema' => ['label' => 'Sistema', 'items' => []],
+					'petshop' => ['label' => 'Petshop', 'items' => []],
+					'vet' => ['label' => 'Vet (Cadastros)', 'items' => []],
+					'outros' => ['label' => 'Prestação de Serviços', 'items' => []],
+				];
+
+				$renderLeaf = function ($item) {
+					$mostrarSempre = $item['mostrar_sempre'] ?? false;
+					$disabled = isset($item['rota_ativa']) && $item['rota_ativa'] === false;
+					$shouldRender = ($item['rota'] ?? '') !== '' && (!isset($item['rota_ativa']) || $mostrarSempre);
+
+					if (! $shouldRender) return '';
+
+					if ($disabled) {
+						return '<li><a class="text-muted" href="javascript:;" style="pointer-events:none;opacity:.6"><i class="bx bx-circle" style="font-size: 10px;"></i>' . e($item['nome']) . '</a></li>';
+					}
+
+					$target = isset($item['target']) ? ' target="_blank"' : '';
+					return '<li><a' . $target . ' href="' . e($item['rota']) . '"><i class="bx bx-circle" style="font-size: 10px;"></i>' . e($item['nome']) . '</a></li>';
+				};
+
+				foreach (($m['subs'] ?? []) as $subItem) {
+					$name = $subItem['nome'] ?? '';
+
+					if (in_array($name, ['Categorias', 'Marcas', 'Produtos', 'Lista de Preços', 'Divisão de Grade'], true)) {
+						$groups['comercial']['items'][] = $subItem;
+						continue;
+					}
+
+					if (in_array($name, ['Clientes', 'Fornecedores', 'Transportadoras', 'Veículos'], true)) {
+						$groups['pessoas_logistica']['items'][] = $subItem;
+						continue;
+					}
+
+					if (in_array($name, ['Categorias de Contas', 'Formas de pagamento'], true)) {
+						$groups['financeiro']['items'][] = $subItem;
+						continue;
+					}
+
+					if (in_array($name, ['Usuários', 'Cidades'], true)) {
+						$groups['sistema']['items'][] = $subItem;
+						continue;
+					}
+
+					if (in_array($name, ['Pets', 'Espécies', 'Raças', 'Pelagens'], true)) {
+						$groups['petshop']['items'][] = $subItem;
+						continue;
+					}
+
+					if (in_array($name, ['Médicos', 'Salas de Atendimento', 'Salas de Internação', 'Checklist', 'Alergias', 'Condições crônicas', 'Medicamentos', 'Vacinas', 'Modelo de Atendimento', 'Modelo de Avaliação', 'Modelo de Prescrição'], true)) {
+						$groups['vet']['items'][] = $subItem;
+						continue;
+					}
+
+					$groups['outros']['items'][] = $subItem;
+				}
+			@endphp
+
+			@foreach($groups as $group)
+				@php
+					$items = $group['items'] ?? [];
+				@endphp
+				@if(count($items) === 0)
+					@continue
+				@endif
+
+				<li>
+					<a href="javascript:;" class="has-arrow">
+						<i class="bx bx-circle" style="font-size: 10px;"></i>{{ $group['label'] }}
+					</a>
+					<ul>
+						@foreach($items as $subItem)
+							{!! $renderLeaf($subItem) !!}
+						@endforeach
+					</ul>
+				</li>
+			@endforeach
 		@else
 			@foreach($m['subs'] as $i)
 			@php

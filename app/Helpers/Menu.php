@@ -39,6 +39,81 @@ class Menu
 						'nome' => 'Clientes',
 						'rota' => route('clientes.index')
 					],
+					[
+						'nome' => 'Pets',
+						'rota' => $this->safeRoute('animais.pacientes.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Espécies',
+						'rota' => $this->safeRoute('animais.especies.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Raças',
+						'rota' => $this->safeRoute('animais.racas.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Pelagens',
+						'rota' => $this->safeRoute('animais.pelagens.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Médicos',
+						'rota' => $this->safeRoute('vet.medicos.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Salas de Atendimento',
+						'rota' => $this->safeRoute('vet.salas-atendimento.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Salas de Internação',
+						'rota' => $this->safeRoute('vet.salas-internacao.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Checklist',
+						'rota' => $this->safeRoute('vet.checklist.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Alergias',
+						'rota' => $this->safeRoute('vet.allergies.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Condições crônicas',
+						'rota' => $this->safeRoute('vet.chronic-conditions.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Medicamentos',
+						'rota' => $this->safeRoute('vet.medicines.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Vacinas',
+						'rota' => $this->safeRoute('vacina.vacinas.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Modelo de Atendimento',
+						'rota' => $this->safeRoute('vet.modelos-atendimento.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Modelo de Avaliação',
+						'rota' => $this->safeRoute('vet.assessment-models.index'),
+						'mostrar_sempre' => true,
+					],
+					[
+						'nome' => 'Modelo de Prescrição',
+						'rota' => $this->safeRoute('vet.prescription-models.index'),
+						'mostrar_sempre' => true,
+					],
 					// [
 					// 	'nome' => 'Grupos de Cliente',
 					// 	'rota' => route('gruposCliente.index')
@@ -225,26 +300,6 @@ class Menu
 				'icone' => 'bx bx-bone',
 				'subs' => [
 					[
-						'nome' => 'Pets',
-						'rota' => $this->safeRoute('animais.pacientes.index'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Espécies',
-						'rota' => $this->safeRoute('animais.especies.index'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Raças',
-						'rota' => $this->safeRoute('animais.racas.index'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Pelagens',
-						'rota' => $this->safeRoute('animais.pelagens.index'),
-						'mostrar_sempre' => true,
-					],
-					[
 						'nome' => 'Cliente Plano',
 						'rota' => $this->safeRoute('petshop.planos.usuario.index'),
 						'mostrar_sempre' => true,
@@ -257,61 +312,6 @@ class Menu
 					[
 						'nome' => 'Gerenciar Planos',
 						'rota' => $this->safeRoute('petshop.gerenciar.planos'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Veterinário - Médicos',
-						'rota' => $this->safeRoute('vet.medicos.index'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Veterinário - Salas de Atendimento',
-						'rota' => $this->safeRoute('vet.salas-atendimento.index'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Veterinário - Salas de Internação',
-						'rota' => $this->safeRoute('vet.salas-internacao.index'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Veterinário - Checklist',
-						'rota' => $this->safeRoute('vet.checklist.index'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Veterinário - Alergias',
-						'rota' => $this->safeRoute('vet.allergies.index'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Veterinário - Condições crônicas',
-						'rota' => $this->safeRoute('vet.chronic-conditions.index'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Veterinário - Medicamentos',
-						'rota' => $this->safeRoute('vet.medicines.index'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Veterinário - Vacinas',
-						'rota' => $this->safeRoute('vacina.vacinas.index'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Veterinário - Modelo de Atendimento',
-						'rota' => $this->safeRoute('vet.modelos-atendimento.index'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Veterinário - Modelo de Avaliação',
-						'rota' => $this->safeRoute('vet.assessment-models.index'),
-						'mostrar_sempre' => true,
-					],
-					[
-						'nome' => 'Veterinário - Modelo de Prescrição',
-						'rota' => $this->safeRoute('vet.prescription-models.index'),
 						'mostrar_sempre' => true,
 					],
 					[
