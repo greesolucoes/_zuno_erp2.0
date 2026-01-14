@@ -143,10 +143,10 @@ class Menu
 						'nome' => 'Lista de Preços',
 						'rota' => route('listaDePrecos.index')
 					],
-					[
-						'nome' => 'Divisão de Grade',
-						'rota' => route('divisaoGrade.index')
-					],
+					// [
+					// 	'nome' => 'Divisão de Grade',
+					// 	'rota' => route('divisaoGrade.index')
+					// ],
 					[
 						'nome' => 'Categorias de Contas',
 						'rota' => route('categoria-conta.index')
@@ -868,6 +868,144 @@ class Menu
 	public function getMenu()
 	{
 		return $this->menu;
+	}
+
+	public function getPerfilPresets()
+	{
+		$allRotas = function () {
+			$rotas = [];
+			foreach ($this->menu as $m) {
+				foreach ($m['subs'] as $s) {
+					if (!empty($s['rota'])) {
+						$rotas[] = $s['rota'];
+					}
+				}
+			}
+			return array_values(array_unique($rotas));
+		};
+
+		$pickByNome = function (array $nomes) {
+			$rotas = [];
+			foreach ($this->menu as $m) {
+				foreach ($m['subs'] as $s) {
+					if (in_array($s['nome'], $nomes) && !empty($s['rota'])) {
+						$rotas[] = $s['rota'];
+					}
+				}
+			}
+			return array_values(array_unique($rotas));
+		};
+
+		$pickByPrefix = function (string $prefix) {
+			$rotas = [];
+			foreach ($this->menu as $m) {
+				foreach ($m['subs'] as $s) {
+					if (!empty($s['rota']) && str_starts_with($s['nome'], $prefix)) {
+						$rotas[] = $s['rota'];
+					}
+				}
+			}
+			return array_values(array_unique($rotas));
+		};
+
+		return [
+			[
+				'key' => 'geral',
+				'nome' => 'Geral (Acesso Total)',
+				'rotas' => $allRotas(),
+			],
+			[
+				'key' => 'operador_caixa',
+				'nome' => 'Operador de Caixa',
+				'rotas' => $pickByNome([
+					'Caixa',
+					'Nova Venda',
+					'Vendas',
+					'Clientes',
+					'Produtos',
+					'Formas de pagamento',
+					'Relatórios',
+				]),
+			],
+			[
+				'key' => 'vendedor',
+				'nome' => 'Vendedor',
+				'rotas' => $pickByNome([
+					'Nova Venda',
+					'Vendas',
+					'Clientes',
+					'Produtos',
+					'Lista de Preços',
+					'Orçamentos',
+					'Relatórios',
+				]),
+			],
+			[
+				'key' => 'compras',
+				'nome' => 'Compras',
+				'rotas' => $pickByNome([
+					'Compra Fiscal',
+					'Compra Manual',
+					'Compras',
+					'Cotação',
+					'Manifesto',
+					'Devolução',
+					'Fornecedores',
+					'Produtos',
+					'Estoque',
+					'Relatórios',
+				]),
+			],
+			[
+				'key' => 'financeiro',
+				'nome' => 'Financeiro',
+				'rotas' => $pickByNome([
+					'Contas a pagar',
+					'Contas a receber',
+					'Caixa diário',
+					'Plano de contas',
+					'Centros de custo',
+					'Extrato bancário',
+					'Relatórios',
+				]),
+			],
+			[
+				'key' => 'veterinario',
+				'nome' => 'Veterinário',
+				'rotas' => array_values(array_unique(array_merge(
+					$pickByNome(['Pets', 'Espécies', 'Raças', 'Pelagens', 'Médicos', 'Salas de Atendimento', 'Salas de Internação', 'Checklist', 'Alergias', 'Condições crônicas', 'Medicamentos', 'Vacinas']),
+					$pickByPrefix('Veterinário - ')
+				))),
+			],
+			[
+				'key' => 'esteticista',
+				'nome' => 'Esteticista',
+				'rotas' => array_values(array_unique(array_merge(
+					$pickByNome(['Pets', 'Clientes', 'Serviços']),
+					$pickByPrefix('Estética - ')
+				))),
+			],
+			[
+				'key' => 'fiscal',
+				'nome' => 'Fiscal',
+				'rotas' => $pickByNome([
+					'Compra Fiscal',
+					'Manifesto',
+					'Devolução',
+					'Emissão de NFe',
+					'Relatório fiscal',
+				]),
+			],
+			[
+				'key' => 'hotel_creche',
+				'nome' => 'Hotel/Creche (Operacional)',
+				'rotas' => array_values(array_unique(array_merge(
+					$pickByPrefix('Hotel - '),
+					$pickByPrefix('Creche - '),
+					$pickByNome(['Pets', 'Clientes'])
+				))),
+			],
+		];
 	}
 
 	public function getIcone($titulo)

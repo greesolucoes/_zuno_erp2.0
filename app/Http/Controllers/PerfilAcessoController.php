@@ -19,8 +19,9 @@ class PerfilAcessoController extends Controller
     public function create()
     {
         $permissoesAtivas = [];
-        $menu = new Menu();
-        $menu = $menu->getMenu();
+        $menuHelper = new Menu();
+        $menu = $menuHelper->getMenu();
+        $perfilPresets = $menuHelper->getPerfilPresets();
         for ($i = 0; $i < sizeof($menu); $i++) {
             $temp = false;
             foreach ($menu[$i]['subs'] as $s) {
@@ -30,7 +31,7 @@ class PerfilAcessoController extends Controller
             }
             $menu[$i]['ativo'] = $temp;
         }
-        return view('perfil_acesso.create', compact('permissoesAtivas', 'menu'));
+        return view('perfil_acesso.create', compact('permissoesAtivas', 'menu', 'perfilPresets'));
     }
 
     public function store(Request $request)
@@ -100,12 +101,13 @@ class PerfilAcessoController extends Controller
 
     public function edit($id)
     {
-        $menu = new Menu();
-        $menu = $menu->getMenu();
+        $menuHelper = new Menu();
+        $menu = $menuHelper->getMenu();
+        $perfilPresets = $menuHelper->getPerfilPresets();
         $item = PerfilAcesso::findOrFail($id);
         $permissoesAtivas = $item->permissao;
         $permissoesAtivas = json_decode($permissoesAtivas);
-        return view('perfil_acesso.edit', compact('item', 'permissoesAtivas', 'menu'));
+        return view('perfil_acesso.edit', compact('item', 'permissoesAtivas', 'menu', 'perfilPresets'));
     }
 
 
