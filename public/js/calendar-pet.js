@@ -116,6 +116,9 @@ var SERVICOS = [];
               case 'ESTETICA':
                 handleModalNovaEstetica();
                 break;
+              case 'VETERINARIO':
+                handleModalNovoAtendimentoVeterinario(e.dateStr);
+                break;
             } 
           } else {
             handleModalSelectService(e.dateStr);
@@ -6271,6 +6274,9 @@ $('#btn-novo-agendamento').on('click', function (e) {
       case 'ESTETICA':
         handleModalNovaEstetica();
         break;
+      case 'VETERINARIO':
+        handleModalNovoAtendimentoVeterinario(selected_date);
+        break;
     } 
   } else {
     handleModalSelectService(selected_date);
@@ -6298,10 +6304,36 @@ function handleModalSelectService (selected_date = null) {
   modal_select_service.querySelector('#hotel-option').onclick = () => handleModalNovoHotel(selected_date);
   modal_select_service.querySelector('#creche-option').onclick = () => handleModalNovaCreche(selected_date);
   modal_select_service.querySelector('#estetica-option').onclick = () => handleModalNovaEstetica();
+  modal_select_service.querySelector('#veterinario-option').onclick = () => handleModalNovoAtendimentoVeterinario(selected_date);
 
   modal_select_service = bootstrap.Modal.getOrCreateInstance(modal_select_service);
 
   modal_select_service.show();
+}
+
+/**
+ * Redireciona para o cadastro de atendimento veterinário,
+ * opcionalmente preenchendo a data via query string.
+ *
+ * @param {string | null} selected_date Data selecionada no calendário (YYYY-MM-DD)
+ */
+function handleModalNovoAtendimentoVeterinario(selected_date = null) {
+  let modal_select_service = $('#select_servico_agenda_petshop');
+
+  if (modal_select_service.hasClass('show')) {
+    modal_select_service.modal('hide');
+  }
+
+  let modal = document.querySelector('#modal_novo_agendamento_veterinario');
+  if (!modal) return;
+
+  if (selected_date) {
+    const dateInput = modal.querySelector('input[name="data_atendimento"]');
+    if (dateInput) dateInput.value = selected_date;
+  }
+
+  modal = bootstrap.Modal.getOrCreateInstance(modal);
+  modal.show();
 }
 
 /**

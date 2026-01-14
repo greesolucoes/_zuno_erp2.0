@@ -74,6 +74,10 @@ Route::group(['prefix' => 'agendamentos'], function () {
     Route::get('/search-agendamentos', 'API\\Petshop\\AgendamentoController@searchAgendamentos');
 });
 
+Route::group(['prefix' => 'vet/atendimentos'], function () {
+    Route::post('/store', 'API\\Petshop\\VetAtendimentoController@store');
+});
+
 Route::group(['prefix' => 'petshop/agendamentos'], function () {
     Route::post('/search', 'API\\Petshop\\AgendamentoController@searchAgendamentos');
 });

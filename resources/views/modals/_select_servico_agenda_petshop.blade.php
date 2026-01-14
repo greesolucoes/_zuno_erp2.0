@@ -22,6 +22,10 @@
                         <i class="ri-sparkling-line"></i>
                         ESTÉTICA
                     </button>
+                    <button type="button" class="btn btn-primary" id="veterinario-option">
+                        <i class="ri-stethoscope-line"></i>
+                        ATENDIMENTO VETERINÁRIO
+                    </button>
                 </div>
             </div>
         </div>

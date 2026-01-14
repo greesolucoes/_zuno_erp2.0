@@ -26,7 +26,10 @@ use App\Models\Petshop\Plano;
 use App\Models\Petshop\Quarto;
 use App\Models\Petshop\SalaDeAula;
 use App\Models\Petshop\Hotel;
+use App\Models\Petshop\Medico;
+use App\Models\Petshop\SalaAtendimento;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class AgendamentoController extends Controller
 {
@@ -102,6 +105,50 @@ class AgendamentoController extends Controller
             )->nome;
         }
 
+        $vet_veterinarians = Medico::query()
+            ->with('funcionario:id,nome')
+            ->where('empresa_id', $empresaId)
+            ->where('status', 'ativo')
+            ->get()
+            ->sortBy(fn (Medico $medico) => Str::lower($medico->funcionario?->nome ?? $medico->crmv ?? ''))
+            ->mapWithKeys(function (Medico $medico) {
+                $name = $medico->funcionario?->nome ?? ('Profissional #' . $medico->id);
+                $crmv = $medico->crmv ? ' • CRMV ' . $medico->crmv : '';
+
+                return [$medico->id => trim($name . $crmv)];
+            })
+            ->all();
+
+        $vet_rooms = SalaAtendimento::query()
+            ->where('empresa_id', $empresaId)
+            ->where('tipo', 'consultorio')
+            ->where(function ($query) {
+                $query
+                    ->whereNull('status')
+                    ->orWhereIn('status', ['disponivel', 'ativo']);
+            })
+            ->orderBy('nome')
+            ->orderBy('identificador')
+            ->get()
+            ->mapWithKeys(function (SalaAtendimento $room) {
+                $label = $room->nome ?: ($room->identificador ?: 'Sala #' . $room->id);
+
+                return [$room->id => $label];
+            })
+            ->all();
+
+        $vet_schedule_times = [];
+        $intervalMinutes = 30;
+
+        for ($minutes = 0; $minutes < 24 * 60; $minutes += $intervalMinutes) {
+            $hours = (int) floor($minutes / 60);
+            $mins = $minutes % 60;
+            $formatted = str_pad((string) $hours, 2, '0', STR_PAD_LEFT)
+                . ':'
+                . str_pad((string) $mins, 2, '0', STR_PAD_LEFT);
+            $vet_schedule_times[$formatted] = $formatted;
+        }
+
         return view('petshop.agendamento.index', compact(
             'agendamentos',
             'servicos',
@@ -110,6 +157,9 @@ class AgendamentoController extends Controller
             'segmento',
             'salas',
             'funcionarios',
+            'vet_veterinarians',
+            'vet_rooms',
+            'vet_schedule_times',
         ));
     }
 

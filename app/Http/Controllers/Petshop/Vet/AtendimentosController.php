@@ -655,7 +655,7 @@ class AtendimentosController extends Controller
         return Carbon::now();
     }
 
-    public function create(): View|ViewFactory
+    public function create(Request $request): View|ViewFactory
     {
         $empresaId = $this->getEmpresaId();
 
@@ -664,12 +664,27 @@ class AtendimentosController extends Controller
         }
 
         $atendimento_templates = ModeloAtendimento::where('empresa_id', $empresaId)->where('status', 'ativo')->get();
+        $formData = [];
+
+        $dataAtendimento = trim((string) $request->query('data_atendimento', ''));
+        if ($dataAtendimento !== '') {
+            try {
+                $formData['data_atendimento'] = Carbon::parse($dataAtendimento)->format('Y-m-d');
+            } catch (\Throwable $exception) {
+                // ignora data inválida
+            }
+        }
+
+        $horario = trim((string) $request->query('horario', ''));
+        if ($horario !== '' && preg_match('/^\d{2}:\d{2}$/', $horario)) {
+            $formData['horario'] = $horario;
+        }
 
         return view('petshop.vet.atendimentos.registrar', array_merge(
             $this->formDependencies($empresaId),
             [
                 'mode' => 'create',
-                'formData' => [],
+                'formData' => $formData,
                 'atendimento' => null,
                 'atendimento_templates' => $atendimento_templates,
             ],

@@ -207,6 +207,7 @@
     @include('modals._novo_agendamento_hotel')
     @include('modals._novo_agendamento_creche')
 	    @include('modals._novo_agendamento_estetica')
+    @include('modals._novo_agendamento_veterinario')
 
   @include('modals._veiculos_cliente')
   @include('modals._novo_cliente')
@@ -229,6 +230,7 @@
 	    <script src="/js/calendar-pet.js"></script>
 	    <script src="/js/hotel.js"></script>
 	    <script src="/js/creche.js"></script>
+	    <script src="/js/vet_agenda.js"></script>
 	    <script src="/js/novo_pet.js"></script>
 	    <script src="/js/checklist_templates.js"></script>
 	  @endsection
