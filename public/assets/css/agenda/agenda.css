@@ -331,7 +331,24 @@
   color: #fff;
   display: flex;
   align-items: center;
-  flex: 1;
+  gap: 6px;
+  justify-content: flex-start;
+  padding-left: 8px;
+}
+
+.agendamento-container-month {
+  display: grid;
+  grid-template-columns: 90px 1fr 90px;
+  align-items: center;
+  width: 100%;
+}
+
+.month-title {
+  text-align: center;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .day-status {
@@ -348,16 +365,34 @@
   width: 75px;
 }
 
-.pet-label-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #fff;
-  white-space: nowrap;
+#calendar .fc-daygrid-event.estado-agendado-area,
+#calendar .fc-daygrid-event.estado-agendado-area .fc-event-main {
+  background-color: #322142 !important;
+}
+
+#calendar .fc-daygrid-event.estado-em-andamento-area,
+#calendar .fc-daygrid-event.estado-em-andamento-area .fc-event-main {
+  background-color: #0a7cff !important;
+}
+
+#calendar .fc-daygrid-event.estado-pendente-aprovacao-area,
+#calendar .fc-daygrid-event.estado-pendente-aprovacao-area .fc-event-main {
+  background-color: #efc90b !important;
+}
+
+#calendar .fc-daygrid-event.estado-concluido-area,
+#calendar .fc-daygrid-event.estado-concluido-area .fc-event-main {
+  background-color: #28A745 !important;
+}
+
+#calendar .fc-daygrid-event.estado-cancelado-area,
+#calendar .fc-daygrid-event.estado-cancelado-area .fc-event-main {
+  background-color: #f40707 !important;
+}
+
+#calendar .fc-daygrid-event.estado-rejeitado-area,
+#calendar .fc-daygrid-event.estado-rejeitado-area .fc-event-main {
+  background-color: #b82e2e !important;
 }
 
 .fc-daygrid-day-events {

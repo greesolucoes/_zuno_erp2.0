@@ -334,17 +334,18 @@ var SERVICOS = [];
                   eventEl.innerHTML =
                   `
                     <div
-                      class="agendamento-container d-flex align-items-center"
+                      class="agendamento-container agendamento-container-month"
                       style="width: 100%; position: relative;"
                       data-id="${info.event.id}"
                       data-tipo-agendamento="${info.event.extendedProps.modulo}"
                     >
-                      <div class="gap-1 month-status ${status_class}" style="flex-shrink: 0;">
+                      <div class="gap-1 month-status" style="flex-shrink: 0;">
                         ${status_icon}
                         <span class="text-uppercase fw-semibold">${label_status}</span>
                       </div>
 
-                      <div class="pet-label-center">${info.event.extendedProps.pet.nome}</div>
+                      <div class="month-title">${info.event.extendedProps.pet.nome}</div>
+                      <div class="month-spacer"></div>
                     </div>
                   `
 
