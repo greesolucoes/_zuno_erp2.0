@@ -59,7 +59,6 @@ class TipoTeleEntregaController extends Controller
     public function edit($id)
     {
       $item = TipoTeleEntrega::findOrFail($id);
-      __validaObjetoEmpresa($item);
 
       return view('tele_entregas.tipos.edit', compact('item'));
     }
@@ -71,7 +70,6 @@ class TipoTeleEntregaController extends Controller
 
       try {
         $item = TipoTeleEntrega::findOrFail($id);
-        __validaObjetoEmpresa($item);
 
         if ($item->nome == $request->nome) {
           \session()->flash("flash_warning", "Nenhuma alteração foi feita");
@@ -106,7 +104,6 @@ class TipoTeleEntregaController extends Controller
     {
       try {
         $item = TipoTeleEntrega::findOrFail($id);
-        __validaObjetoEmpresa($item);
 
         DB::transaction(function () use ($item) {
           $item->delete();

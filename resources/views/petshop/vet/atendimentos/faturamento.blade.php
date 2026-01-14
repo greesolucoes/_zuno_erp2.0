@@ -14,29 +14,19 @@
         $observationsValue = old('observacoes', $initialObservations ?? '');
     @endphp
 
-    <div class="card">
-        <div class="card-header d-flex align-items-start align-items-md-center justify-content-between flex-column flex-md-row gap-3">
-            <div>
-                <h3 class="text-color mb-1">Faturamento do atendimento</h3>
-                <p class="text-muted small mb-0">
-                    Monte a cobrança selecionando serviços e produtos já cadastrados no sistema.
-                </p>
-            </div>
-            <div class="d-flex flex-wrap align-items-center gap-2">
-                @if ($encounterId)
-                    <a href="{{ route('vet.atendimentos.history', $encounterId) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 px-3">
-                        <i class="ri-history-line"></i>
-                        Histórico
-                    </a>
-                @endif
-                <a href="{{ $backUrl }}" class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-3">
-                    <i class="ri-arrow-left-double-fill"></i>
-                    Voltar
+<x-form-page title="Faturamento do atendimento" :back-url="$backUrl">
+        <div class="d-flex justify-content-end mb-3">
+            @if ($encounterId)
+                <a href="{{ route('vet.atendimentos.history', $encounterId) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 px-3">
+                    <i class="ri-history-line"></i>
+                    Histórico
                 </a>
-            </div>
+            @endif
         </div>
+        <p class="text-muted small mb-4">
+            Monte a cobrança selecionando serviços e produtos já cadastrados no sistema.
+        </p>
 
-        <div class="card-body">
             @if ($billingExists)
                 <div class="alert alert-info d-flex align-items-start gap-2">
                     <i class="ri-edit-line fs-5"></i>
@@ -178,7 +168,7 @@
                     <button type="reset" class="btn btn-outline-secondary px-4">Limpar itens</button>
                     <button
                         type="submit"
-                        class="btn btn-success px-4 vet-billing-submit disabled"
+                        class="btn btn-primary px-4 vet-billing-submit disabled"
                         disabled
                         data-default-text="{{ $defaultButtonText }}"
                         data-loading-text="{{ $loadingButtonText }}"
@@ -188,8 +178,6 @@
                     </button>
                 </div>
             </form>
-        </div>
-    </div>
 
     <div class="d-none">
         <table>
@@ -203,6 +191,7 @@
             </tbody>
         </table>
     </div>
+</x-form-page>
 @endsection
 
 @section('js')

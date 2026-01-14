@@ -21,22 +21,11 @@
             }
         }
     @endphp
-
-    <div class="page-content">
-    <div class="card border-top border-0 border-4 border-primary">
-        <div class="card-header d-flex align-items-center justify-content-between">
-            <h5 class="mb-0 text-primary">Criar Modelo de Avaliação</h5>
-
-            <a href="{{ route('vet.assessment-models.index', ['page' => request()->query('page', 1)]) }}"
-               type="button"
-               class="btn btn-light btn-sm d-flex align-items-center gap-1 px-2">
-                <i class="bx bx-arrow-back"></i> Voltar
-            </a>
-        </div>
-
-        <div class="card-body p-5">
+    <x-form-page
+        title="Criar Modelo de Avaliação"
+        :back-url="route('vet.assessment-models.index', ['page' => request()->query('page', 1)])"
+    >
             {!! Form::open()->post()->id('form-modelos-avaliacao')->route('vet.assessment-models.store')->attrs(['autocomplete' => 'off']) !!}
-                <div class="pl-lg-4">
                     <div class="row g-3">
                         <div class="col-md-6">
                             {!! Form::text('title', 'Título do Modelo')
@@ -229,10 +218,8 @@
                             Salvar Modelo
                         </button>
                     </div>
-                </div>
             {!! Form::close() !!}
-        </div>
-    </div>
+    </x-form-page>
 
     <template id="assessment-field-row-template">
         <tr class="dynamic-form" data-row-index="__INDEX__">
@@ -450,7 +437,6 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
 @endsection
 

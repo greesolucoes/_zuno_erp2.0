@@ -14,6 +14,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -71,7 +72,7 @@ class ModelosAvaliacaoController extends Controller
                 }
             })
             ->orderByDesc('updated_at')
-            ->paginate((int) env('PAGINACAO', 15))
+            ->paginate(env("PAGINACAO"))
             ->appends($request->all());
 
         $modelos->getCollection()->transform(
@@ -131,27 +132,30 @@ class ModelosAvaliacaoController extends Controller
         }
 
         try {
-            ModeloAvaliacao::create([
-                'empresa_id' => $empresaId,
-                'title' => $titulo,
-                'category' => $categoria,
-                'notes' => $observacoes,
-                'fields' => $campos,
-                'status' => AssessmentModelOptions::STATUS_ACTIVE,
-                'created_by' => $userId,
-                'updated_by' => $userId,
-            ]);
+            DB::transaction(function () use ($empresaId, $titulo, $categoria, $observacoes, $campos, $userId) {
+                ModeloAvaliacao::create([
+                    'empresa_id' => $empresaId,
+                    'title' => $titulo,
+                    'category' => $categoria,
+                    'notes' => $observacoes,
+                    'fields' => $campos,
+                    'status' => AssessmentModelOptions::STATUS_ACTIVE,
+                    'created_by' => $userId,
+                    'updated_by' => $userId,
+                ]);
+            });
+
+            session()->flash("flash_sucesso", "Modelo de avaliação cadastrado!");
         } catch (Throwable $exception) {
-            report($exception);
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
+            __saveLogError($exception, request()->empresa_id);
 
             return back()
                 ->withInput()
                 ->withErrors(['store' => 'Não foi possível salvar o modelo de avaliação. Tente novamente.']);
         }
 
-        return redirect()
-            ->route('vet.assessment-models.index')
-            ->with('flash_success', 'Modelo de avaliação criado com sucesso.');
+        return redirect()->route('vet.assessment-models.index');
     }
 
     public function show(int $modeloId): View|ViewFactory
@@ -223,16 +227,21 @@ class ModelosAvaliacaoController extends Controller
         }
 
         try {
-            $modelo->update([
-                'title' => $titulo,
-                'category' => $categoria,
-                'notes' => $observacoes,
-                'fields' => $campos,
-                'status' => $status,
-                'updated_by' => $userId,
-            ]);
+            DB::transaction(function () use ($modelo, $titulo, $categoria, $observacoes, $campos, $status, $userId) {
+                $modelo->update([
+                    'title' => $titulo,
+                    'category' => $categoria,
+                    'notes' => $observacoes,
+                    'fields' => $campos,
+                    'status' => $status,
+                    'updated_by' => $userId,
+                ]);
+            });
+
+            session()->flash("flash_sucesso", "Modelo de avaliação atualizado!");
         } catch (Throwable $exception) {
-            report($exception);
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
+            __saveLogError($exception, request()->empresa_id);
 
             return back()
                 ->withInput()
@@ -241,9 +250,7 @@ class ModelosAvaliacaoController extends Controller
 
         $page = $request->query('page');
 
-        return redirect()
-            ->route('vet.assessment-models.index', $page ? ['page' => $page] : [])
-            ->with('flash_success', 'Modelo de avaliação atualizado com sucesso.');
+        return redirect()->route('vet.assessment-models.index', $page ? ['page' => $page] : []);
     }
 
     private function normalizarCampos(array $fields): array
@@ -470,7 +477,7 @@ class ModelosAvaliacaoController extends Controller
 
     private function getEmpresaId(): int
     {
-        $empresaId = Auth::user()?->empresa?->empresa_id;
+        $empresaId = request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
 
         abort_unless($empresaId, 403, 'Empresa não encontrada para o usuário autenticado.');
 

@@ -57,7 +57,6 @@ class AnimalEspecieController extends Controller
   public function edit($id)
   {
     $item = Especie::findOrFail($id);
-    __validaObjetoEmpresa($item);
 
     return view('petshop.animais.especies.edit', compact('item'));
   }
@@ -68,7 +67,6 @@ class AnimalEspecieController extends Controller
 
     try {
       $item = Especie::findOrFail($id);
-      __validaObjetoEmpresa($item);
 
       DB::transaction(function () use ($request, $item) {
         $item->update([
@@ -89,7 +87,6 @@ class AnimalEspecieController extends Controller
   {
     try {
       $item = Especie::findOrFail($id);
-      __validaObjetoEmpresa($item);
 
       DB::transaction(function () use ($item) {
         $item->delete();

@@ -66,7 +66,6 @@ class ConsultaController extends Controller
       $empresaId = request()->empresa_id;
 
       $item = Consulta::findOrFail($id);
-      __validaObjetoEmpresa($item);
 
       $animais = Animal::where('empresa_id', $empresaId)->get();
       $diagnosticos = Diagnostico::where('empresa_id', $empresaId)->get();
@@ -83,7 +82,6 @@ class ConsultaController extends Controller
 
       try {
         $item = Consulta::findOrFail($id);
-        __validaObjetoEmpresa($item);
 
         DB::transaction(function () use ($request, $item) {
           $item->update([
@@ -109,7 +107,6 @@ class ConsultaController extends Controller
     {
       try {
         $item = Consulta::findOrFail($id);
-        __validaObjetoEmpresa($item);
 
         DB::transaction(function () use ($item) {
           $item->delete();

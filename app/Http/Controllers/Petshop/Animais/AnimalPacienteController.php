@@ -127,7 +127,6 @@ class AnimalPacienteController extends Controller
     $empresaId = request()->empresa_id;
 
     $item = Animal::findOrFail($id);
-    __validaObjetoEmpresa($item);
 
     $pelagens = Pelagem::where('empresa_id', $empresaId)->get();
     $especies = Especie::where('empresa_id', $empresaId)->get();
@@ -160,7 +159,6 @@ class AnimalPacienteController extends Controller
 
     try {
       $item = Animal::findOrFail($id);
-      __validaObjetoEmpresa($item);
 
       DB::transaction(function () use ($request, $item) {
         $item->update([
@@ -486,7 +484,6 @@ class AnimalPacienteController extends Controller
   {
     try {
       $item = Animal::findOrFail($id);
-      __validaObjetoEmpresa($item);
 
      DB::transaction(function () use ($item) {
         $item->delete();

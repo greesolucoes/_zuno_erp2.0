@@ -92,7 +92,6 @@ class QuartoController extends Controller
     public function edit(string $id)
     {
         $quarto = Quarto::findOrFail($id);
-        __validaObjetoEmpresa($quarto);
 
         $empresaId = request()->empresa_id;
         $funcionarios = Funcionario::where('empresa_id', $empresaId)->get();
@@ -150,7 +149,6 @@ class QuartoController extends Controller
             $empresaId = request()->empresa_id;
 
             $quarto = Quarto::where('empresa_id', $empresaId)->findOrFail($id);
-            __validaObjetoEmpresa($quarto);
 
             DB::transaction(function () use ($quarto) {
                 $quarto->delete();

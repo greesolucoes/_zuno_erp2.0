@@ -5,27 +5,15 @@
         <form action="{{ route('animais.especies.destroy', $item->id) }}" method="post" id="form-{{ $item->id }}">
             @method('delete')
 
-            @can('clientes_edit')
-                <a href="{{ route('animais.especies.edit', [$item->id, 'page' => request()->query('page', 1)]) }}" class="btn btn-warning btn-sm text-white">
-                    <i class="bx bx-edit"></i>
-                </a>
-            @else
-                <button type="button" class="btn btn-warning btn-sm text-white" disabled>
-                    <i class="bx bx-edit"></i>
-                </button>
-            @endcan
+            <a href="{{ route('animais.especies.edit', [$item->id, 'page' => request()->query('page', 1)]) }}" class="btn btn-warning btn-sm text-white">
+                <i class="bx bx-edit"></i>
+            </a>
 
             @csrf
 
-            @can('clientes_delete')
-                <button type="button" class="btn btn-delete btn-sm btn-danger">
-                    <i class="bx bx-trash"></i>
-                </button>
-            @else
-                <button type="button" class="btn btn-sm btn-danger" disabled>
-                    <i class="bx bx-trash"></i>
-                </button>
-            @endcan
+            <button type="button" class="btn btn-delete btn-sm btn-danger">
+                <i class="bx bx-trash"></i>
+            </button>
         </form>
     </td>
 </tr>

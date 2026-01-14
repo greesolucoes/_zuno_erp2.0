@@ -9,9 +9,9 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Throwable;
 
 class AlergiasController extends Controller
 {
@@ -42,7 +42,7 @@ class AlergiasController extends Controller
                 }
             })
             ->orderByDesc('updated_at')
-            ->paginate((int) env('PAGINACAO', 15))
+            ->paginate(env("PAGINACAO"))
             ->appends($request->all());
 
         return view('petshop.vet.alergias.index', [
@@ -62,38 +62,34 @@ class AlergiasController extends Controller
     {
         $empresaId = $this->getEmpresaId();
 
-        $validated = $request->validate([
-            'nome' => ['required', 'string', 'max:255'],
-            'descricao' => ['nullable', 'string'],
-            'orientacoes' => ['nullable', 'string'],
-            'status' => ['required', 'string', Rule::in(array_keys($this->statusOptions()))],
-        ]);
+        $this->_validate($request);
 
-        $status = Str::of($validated['status'])->trim()->toString();
+        $status = Str::of((string) $request->input('status'))->trim()->toString();
 
         if (! array_key_exists($status, $this->statusOptions())) {
             $status = 'ativo';
         }
 
         try {
-            Alergia::create([
-                'empresa_id' => $empresaId,
-                'nome' => Str::of($validated['nome'])->trim()->toString(),
-                'descricao' => $this->normalizeNullableText($validated['descricao'] ?? null),
-                'orientacoes' => $this->normalizeNullableText($validated['orientacoes'] ?? null),
-                'status' => $status,
-            ]);
-        } catch (Throwable $exception) {
-            report($exception);
+            DB::transaction(function () use ($empresaId, $request, $status) {
+                Alergia::create([
+                    'empresa_id' => $empresaId,
+                    'nome' => Str::of((string) $request->input('nome'))->trim()->toString(),
+                    'descricao' => $this->normalizeNullableText($request->input('descricao')),
+                    'orientacoes' => $this->normalizeNullableText($request->input('orientacoes')),
+                    'status' => $status,
+                ]);
+            });
 
-            return back()
-                ->withInput()
-                ->withErrors(['store' => 'Não foi possível salvar a alergia. Tente novamente.']);
+            session()->flash("flash_sucesso", "Alergia cadastrada!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
+
+            return back()->withInput();
         }
 
-        return redirect()
-            ->route('vet.allergies.index')
-            ->with('flash_success', 'Alergia cadastrada com sucesso.');
+        return redirect()->route('vet.allergies.index');
     }
 
     public function edit(Alergia $alergia): View|ViewFactory
@@ -114,37 +110,33 @@ class AlergiasController extends Controller
 
         abort_unless($alergia->empresa_id === $empresaId, 403);
 
-        $validated = $request->validate([
-            'nome' => ['required', 'string', 'max:255'],
-            'descricao' => ['nullable', 'string'],
-            'orientacoes' => ['nullable', 'string'],
-            'status' => ['required', 'string', Rule::in(array_keys($this->statusOptions()))],
-        ]);
+        $this->_validate($request);
 
-        $status = Str::of($validated['status'])->trim()->toString();
+        $status = Str::of((string) $request->input('status'))->trim()->toString();
 
         if (! array_key_exists($status, $this->statusOptions())) {
             $status = $alergia->status ?? 'ativo';
         }
 
         try {
-            $alergia->update([
-                'nome' => Str::of($validated['nome'])->trim()->toString(),
-                'descricao' => $this->normalizeNullableText($validated['descricao'] ?? null),
-                'orientacoes' => $this->normalizeNullableText($validated['orientacoes'] ?? null),
-                'status' => $status,
-            ]);
-        } catch (Throwable $exception) {
-            report($exception);
+            DB::transaction(function () use ($alergia, $request, $status) {
+                $alergia->update([
+                    'nome' => Str::of((string) $request->input('nome'))->trim()->toString(),
+                    'descricao' => $this->normalizeNullableText($request->input('descricao')),
+                    'orientacoes' => $this->normalizeNullableText($request->input('orientacoes')),
+                    'status' => $status,
+                ]);
+            });
 
-            return back()
-                ->withInput()
-                ->withErrors(['update' => 'Não foi possível atualizar a alergia. Tente novamente.']);
+            session()->flash("flash_sucesso", "Alergia atualizada!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
+
+            return back()->withInput();
         }
 
-        return redirect()
-            ->route('vet.allergies.index')
-            ->with('flash_success', 'Alergia atualizada com sucesso.');
+        return redirect()->route('vet.allergies.index');
     }
 
     public function destroy(Alergia $alergia): RedirectResponse
@@ -156,14 +148,30 @@ class AlergiasController extends Controller
         try {
             $alergia->delete();
 
-            session()->flash('flash_success', 'Alergia removida com sucesso.');
-        } catch (Throwable $exception) {
-            report($exception);
-
-            session()->flash('flash_error', 'Não foi possível remover a alergia no momento.');
+            session()->flash("flash_sucesso", "Alergia removida!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('vet.allergies.index');
+    }
+
+    private function _validate(Request $request): void
+    {
+        $rules = [
+            'nome' => ['required', 'string', 'max:255'],
+            'descricao' => ['nullable', 'string'],
+            'orientacoes' => ['nullable', 'string'],
+            'status' => ['required', 'string', Rule::in(array_keys($this->statusOptions()))],
+        ];
+
+        $messages = [
+            'nome.required' => 'O campo Nome é obrigatório.',
+            'status.required' => 'O campo Status é obrigatório.',
+        ];
+
+        $this->validate($request, $rules, $messages);
     }
 
     private function statusOptions(): array
@@ -187,7 +195,7 @@ class AlergiasController extends Controller
 
     private function getEmpresaId(): int
     {
-        $empresaId = Auth::user()?->empresa?->empresa_id;
+        $empresaId = request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
 
         abort_unless($empresaId, 403, 'Empresa não encontrada para o usuário autenticado.');
 

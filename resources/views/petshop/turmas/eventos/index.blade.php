@@ -69,35 +69,17 @@
                             <table class="table mb-0 table-striped">
                                 <thead class="">
                                     <tr>
+                                        <th>Ações</th>
                                         <th>Descrição</th>
                                         <th>Início</th>
                                         <th>Fim</th>
                                         <th>Serviço</th>
                                         <th>Prestador</th>
-                                        <th>Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($eventos as $evento)
-                                    <tr>
-                                        <td>{{ $evento->descricao ?? '--' }}</td>
-                                        <td>{{ $evento->inicio ? __data_pt($evento->inicio) : '--' }}</td>
-                                        <td>{{ $evento->fim ? __data_pt($evento->fim) : '--' }}</td>
-                                        <td>{{ $evento->servico->nome ?? '--' }}</td>
-                                        <td>{{ $evento->prestador->nome ?? $evento->fornecedor->razao_social ?? '--' }}</td>
-                                        <td>
-                                            <form action="{{ route('turmas.eventos.destroy', $evento->id) }}" method="post" id="form-{{$evento->id}}">
-                                                @method('delete')
-                                                <a href="{{ route('turmas.eventos.edit', [$evento->id, 'turma_id' => $turmaId]) }}" class="btn btn-warning btn-sm text-white">
-                                                    <i class="bx bx-edit"></i>
-                                                </a>
-                                                @csrf
-                                                <button type="button" class="btn btn-delete btn-sm btn-danger">
-                                                    <i class="bx bx-trash"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
+                                        @include('components.petshop.creches.turmas.eventos._table_row', ['evento' => $evento, 'turmaId' => $turmaId])
                                     @empty
                                     <tr>
                                         <td colspan="6" class="text-center">Nada encontrado</td>

@@ -39,12 +39,15 @@
 @endsection
 
 @section('content')
+<x-form-page
+    title="Aplicar vacinação"
+    :back-url="route('vet.vaccinations.index', ['page' => request()->query('page', 1)])"
+>
     <div class="row g-4">
         <div class="col-12">
             <div class="vet-vaccination-apply__summary p-4">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
                     <div>
-                        <h1 class="h4 mb-2 text-primary">Aplicar vacinação</h1>
                         <p class="text-muted mb-0">Registre as doses aplicadas para manter o histórico clínico completo do pet.</p>
                     </div>
                     <div class="text-end">
@@ -388,6 +391,7 @@
             </form>
         </div>
     </div>
+</x-form-page>
 @endsection
 
 @section('js')

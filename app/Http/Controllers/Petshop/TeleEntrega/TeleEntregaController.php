@@ -124,7 +124,6 @@ class TeleEntregaController extends Controller
     public function edit($id)
     {
       $item = TeleEntrega::findOrFail($id);
-      __validaObjetoEmpresa($item);
 
       $empresaId = request()->empresa_id;
       $clientes = Cliente::where('empresa_id', $empresaId)->get();
@@ -141,7 +140,6 @@ class TeleEntregaController extends Controller
 
       try {
         $item = TeleEntrega::findOrFail($id);
-        __validaObjetoEmpresa($item);
 
         $valor_formatado = str_replace(',', '.', str_replace('.', '', $request->valor));
 
@@ -177,7 +175,6 @@ class TeleEntregaController extends Controller
     {
       try {
         $item = TeleEntrega::findOrFail($id);
-        __validaObjetoEmpresa($item);
 
         DB::transaction(function () use ($item) {
           $item->delete();

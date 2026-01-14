@@ -1,20 +1,21 @@
 <tr>
     <td>
-        <form class='d-flex align-items-center gap-1' action="{{ route('turmas.eventos.destroy', $evento->id) }}" method="post"
-        id="form-{{ $evento->id }}">
-            @method('delete')
-            @csrf
-            
-            <button
-                type="button"
-                class="border-0 m-0 p-0 bg-transparent text-color-back btn-delete"
-                title="Excluir Evento">
-                <img
-                    height="26"
-                    width="26"
-                    src="/assets/images/svg/icone excluir.svg"
-                    alt="Excluir Evento">
-            </button>
+        <div class="d-flex align-items-center gap-1">
+            <form action="{{ route('turmas.eventos.destroy', $evento->id) }}" method="post" id="form-{{ $evento->id }}">
+                @method('delete')
+                @csrf
+
+                <button
+                    type="button"
+                    class="border-0 m-0 p-0 bg-transparent text-color-back btn-delete"
+                    title="Excluir Evento">
+                    <img
+                        height="26"
+                        width="26"
+                        src="/assets/images/svg/icone excluir.svg"
+                        alt="Excluir Evento">
+                </button>
+            </form>
 
             <a
                 class="border-0 m-0 p-0 bg-transparent text-color-back"
@@ -26,7 +27,20 @@
                     src="/assets/images/svg/icone editar nfe.svg"
                     alt="Editar Evento">
             </a>
-        </form>
+
+            @if (empty($evento->fim))
+                <form action="{{ route('turmas.eventos.finalizar', $evento->id) }}" method="post">
+                    @csrf
+                    <button
+                        type="submit"
+                        class="border-0 m-0 p-0 bg-transparent text-color-back"
+                        title="Finalizar Evento"
+                        onclick="return confirm('Finalizar este evento agora?')">
+                        <i class="ri-check-line" style="font-size:26px; color: #2fb344"></i>
+                    </button>
+                </form>
+            @endif
+        </div>
     </td>
     <td class="text-center">
         <p class="m-0 p-0">

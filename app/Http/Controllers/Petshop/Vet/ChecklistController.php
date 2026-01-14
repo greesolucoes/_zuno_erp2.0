@@ -9,9 +9,9 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Throwable;
 
 class ChecklistController extends Controller
 {
@@ -41,7 +41,7 @@ class ChecklistController extends Controller
                 }
             })
             ->orderByDesc('updated_at')
-            ->paginate((int) env('PAGINACAO', 15))
+            ->paginate(env("PAGINACAO"))
             ->appends($request->all());
 
         return view('petshop.vet.checklists.index', [
@@ -62,49 +62,43 @@ class ChecklistController extends Controller
     {
         $empresaId = $this->getEmpresaId();
 
-        $validated = $request->validate([
-            'titulo' => ['required', 'string', 'max:255'],
-            'descricao' => ['nullable', 'string'],
-            'itens' => ['nullable', 'array'],
-            'itens.*' => ['nullable', 'string', 'max:255'],
-            'tipo' => ['required', 'string', Rule::in(array_keys($this->typeOptions()))],
-            'status' => ['required', 'string'],
-        ]);
+        $this->_validate($request);
 
-        $status = Str::of($validated['status'])->trim()->toString();
+        $status = Str::of((string) $request->input('status'))->trim()->toString();
 
         if (! array_key_exists($status, $this->statusOptions())) {
             $status = 'ativo';
         }
 
-        $type = Str::of($validated['tipo'])->trim()->lower()->toString();
+        $type = Str::of((string) $request->input('tipo'))->trim()->lower()->toString();
 
         if (! array_key_exists($type, $this->typeOptions())) {
             $type = array_key_first($this->typeOptions());
         }
 
-        $items = $this->normalizeItems($validated['itens'] ?? null);
+        $items = $this->normalizeItems($request->input('itens'));
 
         try {
-            Checklist::create([
-                'empresa_id' => $empresaId,
-                'titulo' => Str::of($validated['titulo'])->trim()->toString(),
-                'descricao' => $this->normalizeNullableText($validated['descricao'] ?? null),
-                'tipo' => $type,
-                'itens' => $items ?: null,
-                'status' => $status,
-            ]);
-        } catch (Throwable $exception) {
-            report($exception);
+            DB::transaction(function () use ($empresaId, $request, $type, $items, $status) {
+                Checklist::create([
+                    'empresa_id' => $empresaId,
+                    'titulo' => Str::of((string) $request->input('titulo'))->trim()->toString(),
+                    'descricao' => $this->normalizeNullableText($request->input('descricao')),
+                    'tipo' => $type,
+                    'itens' => $items ?: null,
+                    'status' => $status,
+                ]);
+            });
 
-            return back()
-                ->withInput()
-                ->withErrors(['store' => 'Não foi possível salvar o checklist. Tente novamente.']);
+            session()->flash("flash_sucesso", "Checklist cadastrado!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
+
+            return back()->withInput();
         }
 
-        return redirect()
-            ->route('vet.checklist.index')
-            ->with('flash_success', 'Checklist cadastrado com sucesso.');
+        return redirect()->route('vet.checklist.index');
     }
 
     public function edit(Checklist $checklist): View|ViewFactory
@@ -126,48 +120,42 @@ class ChecklistController extends Controller
 
         abort_unless($checklist->empresa_id === $empresaId, 403);
 
-        $validated = $request->validate([
-            'titulo' => ['required', 'string', 'max:255'],
-            'descricao' => ['nullable', 'string'],
-            'itens' => ['nullable', 'array'],
-            'itens.*' => ['nullable', 'string', 'max:255'],
-            'tipo' => ['required', 'string', Rule::in(array_keys($this->typeOptions()))],
-            'status' => ['required', 'string'],
-        ]);
+        $this->_validate($request);
 
-        $status = Str::of($validated['status'])->trim()->toString();
+        $status = Str::of((string) $request->input('status'))->trim()->toString();
 
         if (! array_key_exists($status, $this->statusOptions())) {
             $status = $checklist->status ?? 'ativo';
         }
 
-        $type = Str::of($validated['tipo'])->trim()->lower()->toString();
+        $type = Str::of((string) $request->input('tipo'))->trim()->lower()->toString();
 
         if (! array_key_exists($type, $this->typeOptions())) {
             $type = $checklist->tipo ?? array_key_first($this->typeOptions());
         }
 
-        $items = $this->normalizeItems($validated['itens'] ?? null);
+        $items = $this->normalizeItems($request->input('itens'));
 
         try {
-            $checklist->update([
-                'titulo' => Str::of($validated['titulo'])->trim()->toString(),
-                'descricao' => $this->normalizeNullableText($validated['descricao'] ?? null),
-                'tipo' => $type,
-                'itens' => $items ?: null,
-                'status' => $status,
-            ]);
-        } catch (Throwable $exception) {
-            report($exception);
+            DB::transaction(function () use ($checklist, $request, $type, $items, $status) {
+                $checklist->update([
+                    'titulo' => Str::of((string) $request->input('titulo'))->trim()->toString(),
+                    'descricao' => $this->normalizeNullableText($request->input('descricao')),
+                    'tipo' => $type,
+                    'itens' => $items ?: null,
+                    'status' => $status,
+                ]);
+            });
 
-            return back()
-                ->withInput()
-                ->withErrors(['update' => 'Não foi possível atualizar o checklist. Tente novamente.']);
+            session()->flash("flash_sucesso", "Checklist atualizado!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
+
+            return back()->withInput();
         }
 
-        return redirect()
-            ->route('vet.checklist.index')
-            ->with('flash_success', 'Checklist atualizado com sucesso.');
+        return redirect()->route('vet.checklist.index');
     }
 
     public function destroy(Checklist $checklist): RedirectResponse
@@ -179,14 +167,33 @@ class ChecklistController extends Controller
         try {
             $checklist->delete();
 
-            session()->flash('flash_success', 'Checklist removido com sucesso.');
-        } catch (Throwable $exception) {
-            report($exception);
-
-            session()->flash('flash_error', 'Não foi possível remover o checklist no momento.');
+            session()->flash("flash_sucesso", "Checklist removido!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('vet.checklist.index');
+    }
+
+    private function _validate(Request $request): void
+    {
+        $rules = [
+            'titulo' => ['required', 'string', 'max:255'],
+            'descricao' => ['nullable', 'string'],
+            'itens' => ['nullable', 'array'],
+            'itens.*' => ['nullable', 'string', 'max:255'],
+            'tipo' => ['required', 'string', Rule::in(array_keys($this->typeOptions()))],
+            'status' => ['required', 'string', Rule::in(array_keys($this->statusOptions()))],
+        ];
+
+        $messages = [
+            'titulo.required' => 'O campo Título é obrigatório.',
+            'tipo.required' => 'O campo Tipo é obrigatório.',
+            'status.required' => 'O campo Status é obrigatório.',
+        ];
+
+        $this->validate($request, $rules, $messages);
     }
 
     private function statusOptions(): array
@@ -248,7 +255,7 @@ class ChecklistController extends Controller
 
     private function getEmpresaId(): int
     {
-        $empresaId = Auth::user()?->empresa?->empresa_id;
+        $empresaId = request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
 
         abort_unless($empresaId, 403, 'Empresa não encontrada para o usuário autenticado.');
 

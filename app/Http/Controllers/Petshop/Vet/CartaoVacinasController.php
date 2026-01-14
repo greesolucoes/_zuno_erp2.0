@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Petshop\Vet;
 
+use App\Http\Controllers\Controller;
 use App\Models\Petshop\Animal;
 use App\Models\Petshop\Vacinacao;
 use App\Models\Petshop\VacinacaoDose;
@@ -15,7 +16,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
-class CartaoVacinasController
+class CartaoVacinasController extends Controller
 {
     public function index(Request $request): View|ViewFactory
     {
@@ -75,9 +76,9 @@ class CartaoVacinasController
 
     public function store(Request $request): RedirectResponse
     {
-        return redirect()
-            ->route('vet.vaccine-cards.index')
-            ->with('success', 'Cartão digital criado com sucesso! Esta é uma pré-visualização do fluxo.');
+        session()->flash("flash_sucesso", "Cartão digital criado! Esta é uma pré-visualização do fluxo.");
+
+        return redirect()->route('vet.vaccine-cards.index');
     }
 
     public function print(Request $request, string $card): View|ViewFactory
@@ -909,6 +910,6 @@ class CartaoVacinasController
 
     private function getEmpresaId(): ?int
     {
-        return Auth::user()?->empresa?->empresa_id;
+        return request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
     }
 }

@@ -10,9 +10,9 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Throwable;
 
 class InternacaoStatusController extends Controller
 {
@@ -31,7 +31,7 @@ class InternacaoStatusController extends Controller
 
         $statuses = $internacao->statusUpdates()
             ->orderByDesc('created_at')
-            ->paginate((int) env('PAGINACAO', 15))
+            ->paginate(env("PAGINACAO"))
             ->appends($request->all());
 
         return view('petshop.vet.internacoes.status.index', [
@@ -66,31 +66,30 @@ class InternacaoStatusController extends Controller
 
         abort_unless($internacao->empresa_id === $empresaId, 403);
 
-        $validated = $request->validate([
-            'status' => ['required', 'string', 'max:120'],
-            'anotacao' => ['nullable', 'string'],
-            'evolucao' => ['required', 'string', Rule::in(array_keys(InternacaoStatus::evolutionOptions()))],
-        ]);
-
         try {
-            InternacaoStatus::create([
-                'empresa_id' => $empresaId,
-                'internacao_id' => $internacao->id,
-                'status' => Str::of($validated['status'])->trim()->limit(120, ''),
-                'anotacao' => $this->normalizeAnnotation($validated['anotacao'] ?? null),
-                'evolucao' => $validated['evolucao'],
-            ]);
-        } catch (Throwable $exception) {
-            report($exception);
+            $this->_validate($request);
+
+            DB::transaction(function () use ($empresaId, $internacao, $request) {
+                InternacaoStatus::create([
+                    'empresa_id' => $empresaId,
+                    'internacao_id' => $internacao->id,
+                    'status' => Str::of((string) $request->input('status'))->trim()->limit(120, ''),
+                    'anotacao' => $this->normalizeAnnotation($request->input('anotacao')),
+                    'evolucao' => $request->input('evolucao'),
+                ]);
+            });
+
+            session()->flash("flash_sucesso", "Status da internação cadastrado!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
 
             return back()
                 ->withInput()
                 ->withErrors(['store' => 'Não foi possível salvar o status da internação. Tente novamente.']);
         }
 
-        return redirect()
-            ->route('vet.hospitalizations.status.index', $internacao)
-            ->with('flash_success', 'Status da internação cadastrado com sucesso.');
+        return redirect()->route('vet.hospitalizations.status.index', $internacao);
     }
 
     public function edit(Internacao $internacao, InternacaoStatus $status): View|ViewFactory
@@ -121,29 +120,28 @@ class InternacaoStatusController extends Controller
         abort_unless($internacao->empresa_id === $empresaId, 403);
         abort_unless($status->empresa_id === $empresaId && $status->internacao_id === $internacao->id, 403);
 
-        $validated = $request->validate([
-            'status' => ['required', 'string', 'max:120'],
-            'anotacao' => ['nullable', 'string'],
-            'evolucao' => ['required', 'string', Rule::in(array_keys(InternacaoStatus::evolutionOptions()))],
-        ]);
-
         try {
-            $status->update([
-                'status' => Str::of($validated['status'])->trim()->limit(120, ''),
-                'anotacao' => $this->normalizeAnnotation($validated['anotacao'] ?? null),
-                'evolucao' => $validated['evolucao'],
-            ]);
-        } catch (Throwable $exception) {
-            report($exception);
+            $this->_validate($request);
+
+            DB::transaction(function () use ($status, $request) {
+                $status->update([
+                    'status' => Str::of((string) $request->input('status'))->trim()->limit(120, ''),
+                    'anotacao' => $this->normalizeAnnotation($request->input('anotacao')),
+                    'evolucao' => $request->input('evolucao'),
+                ]);
+            });
+
+            session()->flash("flash_sucesso", "Status da internação atualizado!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
 
             return back()
                 ->withInput()
                 ->withErrors(['update' => 'Não foi possível atualizar o status da internação. Tente novamente.']);
         }
 
-        return redirect()
-            ->route('vet.hospitalizations.status.index', $internacao)
-            ->with('flash_success', 'Status da internação atualizado com sucesso.');
+        return redirect()->route('vet.hospitalizations.status.index', $internacao);
     }
 
     public function destroy(Internacao $internacao, InternacaoStatus $status): RedirectResponse
@@ -156,14 +154,29 @@ class InternacaoStatusController extends Controller
         try {
             $status->delete();
 
-            session()->flash('flash_success', 'Status da internação removido com sucesso.');
-        } catch (Throwable $exception) {
-            report($exception);
-
-            session()->flash('flash_error', 'Não foi possível remover o status da internação no momento.');
+            session()->flash("flash_sucesso", "Status da internação removido!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('vet.hospitalizations.status.index', $internacao);
+    }
+
+    private function _validate(Request $request): void
+    {
+        $rules = [
+            'status' => ['required', 'string', 'max:120'],
+            'anotacao' => ['nullable', 'string'],
+            'evolucao' => ['required', 'string', Rule::in(array_keys(InternacaoStatus::evolutionOptions()))],
+        ];
+
+        $messages = [
+            'status.required' => 'O campo Status é obrigatório.',
+            'evolucao.required' => 'O campo Evolução é obrigatório.',
+        ];
+
+        $this->validate($request, $rules, $messages);
     }
 
     private function normalizeAnnotation(?string $annotation): ?string
@@ -179,7 +192,7 @@ class InternacaoStatusController extends Controller
 
     private function getEmpresaId(): int
     {
-        $empresaId = Auth::user()?->empresa?->empresa_id;
+        $empresaId = request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
 
         if (! $empresaId) {
             abort(403, 'Usuário sem empresa vinculada.');

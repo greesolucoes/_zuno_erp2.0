@@ -82,25 +82,13 @@
             @method('delete')
             @csrf
 
-            @can('clientes_edit')
-                <a href="{{ route('esteticas.edit', [$item->id, 'page' => request()->query('page', 1)]) }}" class="btn btn-warning btn-sm text-white" title="Editar">
-                    <i class="bx bx-edit"></i>
-                </a>
-            @else
-                <button type="button" class="btn btn-warning btn-sm text-white" title="Edição desabilitada" disabled>
-                    <i class="bx bx-edit"></i>
-                </button>
-            @endcan
+            <a href="{{ route('esteticas.edit', [$item->id, 'page' => request()->query('page', 1)]) }}" class="btn btn-warning btn-sm text-white" title="Editar">
+                <i class="bx bx-edit"></i>
+            </a>
 
-            @can('clientes_delete')
-                <button type="button" class="btn btn-delete btn-sm btn-danger" title="Excluir">
-                    <i class="bx bx-trash"></i>
-                </button>
-            @else
-                <button type="button" class="btn btn-danger btn-sm" title="Exclusão desabilitada" disabled>
-                    <i class="bx bx-trash"></i>
-                </button>
-            @endcan
+            <button type="button" class="btn btn-delete btn-sm btn-danger" title="Excluir">
+                <i class="bx bx-trash"></i>
+            </button>
 
             @if (isset($item->esteticaClienteEndereco))
                 <a href="{{ route('esteticas.endereco_entrega', $item->id) }}" class="btn btn-primary btn-sm" title="Imprimir cupom" target="_blank">

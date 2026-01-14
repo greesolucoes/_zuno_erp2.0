@@ -166,7 +166,6 @@ class AgendamentoController extends Controller
     public function show($id)
     {
         $item = Agendamento::with('veiculo')->findOrFail($id);
-        __validaObjetoEmpresa($item);
 
         return view('petshop.agendamento.show', compact('item'));
     }
@@ -175,7 +174,6 @@ class AgendamentoController extends Controller
     {
         $this->_validate($request, 'update');
         $item = Agendamento::findOrFail($id);
-        __validaObjetoEmpresa($item);
 
         try {
             DB::transaction(function () use ($request, $item) {
@@ -198,7 +196,6 @@ class AgendamentoController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $item = Agendamento::findOrFail($id);
-        __validaObjetoEmpresa($item);
         try {
             $item->status = 1;
             $item->save();
@@ -213,7 +210,6 @@ class AgendamentoController extends Controller
     public function destroy($id)
     {
         $item = Agendamento::findOrFail($id);
-        __validaObjetoEmpresa($item);
         try {
             $descricaoLog = "Data: " . __data_pt($item->data) . " - cliente: " . $item->cliente->info;
 
@@ -274,7 +270,6 @@ class AgendamentoController extends Controller
     public function pdv($id)
     {
         $agendamento = Agendamento::findOrFail($id);
-        __validaObjetoEmpresa($agendamento);
 
         if (!__isCaixaAberto()) {
             session()->flash("flash_warning", "Abrir caixa antes de continuar!");

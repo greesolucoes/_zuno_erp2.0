@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Petshop\Vet;
 
+use App\Http\Controllers\Controller;
 use App\Models\Cliente;
 use App\Models\Petshop\Animal;
 use App\Models\Petshop\Atendimento;
@@ -32,7 +33,7 @@ use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-class VacinacoesController
+class VacinacoesController extends Controller
 {
     public function index(Request $request): View|ViewFactory
     {
@@ -410,16 +411,15 @@ class VacinacoesController
             DB::commit();
         } catch (\Throwable $exception) {
             DB::rollBack();
-            report($exception);
-
-            session()->flash('flash_error', 'Não foi possível salvar o agendamento de vacinação. Tente novamente.');
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
+            __saveLogError($exception, request()->empresa_id);
 
             return back()
                 ->withErrors(['store' => 'Não foi possível salvar o agendamento de vacinação. Tente novamente.'])
                 ->withInput();
         }
 
-        session()->flash('flash_success', 'Vacinação agendada com sucesso.');
+        session()->flash("flash_sucesso", "Vacinação agendada!");
 
         return redirect()->route('vet.vaccinations.scheduled');
     }
@@ -511,16 +511,15 @@ class VacinacoesController
             DB::commit();
         } catch (\Throwable $exception) {
             DB::rollBack();
-            report($exception);
-
-            session()->flash('flash_error', 'Não foi possível atualizar o agendamento de vacinação. Tente novamente.');
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
+            __saveLogError($exception, request()->empresa_id);
 
             return back()
                 ->withErrors(['store' => 'Não foi possível atualizar o agendamento de vacinação. Tente novamente.'])
                 ->withInput();
         }
 
-        session()->flash('flash_success', 'Agendamento de vacinação atualizado com sucesso.');
+        session()->flash("flash_sucesso", "Agendamento de vacinação atualizado!");
 
         return redirect()->route('vet.vaccinations.scheduled');
     }
@@ -827,9 +826,8 @@ class VacinacoesController
             DB::commit();
         } catch (\Throwable $exception) {
             DB::rollBack();
-            report($exception);
-
-            session()->flash('flash_error', 'Não foi possível registrar a aplicação da vacinação. Tente novamente.');
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
+            __saveLogError($exception, request()->empresa_id);
 
             return redirect()
                 ->back()
@@ -837,7 +835,7 @@ class VacinacoesController
                 ->withInput();
         }
 
-        session()->flash('flash_success', 'Aplicação da vacinação registrada com sucesso.');
+        session()->flash("flash_sucesso", "Aplicação da vacinação registrada!");
 
         return redirect()->route('vet.vaccinations.index');
     }
@@ -2374,7 +2372,7 @@ class VacinacoesController
 
     private function getEmpresaId(): ?int
     {
-        return Auth::user()?->empresa?->empresa_id;
+        return request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
     }
 
     private function formatAttendanceForVaccination(Atendimento $attendance): array

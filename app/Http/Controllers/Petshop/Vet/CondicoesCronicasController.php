@@ -9,9 +9,9 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Throwable;
 
 class CondicoesCronicasController extends Controller
 {
@@ -42,7 +42,7 @@ class CondicoesCronicasController extends Controller
                 }
             })
             ->orderByDesc('updated_at')
-            ->paginate((int) env('PAGINACAO', 15))
+            ->paginate(env("PAGINACAO"))
             ->appends($request->all());
 
         return view('petshop.vet.condicoes_cronicas.index', [
@@ -62,38 +62,34 @@ class CondicoesCronicasController extends Controller
     {
         $empresaId = $this->getEmpresaId();
 
-        $validated = $request->validate([
-            'nome' => ['required', 'string', 'max:255'],
-            'descricao' => ['nullable', 'string'],
-            'orientacoes' => ['nullable', 'string'],
-            'status' => ['required', 'string', Rule::in(array_keys($this->statusOptions()))],
-        ]);
+        $this->_validate($request);
 
-        $status = Str::of($validated['status'])->trim()->toString();
+        $status = Str::of((string) $request->input('status'))->trim()->toString();
 
         if (! array_key_exists($status, $this->statusOptions())) {
             $status = 'ativo';
         }
 
         try {
-            CondicaoCronica::create([
-                'empresa_id' => $empresaId,
-                'nome' => Str::of($validated['nome'])->trim()->toString(),
-                'descricao' => $this->normalizeNullableText($validated['descricao'] ?? null),
-                'orientacoes' => $this->normalizeNullableText($validated['orientacoes'] ?? null),
-                'status' => $status,
-            ]);
-        } catch (Throwable $exception) {
-            report($exception);
+            DB::transaction(function () use ($empresaId, $request, $status) {
+                CondicaoCronica::create([
+                    'empresa_id' => $empresaId,
+                    'nome' => Str::of((string) $request->input('nome'))->trim()->toString(),
+                    'descricao' => $this->normalizeNullableText($request->input('descricao')),
+                    'orientacoes' => $this->normalizeNullableText($request->input('orientacoes')),
+                    'status' => $status,
+                ]);
+            });
 
-            return back()
-                ->withInput()
-                ->withErrors(['store' => 'Não foi possível salvar a condição crônica. Tente novamente.']);
+            session()->flash("flash_sucesso", "Condição crônica cadastrada!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
+
+            return back()->withInput();
         }
 
-        return redirect()
-            ->route('vet.chronic-conditions.index')
-            ->with('flash_success', 'Condição crônica cadastrada com sucesso.');
+        return redirect()->route('vet.chronic-conditions.index');
     }
 
     public function edit(CondicaoCronica $condicaoCronica): View|ViewFactory
@@ -114,37 +110,33 @@ class CondicoesCronicasController extends Controller
 
         abort_unless($condicaoCronica->empresa_id === $empresaId, 403);
 
-        $validated = $request->validate([
-            'nome' => ['required', 'string', 'max:255'],
-            'descricao' => ['nullable', 'string'],
-            'orientacoes' => ['nullable', 'string'],
-            'status' => ['required', 'string', Rule::in(array_keys($this->statusOptions()))],
-        ]);
+        $this->_validate($request);
 
-        $status = Str::of($validated['status'])->trim()->toString();
+        $status = Str::of((string) $request->input('status'))->trim()->toString();
 
         if (! array_key_exists($status, $this->statusOptions())) {
             $status = $condicaoCronica->status ?? 'ativo';
         }
 
         try {
-            $condicaoCronica->update([
-                'nome' => Str::of($validated['nome'])->trim()->toString(),
-                'descricao' => $this->normalizeNullableText($validated['descricao'] ?? null),
-                'orientacoes' => $this->normalizeNullableText($validated['orientacoes'] ?? null),
-                'status' => $status,
-            ]);
-        } catch (Throwable $exception) {
-            report($exception);
+            DB::transaction(function () use ($condicaoCronica, $request, $status) {
+                $condicaoCronica->update([
+                    'nome' => Str::of((string) $request->input('nome'))->trim()->toString(),
+                    'descricao' => $this->normalizeNullableText($request->input('descricao')),
+                    'orientacoes' => $this->normalizeNullableText($request->input('orientacoes')),
+                    'status' => $status,
+                ]);
+            });
 
-            return back()
-                ->withInput()
-                ->withErrors(['update' => 'Não foi possível atualizar a condição crônica. Tente novamente.']);
+            session()->flash("flash_sucesso", "Condição crônica atualizada!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
+
+            return back()->withInput();
         }
 
-        return redirect()
-            ->route('vet.chronic-conditions.index')
-            ->with('flash_success', 'Condição crônica atualizada com sucesso.');
+        return redirect()->route('vet.chronic-conditions.index');
     }
 
     public function destroy(CondicaoCronica $condicaoCronica): RedirectResponse
@@ -156,14 +148,30 @@ class CondicoesCronicasController extends Controller
         try {
             $condicaoCronica->delete();
 
-            session()->flash('flash_success', 'Condição crônica removida com sucesso.');
-        } catch (Throwable $exception) {
-            report($exception);
-
-            session()->flash('flash_error', 'Não foi possível remover a condição crônica no momento.');
+            session()->flash("flash_sucesso", "Condição crônica removida!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('vet.chronic-conditions.index');
+    }
+
+    private function _validate(Request $request): void
+    {
+        $rules = [
+            'nome' => ['required', 'string', 'max:255'],
+            'descricao' => ['nullable', 'string'],
+            'orientacoes' => ['nullable', 'string'],
+            'status' => ['required', 'string', Rule::in(array_keys($this->statusOptions()))],
+        ];
+
+        $messages = [
+            'nome.required' => 'O campo Nome é obrigatório.',
+            'status.required' => 'O campo Status é obrigatório.',
+        ];
+
+        $this->validate($request, $rules, $messages);
     }
 
     private function statusOptions(): array
@@ -187,7 +195,7 @@ class CondicoesCronicasController extends Controller
 
     private function getEmpresaId(): int
     {
-        $empresaId = Auth::user()?->empresa?->empresa_id;
+        $empresaId = request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
 
         abort_unless($empresaId, 403, 'Empresa não encontrada para o usuário autenticado.');
 

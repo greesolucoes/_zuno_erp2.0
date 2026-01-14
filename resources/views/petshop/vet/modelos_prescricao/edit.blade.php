@@ -1,19 +1,10 @@
 @extends('default.layout', ['title' => 'Editar Modelo de Prescrição'])
 
 @section('content')
-    <div class="page-content">
-    <div class="card border-top border-0 border-4 border-primary">
-        <div class="card-header d-flex align-items-center justify-content-between">
-            <h5 class="mb-0 text-primary">Editar Modelo de Prescrição</h5>
-
-            <a href="{{ route('vet.prescription-models.show', ['modeloPrescricao' => $modelo->id, 'page' => request()->query('page', 1)]) }}"
-               type="button"
-               class="btn btn-light btn-sm d-flex align-items-center gap-1 px-2">
-                <i class="bx bx-arrow-back"></i> Voltar
-            </a>
-        </div>
-
-        <div class="card-body p-5">
+<x-form-page
+    title="Editar Modelo de Prescrição"
+    :back-url="route('vet.prescription-models.show', ['modeloPrescricao' => $modelo->id, 'page' => request()->query('page', 1)])"
+>
             @php
                 $availableCategories = $categorias;
                 $categoryOptions = ['' => 'Selecione'] + $availableCategories;
@@ -40,7 +31,6 @@
                 ->id('form-modelos-prescricao')
                 ->route('vet.prescription-models.update', ['modeloPrescricao' => $modelo->id, 'page' => request()->query('page', 1)])
                 ->attrs(['autocomplete' => 'off']) !!}
-                <div class="pl-lg-4">
                     <div class="row g-3">
                         <div class="col-md-6">
                             {!! Form::text('title', 'Título do Modelo')
@@ -240,10 +230,8 @@
                             Salvar alterações
                         </button>
                     </div>
-                </div>
             {!! Form::close() !!}
-        </div>
-    </div>
+</x-form-page>
 
     <template id="prescription-field-row-template">
         <tr class="dynamic-form" data-row-index="__INDEX__">
@@ -461,7 +449,6 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
 @endsection
 

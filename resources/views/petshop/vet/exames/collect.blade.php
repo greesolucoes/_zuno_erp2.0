@@ -344,23 +344,15 @@
             : 'PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, CSV, TXT, RTF, ODT, ODS, JPG, JPEG, PNG e MP4';
     @endphp
 
-    <div class="container-fluid vet-exams-collection">
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-            <div>
-                <span class="badge bg-success-subtle text-success vet-exams-collection__badge">Coleta de exame</span>
-                <h2 class="text-color mb-1">Registro de coleta</h2>
-                <p class="text-muted mb-0">
-                    Revise as informações definidas na solicitação e registre os dados coletados para o exame.
-                </p>
-            </div>
-            <a
-                href="{{ route('vet.exams.index') }}"
-                class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-2"
-            >
-                <i class="ri-arrow-left-double-fill"></i>
-                Voltar
-            </a>
-        </div>
+<x-form-page
+    title="Coleta de exame"
+    heading="Registro de coleta"
+    :back-url="route('vet.exams.index', ['page' => request()->query('page', 1)])"
+>
+    <div class="vet-exams-collection">
+        <p class="text-muted mb-4">
+            Revise as informações definidas na solicitação e registre os dados coletados para o exame.
+        </p>
 
         <form
             class="needs-validation"
@@ -588,9 +580,10 @@
             </div>
 
             <div class="d-flex justify-content-end gap-2">
-                <a href="{{ route('vet.exams.index') }}" class="btn btn-light">Cancelar</a>
-                <button type="submit" class="btn btn-success">Salvar coleta</button>
+                <a href="{{ route('vet.exams.index', ['page' => request()->query('page', 1)]) }}" class="btn btn-outline-secondary px-4">Cancelar</a>
+                <button type="submit" class="btn btn-primary px-4">Salvar coleta</button>
             </div>
         </form>
     </div>
+</x-form-page>
 @endsection

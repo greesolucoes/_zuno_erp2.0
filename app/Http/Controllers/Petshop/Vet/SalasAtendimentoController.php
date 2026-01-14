@@ -7,9 +7,9 @@ use App\Models\Petshop\SalaAtendimento;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
-use Throwable;
 
 class SalasAtendimentoController extends Controller
 {
@@ -36,7 +36,7 @@ class SalasAtendimentoController extends Controller
                 $query->where('tipo', $request->string('tipo')->toString());
             })
             ->orderBy('nome')
-            ->paginate(10)
+            ->paginate(env("PAGINACAO"))
             ->appends($request->all());
 
         return view('petshop.vet.salas_atendimento.index', [
@@ -58,26 +58,29 @@ class SalasAtendimentoController extends Controller
     {
         $empresaId = $this->getEmpresaId();
 
-        $validated = $request->validate([
-            'nome' => ['required', 'string', 'max:255'],
-            'identificador' => ['nullable', 'string', 'max:50'],
-            'tipo' => ['required', Rule::in(array_keys($this->tiposSala()))],
-            'status' => ['required', Rule::in(array_keys($this->statusSala()))],
-            'capacidade' => ['nullable', 'integer', 'min:1', 'max:999'],
-            'equipamentos' => ['nullable', 'string', 'max:255'],
-            'observacoes' => ['nullable', 'string'],
-        ]);
-
         try {
-            SalaAtendimento::create(array_merge($validated, [
-                'empresa_id' => $empresaId,
-            ]));
+            $this->_validate($request);
 
-            session()->flash('flash_success', 'Sala de atendimento cadastrada com sucesso.');
-        } catch (Throwable $exception) {
-            report($exception);
+            $validated = $request->only([
+                'nome',
+                'identificador',
+                'tipo',
+                'status',
+                'capacidade',
+                'equipamentos',
+                'observacoes',
+            ]);
 
-            session()->flash('flash_error', 'Não foi possível cadastrar a sala de atendimento no momento.');
+            DB::transaction(function () use ($empresaId, $validated) {
+                SalaAtendimento::create(array_merge($validated, [
+                    'empresa_id' => $empresaId,
+                ]));
+            });
+
+            session()->flash("flash_sucesso", "Sala de atendimento cadastrada!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
 
             return back()->withInput();
         }
@@ -104,24 +107,27 @@ class SalasAtendimentoController extends Controller
 
         abort_unless($salaAtendimento->empresa_id === $empresaId, 403);
 
-        $validated = $request->validate([
-            'nome' => ['required', 'string', 'max:255'],
-            'identificador' => ['nullable', 'string', 'max:50'],
-            'tipo' => ['required', Rule::in(array_keys($this->tiposSala()))],
-            'status' => ['required', Rule::in(array_keys($this->statusSala()))],
-            'capacidade' => ['nullable', 'integer', 'min:1', 'max:999'],
-            'equipamentos' => ['nullable', 'string', 'max:255'],
-            'observacoes' => ['nullable', 'string'],
-        ]);
-
         try {
-            $salaAtendimento->update($validated);
+            $this->_validate($request);
 
-            session()->flash('flash_success', 'Sala de atendimento atualizada com sucesso.');
-        } catch (Throwable $exception) {
-            report($exception);
+            $validated = $request->only([
+                'nome',
+                'identificador',
+                'tipo',
+                'status',
+                'capacidade',
+                'equipamentos',
+                'observacoes',
+            ]);
 
-            session()->flash('flash_error', 'Não foi possível atualizar a sala de atendimento no momento.');
+            DB::transaction(function () use ($salaAtendimento, $validated) {
+                $salaAtendimento->update($validated);
+            });
+
+            session()->flash("flash_sucesso", "Sala de atendimento atualizada!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
 
             return back()->withInput();
         }
@@ -138,14 +144,34 @@ class SalasAtendimentoController extends Controller
         try {
             $salaAtendimento->delete();
 
-            session()->flash('flash_success', 'Sala de atendimento removida com sucesso.');
-        } catch (Throwable $exception) {
-            report($exception);
-
-            session()->flash('flash_error', 'Não foi possível remover a sala de atendimento no momento.');
+            session()->flash("flash_sucesso", "Sala de atendimento removida!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
         }
 
         return redirect()->route('vet.salas-atendimento.index');
+    }
+
+    private function _validate(Request $request): void
+    {
+        $rules = [
+            'nome' => ['required', 'string', 'max:255'],
+            'identificador' => ['nullable', 'string', 'max:50'],
+            'tipo' => ['required', Rule::in(array_keys($this->tiposSala()))],
+            'status' => ['required', Rule::in(array_keys($this->statusSala()))],
+            'capacidade' => ['nullable', 'integer', 'min:1', 'max:999'],
+            'equipamentos' => ['nullable', 'string', 'max:255'],
+            'observacoes' => ['nullable', 'string'],
+        ];
+
+        $messages = [
+            'nome.required' => 'O campo Nome é obrigatório.',
+            'tipo.required' => 'O campo Tipo é obrigatório.',
+            'status.required' => 'O campo Status é obrigatório.',
+        ];
+
+        $this->validate($request, $rules, $messages);
     }
 
     private function tiposSala(): array
@@ -171,7 +197,7 @@ class SalasAtendimentoController extends Controller
 
     private function getEmpresaId(): int
     {
-        $empresaId = Auth::user()?->empresa?->empresa_id;
+        $empresaId = request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
 
         abort_unless($empresaId, 403, 'Empresa não encontrada para o usuário autenticado.');
 

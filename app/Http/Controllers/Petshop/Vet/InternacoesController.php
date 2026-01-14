@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Petshop\Vet;
 
+use App\Http\Controllers\Controller;
 use App\Models\Cliente;
 use App\Models\Petshop\Animal;
 use App\Models\Petshop\Atendimento;
@@ -15,10 +16,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
-class InternacoesController
+class InternacoesController extends Controller
 {
     public function index(Request $request): View|ViewFactory
     {
@@ -368,18 +370,19 @@ class InternacoesController
             $request->merge(['nivel_risco' => null]);
         }
 
-        $validated = $request->validate([
-            'patient_id' => ['required', 'integer'],
-            'atendimento_id' => ['nullable', 'integer'],
-            'veterinario_id' => ['nullable', 'integer'],
-            'sala_internacao_id' => ['nullable', 'integer'],
-            'admission_date' => ['required', 'date'],
-            'admission_time' => ['required', 'date_format:H:i'],
-            'expected_discharge_date' => ['nullable', 'date', 'after_or_equal:admission_date'],
-            'reason' => ['nullable', 'string', 'max:500'],
-            'notes' => ['nullable', 'string'],
-            'status' => ['nullable', 'in:' . implode(',', array_keys(Internacao::statusMeta()))],
-            'nivel_risco' => ['nullable', 'in:' . implode(',', array_keys(Internacao::riskMeta()))],
+        $this->_validate($request);
+        $validated = $request->only([
+            'patient_id',
+            'atendimento_id',
+            'veterinario_id',
+            'sala_internacao_id',
+            'admission_date',
+            'admission_time',
+            'expected_discharge_date',
+            'reason',
+            'notes',
+            'status',
+            'nivel_risco',
         ]);
 
         $animal = Animal::query()
@@ -432,26 +435,51 @@ class InternacoesController
         $riskLevel = $validated['nivel_risco'] ?? null;
         $riskLevel = $riskLevel === '' ? null : $riskLevel;
 
-        $hospitalization = Internacao::create([
-            'empresa_id' => $companyId,
-            'animal_id' => $animal->id,
-            'tutor_id' => $animal->cliente?->id,
-            'atendimento_id' => $attendance?->id,
-            'veterinario_id' => $veterinarian?->id,
-            'sala_internacao_id' => $room?->id,
-            'status' => $status,
-            'nivel_risco' => $riskLevel,
-            'internado_em' => $admissionAt,
-            'previsao_alta_em' => $expectedDischargeAt,
-            'motivo' => $this->normalizeNullableString($validated['reason'] ?? null),
-            'observacoes' => $this->normalizeNullableString($validated['notes'] ?? null),
-        ]);
+        try {
+            $hospitalization = null;
 
-        return redirect()
-            ->route('vet.hospitalizations.index')
-            ->with('success', $hospitalization->status === Internacao::STATUS_DRAFT
+            DB::transaction(function () use (
+                $companyId,
+                $animal,
+                $attendance,
+                $veterinarian,
+                $room,
+                $status,
+                $riskLevel,
+                $admissionAt,
+                $expectedDischargeAt,
+                $validated,
+                &$hospitalization
+            ) {
+                $hospitalization = Internacao::create([
+                    'empresa_id' => $companyId,
+                    'animal_id' => $animal->id,
+                    'tutor_id' => $animal->cliente?->id,
+                    'atendimento_id' => $attendance?->id,
+                    'veterinario_id' => $veterinarian?->id,
+                    'sala_internacao_id' => $room?->id,
+                    'status' => $status,
+                    'nivel_risco' => $riskLevel,
+                    'internado_em' => $admissionAt,
+                    'previsao_alta_em' => $expectedDischargeAt,
+                    'motivo' => $this->normalizeNullableString($validated['reason'] ?? null),
+                    'observacoes' => $this->normalizeNullableString($validated['notes'] ?? null),
+                ]);
+            });
+
+            $message = $hospitalization?->status === Internacao::STATUS_DRAFT
                 ? 'Internação salva como rascunho.'
-                : 'Internação registrada com sucesso.');
+                : 'Internação registrada com sucesso.';
+
+            session()->flash("flash_sucesso", $message);
+        } catch (\Throwable $exception) {
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
+            __saveLogError($exception, request()->empresa_id);
+
+            return redirect()->back()->withInput();
+        }
+
+        return redirect()->route('vet.hospitalizations.index');
     }
 
     public function edit(Internacao $internacao): View|ViewFactory
@@ -536,18 +564,19 @@ class InternacoesController
             $request->merge(['nivel_risco' => null]);
         }
 
-        $validated = $request->validate([
-            'patient_id' => ['required', 'integer'],
-            'atendimento_id' => ['nullable', 'integer'],
-            'veterinario_id' => ['nullable', 'integer'],
-            'sala_internacao_id' => ['nullable', 'integer'],
-            'admission_date' => ['required', 'date'],
-            'admission_time' => ['required', 'date_format:H:i'],
-            'expected_discharge_date' => ['nullable', 'date', 'after_or_equal:admission_date'],
-            'reason' => ['nullable', 'string', 'max:500'],
-            'notes' => ['nullable', 'string'],
-            'status' => ['nullable', 'in:' . implode(',', array_keys(Internacao::statusMeta()))],
-            'nivel_risco' => ['nullable', 'in:' . implode(',', array_keys(Internacao::riskMeta()))],
+        $this->_validate($request);
+        $validated = $request->only([
+            'patient_id',
+            'atendimento_id',
+            'veterinario_id',
+            'sala_internacao_id',
+            'admission_date',
+            'admission_time',
+            'expected_discharge_date',
+            'reason',
+            'notes',
+            'status',
+            'nivel_risco',
         ]);
 
         $animal = Animal::query()
@@ -600,27 +629,72 @@ class InternacoesController
         $riskLevel = $validated['nivel_risco'] ?? null;
         $riskLevel = $riskLevel === '' ? null : $riskLevel;
 
-        $internacao->update([
-            'animal_id' => $animal->id,
-            'tutor_id' => $animal->cliente?->id,
-            'atendimento_id' => $attendance?->id,
-            'veterinario_id' => $veterinarian?->id,
-            'sala_internacao_id' => $room?->id,
-            'status' => $status,
-            'nivel_risco' => $riskLevel,
-            'internado_em' => $admissionAt,
-            'previsao_alta_em' => $expectedDischargeAt,
-            'motivo' => $this->normalizeNullableString($validated['reason'] ?? null),
-            'observacoes' => $this->normalizeNullableString($validated['notes'] ?? null),
-        ]);
+        try {
+            DB::transaction(function () use (
+                $internacao,
+                $animal,
+                $attendance,
+                $veterinarian,
+                $room,
+                $status,
+                $riskLevel,
+                $admissionAt,
+                $expectedDischargeAt,
+                $validated
+            ) {
+                $internacao->update([
+                    'animal_id' => $animal->id,
+                    'tutor_id' => $animal->cliente?->id,
+                    'atendimento_id' => $attendance?->id,
+                    'veterinario_id' => $veterinarian?->id,
+                    'sala_internacao_id' => $room?->id,
+                    'status' => $status,
+                    'nivel_risco' => $riskLevel,
+                    'internado_em' => $admissionAt,
+                    'previsao_alta_em' => $expectedDischargeAt,
+                    'motivo' => $this->normalizeNullableString($validated['reason'] ?? null),
+                    'observacoes' => $this->normalizeNullableString($validated['notes'] ?? null),
+                ]);
+            });
+        } catch (\Throwable $exception) {
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
+            __saveLogError($exception, request()->empresa_id);
+
+            return redirect()->back()->withInput();
+        }
 
         $message = $status === Internacao::STATUS_DRAFT
             ? 'Internação salva como rascunho.'
             : 'Internação atualizada com sucesso.';
 
-        return redirect()
-            ->route('vet.hospitalizations.index')
-            ->with('success', $message);
+        session()->flash("flash_sucesso", $message);
+
+        return redirect()->route('vet.hospitalizations.index');
+    }
+
+    private function _validate(Request $request): void
+    {
+        $rules = [
+            'patient_id' => ['required', 'integer'],
+            'atendimento_id' => ['nullable', 'integer'],
+            'veterinario_id' => ['nullable', 'integer'],
+            'sala_internacao_id' => ['nullable', 'integer'],
+            'admission_date' => ['required', 'date'],
+            'admission_time' => ['required', 'date_format:H:i'],
+            'expected_discharge_date' => ['nullable', 'date', 'after_or_equal:admission_date'],
+            'reason' => ['nullable', 'string', 'max:500'],
+            'notes' => ['nullable', 'string'],
+            'status' => ['nullable', 'in:' . implode(',', array_keys(Internacao::statusMeta()))],
+            'nivel_risco' => ['nullable', 'in:' . implode(',', array_keys(Internacao::riskMeta()))],
+        ];
+
+        $messages = [
+            'patient_id.required' => 'O campo Paciente é obrigatório.',
+            'admission_date.required' => 'O campo Data de internação é obrigatório.',
+            'admission_time.required' => 'O campo Horário de internação é obrigatório.',
+        ];
+
+        $this->validate($request, $rules, $messages);
     }
 
     private function buildStatusFilters(): array
@@ -1553,7 +1627,7 @@ class InternacoesController
 
     private function getEmpresaId(): ?int
     {
-        return Auth::user()?->empresa?->empresa_id;
+        return request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
     }
 
 }

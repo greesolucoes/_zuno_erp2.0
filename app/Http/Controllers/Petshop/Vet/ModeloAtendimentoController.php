@@ -9,6 +9,7 @@ use App\Models\Petshop\ModeloAtendimento;
 use App\Services\Petshop\Vet\ModeloAtendimentoService;
 use App\Support\Petshop\Vet\ModeloAtendimentoOptions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -23,10 +24,11 @@ class ModeloAtendimentoController extends Controller
 
     public function index(Request $request): View
     {
-        $empresa_id = $request->only('empresa_id');
+        $empresaId = (int) ($request->empresa_id ?? 0);
+        abort_unless($empresaId, 403, 'Empresa não encontrada para o usuário autenticado.');
 
         $data = ModeloAtendimento::query()
-            ->where('empresa_id', $empresa_id)
+            ->where('empresa_id', $empresaId)
             ->when($request->filled('search'), function ($query) use ($request) {
                 $termo = Str::of((string) $request->input('search'))->trim()->toString();
 
@@ -73,13 +75,13 @@ class ModeloAtendimentoController extends Controller
                 }
             })
             ->orderByDesc('updated_at')
-            ->paginate((int) env('PAGINACAO', 15))
+            ->paginate(env("PAGINACAO"))
             ->appends($request->all());
 
         $category_options = ['' => 'Todas'] + ModeloAtendimentoOptions::categories();
         $status_options = ['' => 'Todos'] + ModeloAtendimentoOptions::statusOptions();
 
-        $missing_templates = $this->getMissingDefaultModeloAtendimentoTemplate($request->empresa_id);
+        $missing_templates = $this->getMissingDefaultModeloAtendimentoTemplate($empresaId);
 
         return view('petshop.vet.modelos_atendimento.index', [
             'data' => $data,
@@ -107,7 +109,7 @@ class ModeloAtendimentoController extends Controller
             'status' => 'ativo',
         ]);
 
-        $this->__validate($request);
+        $this->_validate($request);
 
         try {
             $user = auth()->user();
@@ -121,19 +123,15 @@ class ModeloAtendimentoController extends Controller
                 );
             }
 
-            ModeloAtendimento::create($request->all());
+            DB::transaction(function () use ($request) {
+                ModeloAtendimento::create($request->all());
+            });
 
-            session()->flash('flash_success', 'Modelo de atendimento cadastrado com sucesso.');
+            session()->flash("flash_sucesso", "Modelo de atendimento cadastrado!");
             return redirect()->route('vet.modelos-atendimento.index');
         } catch (\Exception $e) {
-            __createLog(
-                $request->empresa_id,
-                'Cadastro de Modelo de Atendimento',
-                'Erro ao cadastrar modelo de atendimento: ' . $e->getMessage(),
-                $e->getMessage()
-            );
-
-            session()->flash('flash_error', 'Ocorreu um erro ao editar o modelo de atendimento.');
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
 
             return redirect()
                 ->back()
@@ -157,7 +155,7 @@ class ModeloAtendimentoController extends Controller
 
     public function update(Request $request, int $id)
     {
-        $this->__validate($request);
+        $this->_validate($request);
 
         try {
             $item = ModeloAtendimento::findOrFail($id);
@@ -172,19 +170,15 @@ class ModeloAtendimentoController extends Controller
                 );
             }
 
-            $item->update($request->all());
+            DB::transaction(function () use ($item, $request) {
+                $item->update($request->all());
+            });
 
-            session()->flash('flash_success', 'Modelo de atendimento atualizado com sucesso.');
+            session()->flash("flash_sucesso", "Modelo de atendimento atualizado!");
             return redirect()->route('vet.modelos-atendimento.index');
         } catch (\Exception $e) {
-            __createLog(
-                $request->empresa_id,
-                'Edição de Modelo de Atendimento',
-                'Erro ao editar modelo de atendimento: ' . $e->getMessage(),
-                $e->getMessage()
-            );
-
-            session()->flash('flash_error', 'Ocorreu um erro ao editar o modelo de atendimento.');
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
             
             return redirect()
                 ->back()
@@ -192,15 +186,23 @@ class ModeloAtendimentoController extends Controller
         }
     }
 
-    private function __validate(Request $request): array
+    private function _validate(Request $request): void
     {
-        return $request->validate([
+        $rules = [
             'title' => ['required', 'string', 'max:255'],
             'category' => ['nullable', 'string', 'max:100'],
             'notes' => ['nullable', 'string'],
             'status' => ['required', 'string', 'in:' . implode(',', ModeloAtendimentoOptions::statuses())],
             'content' => ['required', 'string'],
-        ]);
+        ];
+
+        $messages = [
+            'title.required' => 'O campo Título é obrigatório.',
+            'status.required' => 'O campo Status é obrigatório.',
+            'content.required' => 'O campo Conteúdo é obrigatório.',
+        ];
+
+        $this->validate($request, $rules, $messages);
     }
 
     /**

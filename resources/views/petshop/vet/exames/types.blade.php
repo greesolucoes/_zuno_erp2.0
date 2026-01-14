@@ -42,21 +42,16 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h4 class="mb-1">Tipos de exames cadastrados</h4>
-                <p class="text-muted mb-0">Consulte as descrições e preparos recomendados antes de realizar cada exame.</p>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#createExamTypeModal">
-                    <i class="mdi mdi-plus me-1"></i> Novo tipo de exame
-                </button>
-                <a href="{{ route('vet.exams.index') }}" class="btn btn-light">
-                    <i class="mdi mdi-arrow-left me-1"></i> Voltar ao histórico
-                </a>
-            </div>
+<x-form-page
+    title="Tipos de Exames"
+    heading="Tipos de exames cadastrados"
+    :back-url="route('vet.exams.index', ['page' => request()->query('page', 1)])"
+>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+            <p class="text-muted mb-0">Consulte as descrições e preparos recomendados antes de realizar cada exame.</p>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createExamTypeModal">
+                <i class="mdi mdi-plus me-1"></i> Novo tipo de exame
+            </button>
         </div>
 
         <div class="modal fade" id="createExamTypeModal" tabindex="-1" aria-hidden="true">
@@ -131,7 +126,7 @@
                 <x-petshop.vet.exames.exam-type-card :type="$type" />
             @endforeach
         </div>
-    </div>
+</x-form-page>
 @endsection
 
 @section('js')

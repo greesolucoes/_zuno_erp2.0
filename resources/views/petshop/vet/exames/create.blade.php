@@ -53,23 +53,15 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid vet-exams-request">
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-            <div>
-                <span class="badge bg-primary-subtle text-primary vet-exams-request__badge">Solicitação de exame</span>
-                <h2 class="text-color mb-1">Registrar solicitação de exame</h2>
-                <p class="text-muted mb-0">
-                    Preencha as informações da solicitação. A coleta será registrada em um formulário dedicado após esta etapa.
-                </p>
-            </div>
-            <a
-                    href="{{ route('vet.exams.index') }}"
-                    class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-2"
-                >
-                    <i class="ri-arrow-left-double-fill"></i>
-                    Voltar
-                </a>        
-        </div>
+<x-form-page
+    title="Novo Exame"
+    heading="Registrar solicitação de exame"
+    :back-url="route('vet.exams.index', ['page' => request()->query('page', 1)])"
+>
+    <div class="vet-exams-request">
+        <p class="text-muted mb-4">
+            Preencha as informações da solicitação. A coleta será registrada em um formulário dedicado após esta etapa.
+        </p>
 
         @php
             $availableAttendances = $attendances ?? [];
@@ -346,12 +338,13 @@
             </div>
 
             <div class="d-flex justify-content-end gap-2">
-                <button type="submit" name="action" value="confirm_and_schedule_vaccination" class="btn btn-warning">
+                <button type="submit" name="action" value="confirm_and_schedule_vaccination" class="btn btn-primary px-4">
                     Salvar
                 </button>
             </div>
         </form>
     </div>
+</x-form-page>
 @endsection
 
 @section('js')

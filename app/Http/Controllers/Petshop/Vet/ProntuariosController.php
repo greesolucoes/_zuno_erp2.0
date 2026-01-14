@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Petshop\Vet;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Petshop\StoreProntuarioRequest;
 use App\Http\Requests\Petshop\UpdateProntuarioRequest;
 use App\Models\Cliente;
@@ -29,7 +30,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-class ProntuariosController
+class ProntuariosController extends Controller
 {
     private const ATTACHMENT_STORAGE_DISK = 's3';
     private const ATTACHMENT_DIRECTORY = 'uploads/vet/prontuario/';
@@ -206,7 +207,9 @@ class ProntuariosController
             DB::commit();
         } catch (\Throwable $exception) {
             DB::rollBack();
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
+
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
 
             if ($request->wantsJson()) {
                 return response()->json(['message' => 'Não foi possível registrar o prontuário.'], 500);
@@ -233,7 +236,7 @@ class ProntuariosController
             return response()->json($this->transformRecordForPrefill($record), 201);
         }
 
-        session()->flash('flash_success', 'Prontuário cadastrado com sucesso.');
+        session()->flash("flash_sucesso", "Prontuário cadastrado!");
 
         return redirect()->route('vet.records.edit', [$record->id]);
     }
@@ -313,7 +316,9 @@ class ProntuariosController
             DB::commit();
         } catch (\Throwable $exception) {
             DB::rollBack();
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
+
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
 
             if ($request->wantsJson()) {
                 return response()->json(['message' => 'Não foi possível atualizar o prontuário.'], 500);
@@ -340,7 +345,7 @@ class ProntuariosController
             return response()->json($this->transformRecordForPrefill($prontuario));
         }
 
-        session()->flash('flash_success', 'Prontuário atualizado com sucesso.');
+        session()->flash("flash_sucesso", "Prontuário atualizado!");
 
         return redirect()->route('vet.records.edit', [$prontuario->id]);
     }
@@ -362,7 +367,7 @@ class ProntuariosController
         try {
             $fileName = $this->uploadUtil->uploadFile($file, '/vet/prontuario');
         } catch (\Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             return response()->json([
                 'message' => 'Não foi possível salvar o documento. Tente novamente.',
@@ -414,7 +419,7 @@ class ProntuariosController
         try {
             $this->deleteAttachmentFromStorage($path);
         } catch (\Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             return response()->json([
                 'message' => 'Não foi possível remover o documento. Tente novamente.',
@@ -436,13 +441,25 @@ class ProntuariosController
 
         $this->ensureRecordCompany($prontuario, $companyId);
 
-        $prontuario->delete();
+        try {
+            $prontuario->delete();
+        } catch (\Throwable $exception) {
+            __saveLogError($exception, request()->empresa_id);
+
+            if ($request->wantsJson()) {
+                return response()->json(['message' => 'Não foi possível remover o prontuário.'], 500);
+            }
+
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
+
+            return redirect()->route('vet.records.index');
+        }
 
         if ($request->wantsJson()) {
             return response()->json(['message' => 'Prontuário removido com sucesso.']);
         }
 
-        session()->flash('flash_success', 'Prontuário removido com sucesso.');
+        session()->flash("flash_sucesso", "Prontuário removido!");
 
         return redirect()->route('vet.records.index');
     }
@@ -1431,7 +1448,7 @@ class ProntuariosController
         try {
             return Storage::disk(self::ATTACHMENT_STORAGE_DISK)->url($normalized);
         } catch (\Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             $baseUrl = rtrim((string) env('AWS_URL'), '/');
 
@@ -2720,7 +2737,7 @@ class ProntuariosController
 
     private function getEmpresaId(): ?int
     {
-        return Auth::user()?->empresa?->empresa_id;
+        return request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
     }
 
     private function fetchPatients(?int $companyId): array

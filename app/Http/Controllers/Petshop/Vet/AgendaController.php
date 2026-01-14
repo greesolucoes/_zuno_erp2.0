@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Petshop\Vet;
 
+use App\Http\Controllers\Controller;
 use App\Models\Cliente;
 use App\Models\Petshop\Atendimento;
 use App\Models\Petshop\Medico;
@@ -15,7 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class AgendaController
+class AgendaController extends Controller
 {
     private const VET_SERVICE_CATEGORY = 'ATENDIMENTO VETERINARIO';
 
@@ -98,7 +99,7 @@ class AgendaController
 
     private function getEmpresaId(): ?int
     {
-        return Auth::user()?->empresa?->empresa_id;
+        return request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
     }
 
     private function extractFilters(Request $request): array

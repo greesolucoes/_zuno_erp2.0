@@ -32,20 +32,15 @@ class ValidaAcesso
 			return $next($request);
 		}
 
-		$urip = $_SERVER['REQUEST_URI'];
-		$urip = explode("/", $urip);
-
-		$uri = "/".$urip[1];
-		if(isset($urip[2])){
-			$uri .= "/".$urip[2];
-		}
+		$requestPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '';
+		$uri = $this->permissionKeyFromPath($requestPath);
 		$value = session('user_logged');
 		$usuario = Usuario::find($value['id']);
 		$permissao = json_decode($usuario->permissao);	
 		// dd($permissao);
 		// die();
 		foreach($permissao as $p){
-			if($p == $uri){
+			if($this->permissionKeyFromPath($this->normalizeMenuRoute($p)) == $uri){
 				return $next($request);
 			}
 		}
@@ -67,12 +62,37 @@ class ValidaAcesso
 		foreach($menu as $m){
 			foreach($m['subs'] as $s){
 
-				if($s['rota'] == $uri){
+				if($this->permissionKeyFromPath($this->normalizeMenuRoute($s['rota'] ?? null)) == $uri){
 					$existe = true;
 				}
 			}
 		}
 		return $existe;
+	}
+
+	private function permissionKeyFromPath($path)
+	{
+		if(!is_string($path) || $path == ''){
+			return '';
+		}
+
+		$parts = array_values(array_filter(explode('/', trim($path, '/'))));
+		if(sizeof($parts) == 0){
+			return '/';
+		}
+
+		$base = array_slice($parts, 0, 2);
+		return '/' . implode('/', $base);
+	}
+
+	private function normalizeMenuRoute($value)
+	{
+		if(!is_string($value) || $value == ''){
+			return '';
+		}
+
+		$path = parse_url($value, PHP_URL_PATH);
+		return is_string($path) && $path != '' ? $path : $value;
 	}
 
 }

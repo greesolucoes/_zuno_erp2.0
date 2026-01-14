@@ -212,20 +212,12 @@
     @php($currentVeterinarianId = old('veterinarian_id', $defaultValues['veterinarian_id'] ?? ($selectedVeterinarian['id'] ?? '')))
     @php($selectedVeterinarian = collect($veterinarians)->firstWhere(fn ($vet) => (string) $vet['id'] === (string) $currentVeterinarianId) ?? ($selectedVeterinarian ?? null))
 
-    <div class="container-fluid py-4 vet-vaccination-schedule">
-            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
-                <div>
-                    <h2 class="fw-semibold text-color mb-1">
-                        {{ $formMode === 'edit' ? 'Editar agendamento de vacinação' : 'Agendar nova vacinação' }}
-                    </h2>
-                </div>
-                <div class="d-flex flex-wrap gap-2">
-                    <a href="{{ route('vet.vaccinations.index') }}" class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-2">
-                        <i class="ri-arrow-left-double-fill"></i>Voltar
-                    </a>
-                    
-                </div>
-            </div>
+<x-form-page
+    title="Agendar vacinação"
+    heading="{{ $formMode === 'edit' ? 'Editar agendamento de vacinação' : 'Agendar nova vacinação' }}"
+    :back-url="route('vet.vaccinations.index', ['page' => request()->query('page', 1)])"
+>
+    <div class="vet-vaccination-schedule">
 
         @if (!empty($attendanceContext))
             <div class="alert alert-info d-flex align-items-start gap-3 mb-4">
@@ -978,6 +970,7 @@
             </div>
         </form>
     </div>
+</x-form-page>
 @endsection
 
 @section('js')

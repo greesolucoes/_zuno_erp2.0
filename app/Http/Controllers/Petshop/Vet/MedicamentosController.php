@@ -13,13 +13,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Throwable;
 
 class MedicamentosController extends Controller
 {
     public function index(Request $request): View|ViewFactory
     {
-        $empresaId = Auth::user()?->empresa?->empresa_id;
+        $empresaId = request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
 
         $query = Medicamento::query()
             ->with(['produto.estoque', 'produto.estoqueLocais', 'especies'])
@@ -43,8 +42,12 @@ class MedicamentosController extends Controller
 
         $medicamentos = $query
             ->orderBy('nome_comercial')
-            ->get()
-            ->map(fn(Medicamento $medicamento) => $this->formatarMedicamento($medicamento));
+            ->paginate(env("PAGINACAO"))
+            ->appends($request->all());
+
+        $medicamentos->setCollection(
+            $medicamentos->getCollection()->map(fn (Medicamento $medicamento) => $this->formatarMedicamento($medicamento))
+        );
 
         $opcoesClasseTerapeutica = $this->buscarOpcoesFiltro('classe_terapeutica', 'Todas as categorias');
         $opcoesViaAdministracao = $this->buscarOpcoesFiltro('via_administracao', 'Todas as vias');
@@ -111,7 +114,7 @@ class MedicamentosController extends Controller
 
     public function store(SalvarMedicamentoRequest $request): RedirectResponse
     {
-        $empresaId = Auth::user()?->empresa?->empresa_id;
+        $empresaId = request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
         $produto = Produto::with('medicamentoVeterinario')->findOrFail($request->integer('produto_id'));
 
         if ($produto->medicamentoVeterinario) {
@@ -132,23 +135,23 @@ class MedicamentosController extends Controller
             $produto->save();
 
             DB::commit();
-        } catch (Throwable $exception) {
+            session()->flash("flash_sucesso", "Medicamento cadastrado!");
+        } catch (\Exception $e) {
             DB::rollBack();
-            report($exception);
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
 
             return back()
                 ->withErrors(['store' => 'Não foi possível salvar o medicamento. Tente novamente.'])
                 ->withInput();
         }
 
-        return redirect()
-            ->route('vet.medicines.index')
-            ->with('success', 'Medicamento salvo com sucesso.');
+        return redirect()->route('vet.medicines.index');
     }
 
     public function update(SalvarMedicamentoRequest $request, Medicamento $medicamento): RedirectResponse
     {
-        $empresaId = Auth::user()?->empresa?->empresa_id;
+        $empresaId = request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
         $novoProduto = Produto::with('medicamentoVeterinario')->findOrFail($request->integer('produto_id'));
 
         if ($novoProduto->medicamentoVeterinario && $novoProduto->medicamentoVeterinario->id !== $medicamento->id) {
@@ -180,18 +183,18 @@ class MedicamentosController extends Controller
             $novoProduto->save();
 
             DB::commit();
-        } catch (Throwable $exception) {
+            session()->flash("flash_sucesso", "Medicamento atualizado!");
+        } catch (\Exception $e) {
             DB::rollBack();
-            report($exception);
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
 
             return back()
                 ->withErrors(['update' => 'Não foi possível atualizar o medicamento. Tente novamente.'])
                 ->withInput();
         }
 
-        return redirect()
-            ->route('vet.medicines.index', ['page' => $request->query('page', 1)])
-            ->with('success', 'Medicamento atualizado com sucesso.');
+        return redirect()->route('vet.medicines.index', ['page' => $request->query('page', 1)]);
     }
 
     public function destroy(Medicamento $medicamento): RedirectResponse
@@ -210,17 +213,17 @@ class MedicamentosController extends Controller
             $medicamento->delete();
 
             DB::commit();
-        } catch (Throwable $exception) {
+            session()->flash("flash_sucesso", "Medicamento removido!");
+        } catch (\Exception $e) {
             DB::rollBack();
-            report($exception);
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
 
             return back()
                 ->withErrors(['destroy' => 'Não foi possível excluir o medicamento. Tente novamente.']);
         }
 
-        return redirect()
-            ->route('vet.medicines.index', ['page' => request()->query('page', 1)])
-            ->with('success', 'Medicamento excluído com sucesso.');
+        return redirect()->route('vet.medicines.index', ['page' => request()->query('page', 1)]);
     }
 
     private function montarDadosMedicamento(SalvarMedicamentoRequest $request, ?int $empresaId, int $produtoId): array

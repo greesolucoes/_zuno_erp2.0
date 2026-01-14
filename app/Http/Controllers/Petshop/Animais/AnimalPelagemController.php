@@ -65,7 +65,6 @@ class AnimalPelagemController extends Controller
   public function edit($id)
   {
     $item = Pelagem::findOrFail($id);
-    __validaObjetoEmpresa($item);
 
     return view('petshop.animais.pelagens.edit', compact('item'));
   }
@@ -78,7 +77,6 @@ class AnimalPelagemController extends Controller
 
     try {
       $item = Pelagem::findOrFail($id);
-      __validaObjetoEmpresa($item);
 
       $hasAnotherPelagem = Pelagem::where('nome', $request->nome)
         ->where('empresa_id', $empresaId)
@@ -108,7 +106,6 @@ class AnimalPelagemController extends Controller
   {
     try {
       $item = Pelagem::findOrFail($id);
-      __validaObjetoEmpresa($item);
 
       DB::transaction(function () use ($item) {
         $item->delete();

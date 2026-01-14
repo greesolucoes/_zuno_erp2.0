@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Petshop\Vet;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Petshop\StoreExamTypeRequest;
 use App\Http\Requests\Petshop\StoreVetExamRequest;
 use App\Http\Requests\Petshop\UpdateVetExamCollectionRequest;
@@ -23,11 +24,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class ExamesController
+class ExamesController extends Controller
 {
     protected UploadUtil $uploadUtil;
 
@@ -271,9 +273,9 @@ class ExamesController
             $redirectParams['attendance'] = $data['attendance'];
         }
 
-        return redirect()
-            ->route('vet.exams.report', $redirectParams)
-            ->with('success', 'Laudo atualizado com sucesso.');
+        session()->flash("flash_sucesso", "Laudo atualizado!");
+
+        return redirect()->route('vet.exams.report', $redirectParams);
     }
 
     public function store(StoreVetExamRequest $request): RedirectResponse
@@ -341,12 +343,15 @@ class ExamesController
                 'exam_id' => $exam->id,
             ], fn ($value) => $value !== null && $value !== '' && $value !== 0);
 
+            session()->flash("flash_sucesso", $message);
+
             return redirect()
-                ->route('vet.vaccinations.create', $redirectParams)
-                ->with('success', $message);
+                ->route('vet.vaccinations.create', $redirectParams);
         }
 
-        return redirect()->route('vet.exams.index')->with('success', $message);
+        session()->flash("flash_sucesso", $message);
+
+        return redirect()->route('vet.exams.index');
     }
 
     public function update(UpdateVetExamCollectionRequest $request, VetExame $exam): RedirectResponse
@@ -373,9 +378,9 @@ class ExamesController
 
         $this->storeCollectionAttachments($exam, (array) $request->file('collection_attachments', []));
 
-        return redirect()
-            ->route('vet.exams.index')
-            ->with('success', 'Informações da coleta atualizadas com sucesso.');
+        session()->flash("flash_sucesso", "Informações da coleta atualizadas!");
+
+        return redirect()->route('vet.exams.index');
     }
 
     public function types(): View|ViewFactory
@@ -404,15 +409,24 @@ class ExamesController
 
         $data = $request->validated();
 
-        Exame::create([
-            'empresa_id' => $companyId,
-            'nome' => $data['nome'],
-            'descricao' => $data['descricao'] ?? null,
-        ]);
+        try {
+            DB::transaction(function () use ($companyId, $data) {
+                Exame::create([
+                    'empresa_id' => $companyId,
+                    'nome' => $data['nome'],
+                    'descricao' => $data['descricao'] ?? null,
+                ]);
+            });
 
-        return redirect()
-            ->route('vet.exams.types')
-            ->with('flash_success', 'Tipo de exame cadastrado com sucesso.');
+            session()->flash("flash_sucesso", "Tipo de exame cadastrado!");
+        } catch (\Exception $e) {
+            session()->flash("flash_erro", "Algo deu errado: " . $e->getMessage());
+            __saveLogError($e, request()->empresa_id);
+
+            return redirect()->back()->withInput();
+        }
+
+        return redirect()->route('vet.exams.types');
     }
 
     public function destroy(VetExame $exam): RedirectResponse
@@ -430,21 +444,22 @@ class ExamesController
         try {
             $exam->delete();
         } catch (\Throwable $exception) {
-            report($exception);
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
+            __saveLogError($exception, request()->empresa_id);
 
             return redirect()
                 ->route('vet.exams.index')
-                ->with('error', 'Não foi possível remover a solicitação de exame. Tente novamente.');
+                ->withErrors(['destroy' => 'Não foi possível remover a solicitação de exame. Tente novamente.']);
         }
 
-        return redirect()
-            ->route('vet.exams.index')
-            ->with('success', 'Solicitação de exame removida com sucesso.');
+        session()->flash("flash_sucesso", "Solicitação de exame removida!");
+
+        return redirect()->route('vet.exams.index');
     }
 
     private function getEmpresaId(): ?int
     {
-        return Auth::user()?->empresa?->empresa_id;
+        return request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
     }
 
     private function applySearchFilter(Builder $query, string $term): void
@@ -622,7 +637,7 @@ class ExamesController
             try {
                 $storedFileName = $this->uploadUtil->uploadFile($file, '/vet/solicitacao_exames');
             } catch (\Throwable $exception) {
-                report($exception);
+                __saveLogError($exception, request()->empresa_id);
 
                 return;
             }
@@ -656,7 +671,7 @@ class ExamesController
             try {
                 $storedFileName = $this->uploadUtil->uploadFile($file, '/vet/solicitacao_exames');
             } catch (\Throwable $exception) {
-                report($exception);
+                __saveLogError($exception, request()->empresa_id);
 
                 return;
             }
@@ -812,7 +827,7 @@ class ExamesController
         try {
             $disk = Storage::disk(self::ATTACHMENT_STORAGE_DISK);
         } catch (\Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             abort(500, 'Não foi possível acessar o documento solicitado.');
         }
@@ -820,7 +835,7 @@ class ExamesController
         try {
             $exists = $disk->exists($normalizedPath);
         } catch (\Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             abort(500, 'Não foi possível verificar o documento solicitado.');
         }
@@ -832,7 +847,7 @@ class ExamesController
         try {
             $stream = $disk->readStream($normalizedPath);
         } catch (\Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             abort(500, 'Não foi possível carregar o documento solicitado.');
         }
@@ -866,7 +881,7 @@ class ExamesController
             try {
                 $mimeType = $disk->mimeType($normalizedPath);
             } catch (\Throwable $exception) {
-                report($exception);
+                __saveLogError($exception, request()->empresa_id);
             }
         }
 
@@ -878,7 +893,7 @@ class ExamesController
             try {
                 $size = $disk->size($normalizedPath) ?: null;
             } catch (\Throwable $exception) {
-                report($exception);
+                __saveLogError($exception, request()->empresa_id);
             }
         }
 
@@ -919,7 +934,7 @@ class ExamesController
                 'attachment' => $attachmentId,
             ]);
         } catch (\Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             return null;
         }
@@ -967,7 +982,7 @@ class ExamesController
         try {
             return Storage::disk(self::ATTACHMENT_STORAGE_DISK)->url($normalized);
         } catch (\Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             $baseUrl = rtrim((string) env('AWS_URL'), '/');
 

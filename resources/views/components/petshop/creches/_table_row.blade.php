@@ -79,6 +79,9 @@
                 <ul class="dropdown-menu" aria-labelledby="dropdownChecklist{{ $item->id }}">
                     <li><a class="dropdown-item" href="{{ route('creches.checklist.create', [$item->id, 'tipo' => 'entrada']) }}">Checklist de entrada</a></li>
                     <li><a class="dropdown-item" href="{{ route('creches.checklist.create', [$item->id, 'tipo' => 'saida']) }}">Checklist de saída</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ route('creches.checklist.imprimir', [$item->id, 'tipo' => 'entrada']) }}" target="_blank">Imprimir checklist de entrada</a></li>
+                    <li><a class="dropdown-item" href="{{ route('creches.checklist.imprimir', [$item->id, 'tipo' => 'saida']) }}" target="_blank">Imprimir checklist de saída</a></li>
                 </ul>
             </div>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Petshop\Vet;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Petshop\StorePrescricaoRequest;
 use App\Models\Cliente;
 use App\Models\Petshop\Alergia;
@@ -30,7 +31,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Throwable;
 
-class PrescricoesController
+class PrescricoesController extends Controller
 {
     private const ATTACHMENT_DIRECTORY = 'uploads/vet/prescricao/';
     private const ATTACHMENT_STORAGE_DISK = 's3';
@@ -221,7 +222,9 @@ class PrescricoesController
             ], 201);
         }
 
-        return redirect()->route('vet.prescriptions.index')->with('success', $message);
+        session()->flash("flash_sucesso", $message);
+
+        return redirect()->route('vet.prescriptions.index');
     }
 
     public function storeAttachment(Request $request): JsonResponse
@@ -241,7 +244,7 @@ class PrescricoesController
         try {
             $fileName = $this->uploadUtil->uploadFile($file, '/vet/prescricao');
         } catch (Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             return response()->json([
                 'message' => 'Não foi possível salvar o documento. Tente novamente.',
@@ -254,7 +257,7 @@ class PrescricoesController
         try {
             $url = Storage::disk(self::ATTACHMENT_STORAGE_DISK)->url($normalizedPath);
         } catch (Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             $baseUrl = rtrim((string) env('AWS_URL'), '/');
             $url = $baseUrl ? $baseUrl . '/' . $normalizedPath : null;
@@ -300,7 +303,7 @@ class PrescricoesController
         try {
             $this->deleteAttachmentFromStorage($path);
         } catch (Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             return response()->json([
                 'message' => 'Não foi possível remover o documento. Tente novamente.',
@@ -370,7 +373,9 @@ class PrescricoesController
             ]);
         }
 
-        return redirect()->route('vet.prescriptions.index')->with('success', $message);
+        session()->flash("flash_sucesso", $message);
+
+        return redirect()->route('vet.prescriptions.index');
     }
 
     public function destroy(Request $request, int $prescriptionId): RedirectResponse|JsonResponse
@@ -388,7 +393,7 @@ class PrescricoesController
         try {
             $prescription->delete();
         } catch (Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             $errorMessage = 'Não foi possível remover a prescrição no momento.';
 
@@ -396,7 +401,7 @@ class PrescricoesController
                 return response()->json(['message' => $errorMessage], 500);
             }
 
-            session()->flash('flash_error', $errorMessage);
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
 
             return redirect()->route('vet.prescriptions.index');
         }
@@ -407,14 +412,14 @@ class PrescricoesController
             return response()->json(['message' => $successMessage]);
         }
 
-        session()->flash('flash_success', $successMessage);
+        session()->flash("flash_sucesso", $successMessage);
 
         return redirect()->route('vet.prescriptions.index');
     }
 
     private function getEmpresaId(): ?int
     {
-        return Auth::user()?->empresa?->empresa_id;
+        return request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
     }
 
     private function sanitizeTemplateFields(mixed $fields): array

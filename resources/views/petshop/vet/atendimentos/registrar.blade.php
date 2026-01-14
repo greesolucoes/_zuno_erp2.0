@@ -339,18 +339,7 @@
         $initialTutorContact = old('contato_tutor', $initialFormData['contato_tutor'] ?? null);
         $initialTutorEmail = old('email_tutor', $initialFormData['email_tutor'] ?? null);
     @endphp
-
-    <div class="card shadow-sm">
-        <div class="card-header d-flex align-items-center justify-content-between gap-2 flex-wrap">
-            <h3 class="text-color mb-0">{{ $pageTitle }}</h3>
-
-            <a href="{{ $backUrl }}" class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-2">
-                <i class="ri-arrow-left-double-fill"></i>
-                Voltar
-            </a>
-        </div>
-
-        <div class="card-body">
+<x-form-page :title="$pageTitle" :back-url="$backUrl">
             @if ($errors->has('general'))
                 <div class="alert alert-danger">{{ $errors->first('general') }}</div>
             @endif
@@ -382,14 +371,13 @@
                 ])
 
                 <div class="d-flex flex-wrap justify-content-end gap-2 mt-4">
-                    <button type="submit" name="action" value="finalize" class="btn btn-success px-5">
+                    <button type="submit" name="action" value="finalize" class="btn btn-primary px-4">
                         Salvar
                     </button>
                    
                 </div>
             {!! Form::close() !!}
-        </div>
-    </div>
+</x-form-page>
 @endsection
 
 @section('js')

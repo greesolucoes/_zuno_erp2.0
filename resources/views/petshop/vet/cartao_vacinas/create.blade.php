@@ -107,8 +107,12 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid px-xxl-5 px-xl-4 px-lg-4 px-md-3 px-2 py-4">
-        <div class="vaccine-form__container mb-4">
+<x-form-page
+    title="Novo Cartão Digital de Vacinação"
+    heading="Criar cartão digital de vacinação"
+    :back-url="route('vet.vaccine-cards.index', ['page' => request()->query('page', 1)])"
+>
+        <div class="vaccine-form__container">
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                 <div>
                     <span class="vaccine-form__badge mb-3">
@@ -367,5 +371,5 @@
                 </div>
             </form>
         </div>
-    </div>
+</x-form-page>
 @endsection

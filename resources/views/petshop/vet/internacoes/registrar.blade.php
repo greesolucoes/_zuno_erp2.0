@@ -100,19 +100,12 @@
 @endphp
 
 @section('content')
-    <div class="container-fluid py-4">
-        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
-            <div>
-                <h2 class="text-color mb-1">{{ $pageHeading }}</h2>
-                <p class="text-muted mb-0">{{ $pageDescription }}</p>
-            </div>
-            <div class="d-flex gap-2">
-                <a href="{{ route('vet.hospitalizations.index') }}" class="btn btn-outline-secondary">
-                    <i class="ri-arrow-left-line me-1"></i>
-                    Voltar
-                </a>
-            </div>
-        </div>
+<x-form-page
+    :title="$pageTitle"
+    :heading="$pageHeading"
+    :back-url="route('vet.hospitalizations.index', ['page' => request()->query('page', 1)])"
+>
+        <p class="text-muted mb-4">{{ $pageDescription }}</p>
 
         @if ($attendanceContext)
             <div class="alert alert-info d-flex align-items-start gap-3 mb-4">
@@ -358,7 +351,7 @@
                 </div>
             </div>
         </form>
-    </div>
+</x-form-page>
 @endsection
 
 @push('scripts')

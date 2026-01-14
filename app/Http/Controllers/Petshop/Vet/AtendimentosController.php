@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Petshop\Vet;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Petshop\StoreAtendimentoFaturamentoRequest;
 use App\Http\Requests\Petshop\StoreAtendimentoRequest;
 use App\Http\Requests\Petshop\UpdateAtendimentoRequest;
@@ -37,7 +38,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class AtendimentosController
+class AtendimentosController extends Controller
 {
     protected UploadUtil $uploadUtil;
 
@@ -98,7 +99,7 @@ class AtendimentosController
             ->orderByDesc('data_atendimento')
             ->orderByDesc('horario')
             ->orderByDesc('id')
-            ->paginate(15);
+            ->paginate(env("PAGINACAO"));
 
         $encounterCollection = $paginator->getCollection()->map(function (Atendimento $atendimento) {
             return $this->mapEncounter($atendimento);
@@ -505,7 +506,7 @@ class AtendimentosController
             DB::commit();
         } catch (\Throwable $exception) {
             DB::rollBack();
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             return response()->json([
                 'message' => 'Não foi possível salvar o faturamento do atendimento.',
@@ -708,7 +709,8 @@ class AtendimentosController
             DB::commit();
         } catch (\Throwable $exception) {
             DB::rollBack();
-            report($exception);
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
+            __saveLogError($exception, request()->empresa_id);
 
             return redirect()
                 ->back()
@@ -716,7 +718,7 @@ class AtendimentosController
                 ->withErrors(['general' => 'Não foi possível salvar o atendimento. Tente novamente.']);
         }
 
-        session()->flash('flash_success', 'Atendimento cadastrado com sucesso.');
+        session()->flash("flash_sucesso", "Atendimento cadastrado!");
 
         return redirect()->route('vet.atendimentos.edit', [$atendimento->id]);
     }
@@ -791,7 +793,8 @@ class AtendimentosController
             DB::commit();
         } catch (\Throwable $exception) {
             DB::rollBack();
-            report($exception);
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
+            __saveLogError($exception, request()->empresa_id);
 
             return redirect()
                 ->back()
@@ -799,7 +802,7 @@ class AtendimentosController
                 ->withErrors(['general' => 'Não foi possível atualizar o atendimento. Tente novamente.']);
         }
 
-        session()->flash('flash_success', 'Atendimento atualizado com sucesso.');
+        session()->flash("flash_sucesso", "Atendimento atualizado!");
 
         return redirect()->route('vet.atendimentos.edit', [$atendimento->id]);
     }
@@ -822,9 +825,9 @@ class AtendimentosController
         if ($status !== $atendimento->status) {
             $atendimento->forceFill(['status' => $status])->save();
 
-            session()->flash('flash_success', 'Status do atendimento atualizado para ' . $statusLabel . '.');
+            session()->flash("flash_sucesso", 'Status do atendimento atualizado para ' . $statusLabel . '.');
         } else {
-            session()->flash('flash_success', 'O atendimento já está com status ' . $statusLabel . '.');
+            session()->flash("flash_sucesso", 'O atendimento já está com status ' . $statusLabel . '.');
         }
 
         return redirect()->route('vet.atendimentos.edit', [$atendimento->id]);
@@ -854,21 +857,20 @@ class AtendimentosController
             DB::commit();
         } catch (\Throwable $exception) {
             DB::rollBack();
-            report($exception);
-
-            session()->flash('flash_error', 'Não foi possível remover o atendimento.');
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
+            __saveLogError($exception, request()->empresa_id);
 
             return redirect()->route('vet.atendimentos.index');
         }
 
-        session()->flash('flash_success', 'Atendimento removido com sucesso.');
+        session()->flash("flash_sucesso", "Atendimento removido!");
 
         return redirect()->route('vet.atendimentos.index');
     }
 
     private function getEmpresaId(): ?int
     {
-        return Auth::user()?->empresa?->empresa_id;
+        return request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
     }
 
     private function ensureEmpresa(Atendimento $atendimento, int $empresaId): void
@@ -2238,7 +2240,7 @@ class AtendimentosController
             try {
                 $this->deleteAttachmentFromStorage($path);
             } catch (\Throwable $exception) {
-                report($exception);
+                __saveLogError($exception, request()->empresa_id);
             }
         }
 
@@ -2247,7 +2249,7 @@ class AtendimentosController
 
     public function patientsOptions(Request $request): JsonResponse
     {
-        $empresaId = Auth::user()?->empresa?->empresa_id;
+        $empresaId = request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
 
         if (!$empresaId) {
             return response()->json([
@@ -2315,7 +2317,7 @@ class AtendimentosController
 
     public function patientDetails(Request $request, Animal $animal): JsonResponse
     {
-        $empresaId = Auth::user()?->empresa?->empresa_id;
+        $empresaId = request()->empresa_id ?: Auth::user()?->empresa?->empresa_id;
 
         if (!$empresaId || $animal->empresa_id !== $empresaId) {
             abort(404);
@@ -2387,7 +2389,7 @@ class AtendimentosController
         try {
             $fileName = $this->uploadUtil->uploadFile($file, '/vet/atendimento');
         } catch (\Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             return response()->json([
                 'message' => 'Não foi possível salvar o documento. Tente novamente.',
@@ -2437,7 +2439,7 @@ class AtendimentosController
         try {
             $this->deleteAttachmentFromStorage($path);
         } catch (\Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             return response()->json([
                 'message' => 'Não foi possível remover o documento. Tente novamente.',
@@ -2492,7 +2494,7 @@ class AtendimentosController
         try {
             return Storage::disk(self::ATTACHMENT_STORAGE_DISK)->url($normalized);
         } catch (\Throwable $exception) {
-            report($exception);
+            __saveLogError($exception, request()->empresa_id);
 
             $baseUrl = rtrim((string) env('AWS_URL'), '/');
 

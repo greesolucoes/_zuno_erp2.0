@@ -260,29 +260,24 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid vet-exams-report">
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-            <div>
-                <span class="badge bg-info-subtle text-info vet-exams-report__badge">Emitir laudo</span>
-                <h2 class="text-color mb-1">{{ $exam->examType?->nome ?? 'Laudo de exame' }}</h2>
-                <p class="text-muted mb-0">
-                    Paciente: {{ $exam->animal?->nome ?? '—' }}
-                    @if ($exam->animal?->cliente)
-                        • Tutor: {{ $exam->animal->cliente->razao_social }}
-                    @endif
-                </p>
-            </div>
-            <div class="d-flex flex-wrap gap-2">
-                <a href="{{ $backUrl }}" class="btn btn-light">
-                    <i class="ri-arrow-left-line"></i>
-                    Voltar para exames
-                </a>
-                <a href="{{ route('vet.exams.collect', $exam) }}" class="btn btn-outline-primary">
-                    <i class="ri-file-add-line"></i>
-                    Ver coleta
-                </a>
-            </div>
+<x-form-page
+    title="Emitir laudo"
+    heading="{{ $exam->examType?->nome ?? 'Laudo de exame' }}"
+    :back-url="$backUrl"
+>
+    <div class="vet-exams-report">
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{{ route('vet.exams.collect', $exam) }}" class="btn btn-outline-primary btn-sm">
+                <i class="ri-file-add-line"></i>
+                Ver coleta
+            </a>
         </div>
+        <p class="text-muted mb-4">
+            Paciente: {{ $exam->animal?->nome ?? '—' }}
+            @if ($exam->animal?->cliente)
+                • Tutor: {{ $exam->animal->cliente->razao_social }}
+            @endif
+        </p>
 
         <div class="vet-exams-report__summary-card p-4 mb-4">
             <div class="row g-4">
@@ -553,6 +548,7 @@
             </div>
         @endif
     </div>
+</x-form-page>
 @endsection
 
 @section('js')

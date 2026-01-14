@@ -77,7 +77,6 @@ class AnimalRacaController extends Controller
   public function edit(Request $request, $id)
   {
     $item = Raca::findOrFail($id);
-    __validaObjetoEmpresa($item);
 
     $especies = Especie::where('empresa_id', request()->empresa_id)->get();
 
@@ -92,7 +91,6 @@ class AnimalRacaController extends Controller
 
     try {
       $item = Raca::findOrFail($id);
-      __validaObjetoEmpresa($item);
 
       $hasAnotherRaca = Raca::where('nome', $request->nome)
         ->where('empresa_id', $empresaId)
@@ -124,7 +122,6 @@ class AnimalRacaController extends Controller
   {
     try {
       $item = Raca::findOrFail($id);
-      __validaObjetoEmpresa($item);
 
       DB::transaction(function () use ($item) {
         $item->delete();

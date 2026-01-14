@@ -430,21 +430,12 @@
         $initialMedicationsList = $initialPrescription['medications'] ?? ($initialTemplate['medications'] ?? []);
     @endphp
 
-    <div class="container-fluid py-4 vet-prescricao-form">
-        <div class="d-flex flex-wrap flex-md-nowrap justify-content-between align-items-start gap-3 mb-4">
-            <div>
-                <h2 class="text-color mb-1">{{ $isEditing ? 'Editar Prescrição' : 'Emitir Prescrição' }}</h2>
-            </div>
-            <div class="d-flex flex-wrap gap-2">
-                <a
-                    href="{{ route('vet.prescriptions.index', ['page' => request()->query('page', 1)]) }}"
-                    class="btn btn-danger btn-sm d-flex align-items-center gap-1 px-2"
-                >
-                    <i class="ri-arrow-left-double-fill"></i>
-                    Voltar
-                </a>              
-            </div>
-        </div>
+<x-form-page
+    title="Emitir prescrição veterinária"
+    heading="{{ $isEditing ? 'Editar Prescrição' : 'Emitir Prescrição' }}"
+    :back-url="route('vet.prescriptions.index', ['page' => request()->query('page', 1)])"
+>
+    <div class="vet-prescricao-form">
 
         @if (!empty($attendanceContext))
             <div class="alert alert-info d-flex align-items-start gap-3 mb-4">
@@ -1333,7 +1324,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mt-4">
-                        <button type="submit" id="vetPrescriptionSubmit" class="btn btn-success px-5">
+                        <button type="submit" id="vetPrescriptionSubmit" class="btn btn-primary px-4">
                             Salvar
                         </button>
                     </div>
@@ -1341,6 +1332,7 @@
             </div>
         </form>
     </div>
+</x-form-page>
 @endsection
 
 @section('js')

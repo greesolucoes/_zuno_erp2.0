@@ -815,8 +815,16 @@ class Menu
 						'rota' => route('perfilAcesso.index')
 					],
 					[
+						'nome' => 'Perfis de Acesso - Cadastro',
+						'rota' => route('perfilAcesso.create')
+					],
+					[
 						'nome' => 'Empresas',
 						'rota' => route('empresas.index')
+					],
+					[
+						'nome' => 'Empresas - Detalhes',
+						'rota' => route('empresas.detalhes', request()->empresa_id ?? 1)
 					],
 					[
 						'nome' => 'Planos',
