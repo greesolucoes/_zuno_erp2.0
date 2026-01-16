@@ -50,12 +50,6 @@
                             {!! Form::text('codigo', 'Código')->placeholder('Digite o código aqui...') !!}
                         </div>
 
-                        @isset($cargos)
-                            <div class="col-md-4">
-                                {!! Form::select('cargo_id', 'Cargo', ['' => 'Selecione'] + $cargos->pluck('nome', 'id')->all())->attrs(['class' => 'form-select'])->required() !!}
-                            </div>
-                        @endisset
-
                         <div class="col-md-3">
                             {!! Form::select('cidade_id', 'Cidade')
                                 ->attrs(['class' => 'select2 cidade_id2'])

@@ -281,38 +281,59 @@
 @endsection
 
 @section('content')
-<div class="container-fluid px-0 px-md-2">
-    <div class="card pet-crm-header mb-4 shadow-lg">
-        <div class="card-body d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
-            <div>
-                <h4 class="mb-1 fw-bold">Linha do tempo médica de {{ $animal->nome }}</h4>
-                <div class="pet-crm-header__meta small text-white-50 d-flex flex-wrap gap-2">
-                    @if($animal->especie?->nome)
-                        <span><i class="ri-paw-line me-1"></i>{{ $animal->especie->nome }}</span>
-                    @endif
-                    @if($animal->raca?->nome)
-                        <span><i class="ri-price-tag-3-line me-1"></i>{{ $animal->raca->nome }}</span>
-                    @endif
-                    @if(!is_null($animal->idade))
-                        <span><i class="ri-hourglass-line me-1"></i>{{ $animal->idade }} anos</span>
-                    @endif
-                    @if($animal->cliente)
-                        <span><i class="ri-user-heart-line me-1"></i>Tutor: {{ $animal->cliente->razao_social ?? $animal->cliente->nome_fantasia }}</span>
-                    @endif
+@php
+    $page = request()->query('page', 1);
+@endphp
+
+<div class="page-content">
+    <div class="card border-top border-0 border-4 border-primary">
+        <div class="card-body p-5">
+            <div class="page-breadcrumb d-sm-flex align-items-center mb-3">
+                <div class="ms-auto">
+                    <a href="{{ route('animais.pacientes.index', ['page' => $page]) }}" type="button" class="btn btn-light btn-sm">
+                        <i class="bx bx-arrow-back"></i> Voltar
+                    </a>
                 </div>
             </div>
-            <div class="pet-crm-header__year-selector d-flex flex-wrap justify-content-lg-end gap-2">
-                @foreach($availableYears as $yearOption)
-                    <a
-                        href="{{ route('animais.pacientes.crm', [$animal->id, 'year' => $yearOption]) }}"
-                        class="btn btn-sm {{ (int) $yearOption === (int) $selectedYear ? 'btn-light text-primary shadow-sm' : 'btn-outline-light' }}"
-                    >
-                        {{ $yearOption }}
-                    </a>
-                @endforeach
+
+            <div class="card-title d-flex align-items-center">
+                <h5 class="mb-0 text-primary">CRM do Pet</h5>
             </div>
-        </div>
-    </div>
+            <hr>
+
+            <div class="pl-lg-4">
+                <div class="container-fluid px-0 px-md-2">
+                    <div class="card pet-crm-header mb-4 shadow-lg">
+                        <div class="card-body d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+                            <div>
+                                <h4 class="mb-1 fw-bold">Linha do tempo médica de {{ $animal->nome }}</h4>
+                                <div class="pet-crm-header__meta small text-white-50 d-flex flex-wrap gap-2">
+                                    @if($animal->especie?->nome)
+                                        <span><i class="ri-paw-line me-1"></i>{{ $animal->especie->nome }}</span>
+                                    @endif
+                                    @if($animal->raca?->nome)
+                                        <span><i class="ri-price-tag-3-line me-1"></i>{{ $animal->raca->nome }}</span>
+                                    @endif
+                                    @if(!is_null($animal->idade))
+                                        <span><i class="ri-hourglass-line me-1"></i>{{ $animal->idade }} anos</span>
+                                    @endif
+                                    @if($animal->cliente)
+                                        <span><i class="ri-user-heart-line me-1"></i>Tutor: {{ $animal->cliente->razao_social ?? $animal->cliente->nome_fantasia }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="pet-crm-header__year-selector d-flex flex-wrap justify-content-lg-end gap-2">
+                                @foreach($availableYears as $yearOption)
+                                    <a
+                                        href="{{ route('animais.pacientes.crm', [$animal->id, 'year' => $yearOption, 'page' => $page]) }}"
+                                        class="btn btn-sm {{ (int) $yearOption === (int) $selectedYear ? 'btn-light text-primary shadow-sm' : 'btn-outline-light' }}"
+                                    >
+                                        {{ $yearOption }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
 
     <div class="row g-4">
         <div class="col-12 col-xl-4 col-xxl-3">
@@ -498,6 +519,10 @@
                     </div>
                 @endforeach
             @endif
+        </div>
+    </div>
+</div>
+            </div>
         </div>
     </div>
 </div>

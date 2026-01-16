@@ -2,8 +2,7 @@
     $selectedEmployee = old('funcionario_id', optional($medico ?? null)->funcionario_id);
     $statusValue = old('status', optional($medico ?? null)->status ?? 'ativo');
     $employeeOptions = ['' => 'Selecione um colaborador'] + $employees->mapWithKeys(function ($employee) {
-        $cargo = $employee->cargo?->nome ? ' - ' . $employee->cargo->nome : '';
-        return [$employee->id => trim($employee->nome . $cargo)];
+        return [$employee->id => $employee->nome];
     })->toArray();
 @endphp
 

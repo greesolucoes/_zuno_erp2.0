@@ -3,10 +3,6 @@
 namespace App\Http\Controllers\Petshop\Vet;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Petshop\StoreAtendimentoFaturamentoRequest;
-use App\Http\Requests\Petshop\StoreAtendimentoRequest;
-use App\Http\Requests\Petshop\UpdateAtendimentoRequest;
-use App\Http\Requests\Petshop\UpdateAtendimentoStatusRequest;
 use App\Models\Cliente;
 use App\Models\Petshop\Animal;
 use App\Models\Petshop\Checklist;
@@ -37,6 +33,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class AtendimentosController extends Controller
 {
@@ -322,10 +319,8 @@ class AtendimentosController extends Controller
         ]);
     }
 
-    public function storeBilling(
-        StoreAtendimentoFaturamentoRequest $request,
-        Atendimento $atendimento
-    ): JsonResponse {
+    public function storeBilling(Request $request, Atendimento $atendimento): JsonResponse
+    {
         $empresaId = $this->getEmpresaId();
 
         if (!$empresaId) {
@@ -334,7 +329,9 @@ class AtendimentosController extends Controller
 
         $this->ensureEmpresa($atendimento, $empresaId);
 
-        $data = $request->validated();
+        $this->validateAtendimentoBillingPayload($request);
+
+        $data = $request->all();
 
         $serviceIds = collect($data['services'])
             ->pluck('servico_id')
@@ -691,7 +688,7 @@ class AtendimentosController extends Controller
         ));
     }
 
-    public function store(StoreAtendimentoRequest $request)
+    public function store(Request $request)
     {
         $empresaId = $this->getEmpresaId();
 
@@ -699,7 +696,9 @@ class AtendimentosController extends Controller
             abort(403, 'Empresa não localizada para o usuário autenticado.');
         }
 
-        $data = $request->validated();
+        $this->validateAtendimentoPayload($request);
+
+        $data = $request->all();
 
         try {
             DB::beginTransaction();
@@ -772,7 +771,7 @@ class AtendimentosController extends Controller
         ));
     }
 
-    public function update(UpdateAtendimentoRequest $request, Atendimento $atendimento)
+    public function update(Request $request, Atendimento $atendimento)
     {
         $empresaId = $this->getEmpresaId();
 
@@ -782,7 +781,9 @@ class AtendimentosController extends Controller
 
         $this->ensureEmpresa($atendimento, $empresaId);
 
-        $data = $request->validated();
+        $this->validateAtendimentoPayload($request);
+
+        $data = $request->all();
 
         try {
             DB::beginTransaction();
@@ -822,7 +823,7 @@ class AtendimentosController extends Controller
         return redirect()->route('vet.atendimentos.edit', [$atendimento->id]);
     }
 
-    public function updateStatus(UpdateAtendimentoStatusRequest $request, Atendimento $atendimento)
+    public function updateStatus(Request $request, Atendimento $atendimento)
     {
         $empresaId = $this->getEmpresaId();
 
@@ -832,7 +833,9 @@ class AtendimentosController extends Controller
 
         $this->ensureEmpresa($atendimento, $empresaId);
 
-        $data = $request->validated();
+        $this->validateAtendimentoStatusPayload($request);
+
+        $data = $request->all();
         $status = $data['status'];
 
         $statusLabel = Atendimento::statusMeta()[$status]['label'] ?? Str::title(str_replace('_', ' ', $status));
@@ -2689,5 +2692,77 @@ class AtendimentosController extends Controller
         ]);
 
         return $parts ? implode(' • ', $parts) : null;
+    }
+
+    private function validateAtendimentoPayload(Request $request): void
+    {
+        $rules = [
+            'paciente_id' => ['required', 'integer', 'exists:petshop_animais,id'],
+            'tutor_id' => ['nullable', 'integer'],
+            'tutor_nome' => ['nullable', 'string', 'max:255'],
+            'contato_tutor' => ['nullable', 'string', 'max:30'],
+            'email_tutor' => ['nullable', 'email', 'max:255'],
+            'veterinario_id' => ['nullable', 'integer'],
+            'sala_id' => ['nullable', 'integer'],
+            'servico_id' => ['nullable', 'integer'],
+            'data_atendimento' => ['nullable', 'date'],
+            'horario' => ['nullable', 'string', 'max:10'],
+            'tipo_atendimento' => ['nullable', 'string', 'max:255'],
+            'motivo_visita' => ['nullable', 'string'],
+            'peso' => ['nullable'],
+            'temperatura' => ['nullable'],
+            'frequencia_cardiaca' => ['nullable'],
+            'frequencia_respiratoria' => ['nullable'],
+            'observacoes_triagem' => ['nullable', 'string'],
+            'checklists' => ['nullable', 'array'],
+            'quick_attachments' => ['nullable', 'array'],
+            'action' => ['nullable', 'string', 'max:50'],
+        ];
+
+        $messages = [
+            'paciente_id.required' => 'Selecione um paciente.',
+            'paciente_id.exists' => 'Paciente inválido.',
+        ];
+
+        $this->validate($request, $rules, $messages);
+    }
+
+    private function validateAtendimentoBillingPayload(Request $request): void
+    {
+        $rules = [
+            'services' => ['required', 'array', 'min:1'],
+            'services.*.servico_id' => ['required', 'integer'],
+            'services.*.quantidade' => ['nullable'],
+            'services.*.valor' => ['nullable'],
+            'products' => ['nullable', 'array'],
+            'products.*.produto_id' => ['required', 'integer'],
+            'products.*.quantidade' => ['nullable'],
+            'products.*.valor' => ['nullable'],
+            'observacoes' => ['nullable', 'string'],
+        ];
+
+        $messages = [
+            'services.required' => 'Informe ao menos um serviço.',
+            'services.min' => 'Informe ao menos um serviço.',
+            'services.*.servico_id.required' => 'Informe o serviço.',
+        ];
+
+        $this->validate($request, $rules, $messages);
+    }
+
+    private function validateAtendimentoStatusPayload(Request $request): void
+    {
+        $statusOptions = array_keys(Atendimento::statusMeta());
+
+        $rules = [
+            'status' => ['required', Rule::in($statusOptions)],
+        ];
+
+        $messages = [
+            'status.required' => 'Informe o status.',
+            'status.in' => 'Status inválido.',
+        ];
+
+        $this->validate($request, $rules, $messages);
     }
 }

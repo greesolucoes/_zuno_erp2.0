@@ -18,7 +18,6 @@ class FuncionarioController extends Controller
             ->orderBy('nome')
             ->get(['id', 'nome'])
             ->map(function ($item) {
-                $item->cargo = $item->cargo ?? '';
                 return $item;
             })
             ->values();

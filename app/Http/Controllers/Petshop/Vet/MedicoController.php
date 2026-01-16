@@ -18,7 +18,7 @@ class MedicoController extends Controller
     {
         $empresaId = $this->getEmpresaId();
 
-        $medicos = Medico::with(['funcionario.cargo'])
+        $medicos = Medico::with(['funcionario'])
             ->where('empresa_id', $empresaId)
             ->when($request->filled('search'), function ($query) use ($request) {
                 $term = $request->string('search')->toString();
@@ -53,7 +53,6 @@ class MedicoController extends Controller
         $employees = Funcionario::query()
             ->where('empresa_id', $empresaId)
             ->whereNotIn('id', $occupiedEmployeeIds)
-            ->with('cargo')
             ->orderBy('nome')
             ->get();
 
@@ -109,7 +108,6 @@ class MedicoController extends Controller
         $employees = Funcionario::query()
             ->where('empresa_id', $empresaId)
             ->whereNotIn('id', $occupiedEmployeeIds)
-            ->with('cargo')
             ->orderBy('nome')
             ->get();
 

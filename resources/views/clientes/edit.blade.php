@@ -27,3 +27,38 @@
 	</div>
 </div>
 @endsection
+
+@section('js')
+	<script type="text/javascript" src="/js/client.js"></script>
+	<script type="text/javascript" src="/assets/js/jquery.uploadPreview.min.js"></script>
+	<script type="text/javascript">
+		$(document).on("blur", "#inp-cep", function () {
+			let cep = $(this).val().replace(/[^0-9]/g,'')
+
+			$url = "https://viacep.com.br/ws/"+cep+"/json";
+			$.get($url)
+			.done((success) => {
+				$('#inp-rua').val(success.logradouro)
+				$('#inp-numero').val(success.numero)
+				$('#inp-bairro').val(success.bairro)
+
+				findCidade(success.ibge)
+			});
+		});
+
+		function findCidade(codigo_ibge) {
+			$.get(path_url + "api/cidadePorCodigoIbge/" + codigo_ibge)
+			.done((res) => {
+				var newOption = new Option(
+					res.nome + " (" + res.uf + ")",
+					res.id,
+					false,
+					false
+				);
+				$("#inp-cidade_id")
+					.html(newOption)
+					.trigger("change");
+			});
+		}
+	</script>
+@endsection

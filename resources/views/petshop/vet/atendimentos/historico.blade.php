@@ -233,6 +233,7 @@
 
 @section('content')
     @php
+        $page = request()->query('page', 1);
         $prescriptionParams = array_filter([
             'atendimento' => $encounter['id'] ?? null,
             'patient_id' => $encounter['patient_id'] ?? $encounter['animal_id'] ?? null,
@@ -240,66 +241,76 @@
         ], fn ($value) => $value !== null && $value !== '');
     @endphp
 
-    <div class="container-fluid px-0">
-        <div class="d-flex align-items-center gap-2 mb-3">
-           
-        </div>
-
-        <div class="card shadow-sm border-0 mb-4 vet-encounter-history__summary">
-            <div class="card-body">
-                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-3">
-                    <div class="flex-grow-1">
-                        <span class="badge bg-{{ $encounter['status_color'] ?? 'primary' }} text-uppercase">{{ $encounter['status'] ?? '—' }}</span>
-                        <h2 class="h4 text-color mb-1 mt-2">{{ $encounter['patient'] ?? 'Paciente não informado' }}</h2>
-                        <div class="text-muted">
-                            {{ $encounter['species'] ?? 'Espécie não informada' }}
-                            @if(!empty($encounter['breed']))
-                                • {{ $encounter['breed'] }}
-                            @endif
-                        </div>
-                        @if(!empty($encounter['tutor']))
-                            <div class="text-muted small">
-                                Tutor: {{ $encounter['tutor'] }}
-                            </div>
-                        @endif
-                        <div class="text-muted small">Código: {{ $encounter['code'] ?? '—' }}</div>
+    <div class="page-content">
+        <div class="card border-top border-0 border-4 border-primary">
+            <div class="card-body p-5">
+                <div class="page-breadcrumb d-sm-flex align-items-center mb-3">
+                    <div class="ms-auto">
+                        <a href="{{ route('vet.atendimentos.index', ['page' => $page]) }}" type="button" class="btn btn-light btn-sm">
+                            <i class="bx bx-arrow-back"></i> Voltar
+                        </a>
                     </div>
-                    <div class="d-flex flex-column flex-lg-column align-items-lg-end gap-3 flex-grow-1">
-                        <div class="d-flex justify-content-lg-end">
-                        </div>
-                        <div class="row g-3 flex-grow-1">
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="vet-encounter-history__metric">
-                                <span class="text-muted small text-uppercase">Serviço</span>
-                                <div class="fw-semibold text-color">{{ $encounter['service'] ?? '—' }}</div>
+                </div>
+                <div class="card-title d-flex align-items-center">
+                    <h5 class="mb-0 text-primary">Histórico do atendimento</h5>
+                </div>
+                <hr>
+
+                <div class="card shadow-sm border-0 mb-4 vet-encounter-history__summary">
+                    <div class="card-body">
+                        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-3">
+                            <div class="flex-grow-1">
+                                <span class="badge bg-{{ $encounter['status_color'] ?? 'primary' }} text-uppercase">{{ $encounter['status'] ?? '—' }}</span>
+                                <h2 class="h4 text-color mb-1 mt-2">{{ $encounter['patient'] ?? 'Paciente não informado' }}</h2>
+                                <div class="text-muted">
+                                    {{ $encounter['species'] ?? 'Espécie não informada' }}
+                                    @if(!empty($encounter['breed']))
+                                        • {{ $encounter['breed'] }}
+                                    @endif
+                                </div>
+                                @if(!empty($encounter['tutor']))
+                                    <div class="text-muted small">
+                                        Tutor: {{ $encounter['tutor'] }}
+                                    </div>
+                                @endif
+                                <div class="text-muted small">Código: {{ $encounter['code'] ?? '—' }}</div>
                             </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="vet-encounter-history__metric">
-                                <span class="text-muted small text-uppercase">Veterinário</span>
-                                <div class="fw-semibold text-color">{{ $encounter['veterinarian'] ?? 'Não definido' }}</div>
+                            <div class="d-flex flex-column flex-lg-column align-items-lg-end gap-3 flex-grow-1">
+                                <div class="d-flex justify-content-lg-end">
+                                </div>
+                                <div class="row g-3 flex-grow-1">
+                                <div class="col-sm-6 col-lg-3">
+                                    <div class="vet-encounter-history__metric">
+                                        <span class="text-muted small text-uppercase">Serviço</span>
+                                        <div class="fw-semibold text-color">{{ $encounter['service'] ?? '—' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-3">
+                                    <div class="vet-encounter-history__metric">
+                                        <span class="text-muted small text-uppercase">Veterinário</span>
+                                        <div class="fw-semibold text-color">{{ $encounter['veterinarian'] ?? 'Não definido' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-3">
+                                    <div class="vet-encounter-history__metric">
+                                        <span class="text-muted small text-uppercase">Horário previsto</span>
+                                        <div class="fw-semibold text-color">{{ $encounter['start_display'] ?? '—' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-3">
+                                    <div class="vet-encounter-history__metric">
+                                        <span class="text-muted small text-uppercase">Sala</span>
+                                        <div class="fw-semibold text-color">{{ $encounter['room'] ?? '—' }}</div>
+                                    </div>
+                                </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="vet-encounter-history__metric">
-                                <span class="text-muted small text-uppercase">Horário previsto</span>
-                                <div class="fw-semibold text-color">{{ $encounter['start_display'] ?? '—' }}</div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="vet-encounter-history__metric">
-                                <span class="text-muted small text-uppercase">Sala</span>
-                                <div class="fw-semibold text-color">{{ $encounter['room'] ?? '—' }}</div>
-                            </div>
-                        </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="row g-4">
-            <div class="col-lg-8">
+                <div class="row g-4">
+                    <div class="col-lg-4">
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-header bg-white border-0 pb-0">
                         <h5 class="text-color mb-1">Eventos do atendimento</h5>
@@ -357,7 +368,10 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
+                    <div class="col-lg-8">
+                        <div class="mb-4">
+                            @include('petshop.vet.atendimentos.partials.actions-panel', ['encounter' => $encounter])
+                        </div>
                 @if(!empty($triageDetails))
                     <div class="card shadow-sm border-0 mb-4">
                         <div class="card-header bg-white border-0 pb-0">
@@ -564,6 +578,8 @@
                         </div>
                     </div>
                 @endif
+            </div>
+        </div>
             </div>
         </div>
     </div>

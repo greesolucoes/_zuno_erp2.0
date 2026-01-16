@@ -1,14 +1,10 @@
 @php
     $medicoFuncionario = $medico->funcionario;
-    $cargoNome = $medicoFuncionario?->cargo?->nome;
 @endphp
 
 <tr>
     <td class="text-start">
         <div class="fw-semibold text-color">{{ $medicoFuncionario?->nome ?? 'Colaborador removido' }}</div>
-        @if ($cargoNome)
-            <small class="text-muted">{{ $cargoNome }}</small>
-        @endif
     </td>
     <td class="text-center">{{ $medico->crmv }}</td>
     <td class="text-center">{{ $medico->especialidade ?: '--' }}</td>
