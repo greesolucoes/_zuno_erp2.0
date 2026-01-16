@@ -87,6 +87,12 @@
     $hospitalizationActionLabel = 'Internação';
     $hospitalizationActionTitle = $hospitalizationViewUrl ? 'Ver internação ativa' : 'Enviar para internação';
 
+    $patientId = $encounter['patient_id'] ?? ($encounter['animal_id'] ?? null);
+    $patientCrmUrl = null;
+    if (!empty($patientId) && \Illuminate\Support\Facades\Route::has('animais.pacientes.crm')) {
+        $patientCrmUrl = route('animais.pacientes.crm', $patientId);
+    }
+
     $billingInfo = $encounter['billing'] ?? null;
     $hasBilling = filled($billingInfo);
     $billingTitle = $hasBilling ? 'Editar faturamento' : 'Faturar atendimento';
@@ -94,67 +100,83 @@
     $actionCards = [
         [
             'label' => 'Histórico',
-            'url' => route('vet.atendimentos.history', $attendanceId),
-            'title' => 'Visualizar histórico do atendimento',
-            'icon' => 'ri-history-line',
+            'url' => $patientCrmUrl,
+            'title' => 'Visualizar histórico (CRM) do paciente',
+            'icon' => 'bx bx-history',
             'textClass' => 'text-secondary',
-            'disabled' => false,
+            'disabled' => empty($patientCrmUrl),
+            'target' => '_blank',
+            'rel' => 'noopener noreferrer',
         ],
         [
             'label' => 'Atendimento',
             'url' => route('vet.atendimentos.edit', $attendanceId),
             'title' => 'Editar atendimento',
-            'icon' => 'ri-edit-line',
+            'icon' => 'bx bx-edit',
             'textClass' => 'text-success',
             'disabled' => false,
+            'target' => '_blank',
+            'rel' => 'noopener noreferrer',
         ],
         [
             'label' => $hospitalizationActionLabel,
             'url' => $hospitalizationActionUrl,
             'title' => $hospitalizationActionTitle,
-            'icon' => 'ri-hotel-bed-line',
+            'icon' => 'bx bx-bed',
             'textClass' => 'text-info',
             'disabled' => empty($hospitalizationActionUrl),
+            'target' => '_blank',
+            'rel' => 'noopener noreferrer',
         ],
         [
             'label' => 'Vacinas',
             'url' => $vaccinationCreateUrl,
             'title' => 'Agendar vacinação para este atendimento',
-            'icon' => 'ri-syringe-line',
+            'icon' => 'bx bx-first-aid',
             'textClass' => 'text-primary',
             'disabled' => false,
+            'target' => '_blank',
+            'rel' => 'noopener noreferrer',
         ],
         [
             'label' => $examActionLabel,
             'url' => $examActionUrl,
             'title' => $examActionTitle,
-            'icon' => 'ri-flask-line',
+            'icon' => 'bx bx-test-tube',
             'textClass' => 'text-warning',
             'disabled' => false,
+            'target' => '_blank',
+            'rel' => 'noopener noreferrer',
         ],
         [
             'label' => 'Receitas',
             'url' => $prescriptionActionUrl,
             'title' => $hasPrescriptions ? 'Editar prescrição vinculada a este atendimento' : 'Emitir prescrição',
-            'icon' => 'ri-capsule-line',
+            'icon' => 'bx bx-receipt',
             'textClass' => 'text-success',
             'disabled' => $prescriptionActionDisabled,
+            'target' => '_blank',
+            'rel' => 'noopener noreferrer',
         ],
         [
             'label' => $recordActionLabel,
             'url' => $recordActionUrl,
             'title' => $recordActionTitle,
-            'icon' => 'ri-file-list-3-line',
+            'icon' => 'bx bx-notepad',
             'textClass' => 'text-info',
             'disabled' => false,
+            'target' => '_blank',
+            'rel' => 'noopener noreferrer',
         ],
         [
             'label' => 'Faturamento',
             'url' => route('vet.atendimentos.billing', $attendanceId),
             'title' => $billingTitle,
-            'icon' => 'ri-money-dollar-circle-line',
+            'icon' => 'bx bx-money',
             'textClass' => 'text-secondary',
             'disabled' => false,
+            'target' => '_blank',
+            'rel' => 'noopener noreferrer',
         ],
     ];
 
@@ -163,9 +185,11 @@
             'label' => 'Aplicar vacina',
             'url' => $vaccinationApplyUrl,
             'title' => 'Aplicar vacina agendada',
-            'icon' => 'ri-syringe-line',
+            'icon' => 'bx bx-vial',
             'textClass' => 'text-primary',
             'disabled' => false,
+            'target' => '_blank',
+            'rel' => 'noopener noreferrer',
         ];
     }
 
@@ -174,9 +198,11 @@
             'label' => 'Editar vacina',
             'url' => $vaccinationEditUrl,
             'title' => 'Editar vacinação vinculada a este atendimento',
-            'icon' => 'ri-syringe-line',
+            'icon' => 'bx bx-vial',
             'textClass' => 'text-primary',
             'disabled' => false,
+            'target' => '_blank',
+            'rel' => 'noopener noreferrer',
         ];
     }
 
@@ -185,7 +211,7 @@
             'label' => 'Cartão',
             'url' => $vaccinationCardUrl,
             'title' => 'Visualizar cartão de vacina do paciente',
-            'icon' => 'ri-id-card-line',
+            'icon' => 'bx bx-id-card',
             'textClass' => 'text-primary',
             'target' => '_blank',
             'rel' => 'noopener noreferrer',
@@ -209,7 +235,7 @@
             @csrf
             @method('delete')
             <button type="button" class="btn btn-sm btn-outline-danger btn-delete" title="Excluir atendimento">
-                <i class="ri-delete-bin-6-line"></i>
+                <i class="bx bx-trash"></i>
             </button>
         </form>
     </div>
@@ -224,8 +250,8 @@
                     @if ($isDisabled)
                         <div class="card h-100 border-0 shadow-sm opacity-50" title="{{ $card['title'] ?? '' }}">
                             <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
-                                <div class="mb-2">
-                                    <i class="{{ $card['icon'] ?? 'ri-apps-line' }} fs-2 {{ $card['textClass'] ?? 'text-secondary' }}"></i>
+                                <div class="vet-encounter-actions__icon mb-2">
+                                    <i class="{{ $card['icon'] ?? 'bx bx-grid-alt' }} vet-encounter-actions__glyph {{ $card['textClass'] ?? 'text-secondary' }}"></i>
                                 </div>
                                 <div class="fw-semibold text-color">{{ $card['label'] }}</div>
                                 <div class="small text-muted">Indisponível</div>
@@ -240,8 +266,8 @@
                             @if (!empty($card['rel'])) rel="{{ $card['rel'] }}" @endif
                         >
                             <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
-                                <div class="mb-2">
-                                    <i class="{{ $card['icon'] ?? 'ri-apps-line' }} fs-2 {{ $card['textClass'] ?? 'text-secondary' }}"></i>
+                                <div class="vet-encounter-actions__icon mb-2">
+                                    <i class="{{ $card['icon'] ?? 'bx bx-grid-alt' }} vet-encounter-actions__glyph {{ $card['textClass'] ?? 'text-secondary' }}"></i>
                                 </div>
                                 <div class="fw-semibold text-color">{{ $card['label'] }}</div>
                             </div>
@@ -252,4 +278,3 @@
         </div>
     </div>
 </div>
-

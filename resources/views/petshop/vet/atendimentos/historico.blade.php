@@ -158,6 +158,22 @@
             margin-top: .1rem;
         }
 
+        .vet-encounter-actions__icon {
+            width: 4.5rem;
+            height: 4.5rem;
+            border-radius: 1.6rem;
+            background: rgba(76, 63, 179, 0.07);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 14px 36px rgba(32, 25, 110, 0.08);
+        }
+
+        .vet-encounter-actions__glyph {
+            font-size: 2.1rem;
+            line-height: 1;
+        }
+
         @media (max-width: 1199.98px) {
             .vet-encounter-timeline::before {
                 left: 6.75rem;
