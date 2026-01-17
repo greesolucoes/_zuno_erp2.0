@@ -9,8 +9,24 @@ class ContaReceber extends Model
 	protected $fillable = [
 		'venda_id', 'remessa_nfe_id', 'data_vencimento', 'data_recebimento', 'valor_integral',
 		'valor_recebido', 'referencia', 'categoria_id', 'status', 'empresa_id',
-		'cliente_id', 'juros', 'multa', 'venda_caixa_id', 'observacao', 'tipo_pagamento',
-		'filial_id'
+		'cliente_id', 'juros', 'multa', 'venda_caixa_id', 'hotel_id', 'creche_id', 'estetica_id',
+		'observacao', 'tipo_pagamento', 'filial_id'
+	];
+
+	protected $casts = [
+		'empresa_id' => 'integer',
+		'venda_id' => 'integer',
+		'remessa_nfe_id' => 'integer',
+		'cliente_id' => 'integer',
+		'categoria_id' => 'integer',
+		'venda_caixa_id' => 'integer',
+		'hotel_id' => 'integer',
+		'creche_id' => 'integer',
+		'estetica_id' => 'integer',
+		'filial_id' => 'integer',
+		'status' => 'boolean',
+		'data_vencimento' => 'date',
+		'data_recebimento' => 'date',
 	];
 
 	public function filial()

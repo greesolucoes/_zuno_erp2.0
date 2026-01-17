@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\Petshop;
 
 use App\Http\Controllers\Controller;
+use App\Models\CategoriaConta;
+use App\Models\ContaReceber;
 use App\Models\OrdemServico;
 use App\Models\Petshop\Animal;
 use App\Models\Petshop\Hotel;
@@ -11,7 +13,6 @@ use App\Models\Produto;
 use App\Models\ProdutoOs;
 use App\Models\Servico;
 use App\Models\ServicoOs;
-use App\Services\Notificacao\HotelNotificacaoService;
 use App\Services\Petshop\HotelService;
 use App\Services\QuartoService;
 use Carbon\Carbon;
@@ -319,19 +320,36 @@ class HotelController extends Controller
                     ]);
                 }
 
+                $categoria = CategoriaConta::where('empresa_id', $empresa_id)
+                    ->where('tipo', 'receber')
+                    ->first();
+
+                if (!$categoria) {
+                    throw new Exception('Categoria de contas a receber não configurada para esta empresa.');
+                }
+
+                ContaReceber::create([
+                    'venda_id' => null,
+                    'cliente_id' => $pet->cliente_id,
+                    'data_vencimento' => $checkout->format('Y-m-d'),
+                    'data_recebimento' => $checkout->format('Y-m-d'),
+                    'valor_integral' => $valor_servicos + $valor_produtos,
+                    'tipo_pagamento' => '',
+                    'valor_recebido' => 0,
+                    'status' => 0,
+                    'referencia' => 'Reserva HOTEL #' . $hotel->id . ' / OS #' . $ordem->id,
+                    'categoria_id' => $categoria->id,
+                    'empresa_id' => $empresa_id,
+                    'juros' => 0,
+                    'multa' => 0,
+                    'venda_caixa_id' => null,
+                    'hotel_id' => $hotel->id,
+                    'observacao' => '',
+                    'filial_id' => null,
+                ]);
+
                 return $hotel;
             });
-
-            $hotelParaNotificacao = $hotel->fresh([
-                'empresa',
-                'cliente',
-                'animal',
-                'quarto',
-                'servicos',
-                'produtos',
-            ]);
-
-            (new HotelNotificacaoService())->nova($hotelParaNotificacao ?? $hotel);
 
             return response()->json([
                 'success' => true,

@@ -165,7 +165,7 @@
 
     <td>
         @if($item->ordemServico)
-            <a href="{{ route('ordem-servico.show', $item->ordemServico->id) }}">
+            <a href="{{ route('ordemServico.show', $item->ordemServico->id) }}">
                 #{{ $item->ordemServico->codigo_sequencial }}
             </a>
         @else

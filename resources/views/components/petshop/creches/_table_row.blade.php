@@ -1,7 +1,7 @@
 <tr>
     <td class="text-center">
         @if($item->ordem_servico_id)
-            <a href="{{ route('ordem-servico.show', $item->ordem_servico_id) }}">#{{ $item->ordemServico->codigo_sequencial }}</a>
+            <a href="{{ route('ordemServico.show', $item->ordem_servico_id) }}">#{{ $item->ordemServico->codigo_sequencial }}</a>
         @else
             --
         @endif

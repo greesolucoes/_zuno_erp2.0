@@ -5,6 +5,7 @@ namespace App\Services\Petshop;
 use App\Models\ContaReceber;
 use App\Models\Petshop\Hotel;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class HotelService
 {
@@ -15,14 +16,17 @@ class HotelService
      * @param int $conta_receber_id id da conta a receber
      */
     public function updateContaReceberId(int $hotel_id, int $conta_receber_id) {
-        $conta_receber = ContaReceber::findOrFail($conta_receber_id);
+        DB::transaction(function () use ($hotel_id, $conta_receber_id) {
+            $hotel = Hotel::findOrFail($hotel_id);
+            $conta_receber = ContaReceber::findOrFail($conta_receber_id);
 
-        $conta_receber->hotel_id = $hotel_id;
+            if ((int)$conta_receber->empresa_id !== (int)$hotel->empresa_id) {
+                throw new \Exception('Conta a receber não pertence à mesma empresa do agendamento.');
+            }
 
-        $hotel = Hotel::findOrFail($hotel_id);
-
-        $hotel->save();
-        $conta_receber->save();
+            $conta_receber->hotel_id = $hotel_id;
+            $conta_receber->save();
+        });
     }
 
     /**

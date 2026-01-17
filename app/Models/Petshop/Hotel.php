@@ -127,7 +127,7 @@ class Hotel extends Model
 
     public function contaReceber()
     {
-        return $this->hasOne(ContaReceber::class);
+        return $this->hasOne(ContaReceber::class, 'hotel_id', 'id');
     }
 
     public function checklists()

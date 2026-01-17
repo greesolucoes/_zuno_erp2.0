@@ -14,7 +14,6 @@ use App\Models\Servico;
 use App\Models\ServicoOs;
 use App\Models\Produto;
 use App\Models\ProdutoOs;
-use App\Services\Notificacao\HotelNotificacaoService;
 use App\Services\Petshop\HotelService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -386,18 +385,6 @@ class HotelController extends Controller
                     'desconto'         => 0,
                 ]);
             }
-
-            $hotelParaNotificacao = $hotel->fresh([
-                'empresa',
-                'cliente',
-                'animal',
-                'quarto',
-                'servicos',
-                'produtos',
-            ]);
-
-            (new HotelNotificacaoService())->nova($hotelParaNotificacao ?? $hotel);
-
 
             session()->flash('flash_sucesso', 'Reserva cadastrada com sucesso!');
         } catch (\Exception $e) {

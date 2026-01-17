@@ -120,7 +120,7 @@ class Creche extends Model
 
     public function contaReceber()
     {
-        return $this->hasOne(ContaReceber::class);
+        return $this->hasOne(ContaReceber::class, 'creche_id', 'id');
     }
 
     public function checklists()

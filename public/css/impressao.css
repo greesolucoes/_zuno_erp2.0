@@ -1,0 +1,296 @@
+/* Tags gerais */
+
+/* Reset básico */
+body, h1, h2, h3, p, span, strong, table, tr, th, td { margin: 0; padding: 0; }
+
+td {
+    color: #333;
+    line-height: 1.5;
+    font-size: 11px;
+    text-align: left !important;
+}
+
+th {
+    text-align: left !important;
+    font-size: 14px;
+    color: #333;
+    font-weight: 700 !important;
+}
+
+p {
+    color: #333;
+    line-height: 1.5;
+    font-size: 0;
+    margin-top: 0;
+    margin-bottom: 2px;
+}
+
+span {
+    color: #333;
+    line-height: 1.5;
+}
+
+img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+table {
+    font-size: 0.8rem;
+    margin: 0;
+    width: 100%;
+}
+
+/* Estrutura principal */
+body {
+    margin-top: 200px;
+    padding: 10px 0px;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #999;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+@page {
+    margin: 20px 50px;
+}
+
+/* Classes de alinhamento */
+.text-left {
+    text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+/* Classes de margem */
+.mb-3 {
+    margin-bottom: 1rem !important;
+}
+
+.ml-3 {
+    margin-left: 1rem !important;
+}
+
+.logo {
+    max-height: 110px;
+}
+
+.header-title-container {
+    margin-bottom: 15px;
+}
+
+.header-title h2 {
+    margin-top: -24px;
+    text-align: center;
+}
+
+.header-emition {
+    max-width: 250px;
+}
+.header-emition small {
+    text-align: right;
+    font-size: 9px;
+}
+
+.header-info {
+    text-align: left;
+    vertical-align: top;
+    font-size: 9px;
+    color: #333;
+    line-height: 1.5;
+    padding-left: 15px;
+}
+
+.header-store-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.emitted-date td {
+    vertical-align: top;
+}
+
+.emitted-date span {
+    white-space: normal;
+    word-break: break-word;
+    display: inline-block;
+    max-width: 180px;
+    font-size: 11px;
+}
+
+.section-title {
+    margin-bottom: 8px;
+    margin-top: 15px;
+}
+.section-title strong{
+    font-size: 14px;
+}
+
+.impression-data {
+    width: 100%;
+    font-size: 12px;
+    padding: 0 4px;
+    margin-bottom: 10px;
+    line-height: 20px;
+}
+
+.data-left-column, .data-right-column {
+    display: inline-block;
+    width: 50%;
+    vertical-align: top;
+}
+.data-right-column {
+    width: 49%;
+}
+
+.items-table td{
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.impression-values {
+    margin-top: 30px;
+}
+
+.signatures-container {
+    position: absolute;
+    bottom: 110px;
+}
+.signatures-container span {
+    font-size: 9px;
+}
+
+.half-text-block {
+    width: 50%;
+    padding: 0 5px;
+}
+.half-text-block p {
+    font-size: 13px;
+    margin-bottom: 3px;
+}
+.half-text-block span {
+    font-size: 9px;
+    text-align: start;
+    color: #333;
+    line-height: 1.5;
+}
+
+.anexo-title {
+    font-size: 13px;
+    margin-bottom: 40px;
+}
+.anexo-item {
+    width: 23%;
+    display: inline-block;
+    border-radius: 10px;
+    background-color: #ccc;
+    margin: 5px;
+}
+.anexo-item img {
+    height: 140px;
+    min-width: 100%;
+    background-color: #ccc;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.aditional-info {
+    margin-top: 20px;
+    margin-bottom: 40px;
+    line-height: 13px;
+    font-weight: 400;
+    display: block;
+}
+
+.aditional-info p {
+    font-size: 10px;
+    color: #333333BB;
+}
+
+/* Banner/Logo */
+.logoBanner img {
+    float: left;
+    max-width: 70px;
+}
+
+.banner h1 {
+    position: absolute;
+    margin-top: 0;
+}
+
+.banner hr {
+    margin-top: 29px;
+    margin-left: 120px;
+}
+
+/* Estilos de tabela */
+table thead {
+    border-bottom: 1px solid #888;
+    border-top: 1px solid #888;
+}
+
+table thead th {
+    font-weight: 500;
+    font-size: 12px;
+    padding: 7px 0;
+}
+
+table tbody td {
+    font-weight: 400;
+    font-size: 12px;
+}
+
+/* Footer específico */
+.footer-logo {
+    padding-top: 10px;
+    max-width: 100px;
+}
+
+/* Numeração de páginas */
+.page-number:before {
+    content: counter(page);
+}
+.page-number:before {
+    content: counter(page);
+}
+
+.tyne-textarea-container {
+
+    h1 {
+        font-size: 20px;
+    }
+    h2 {
+        font-size: 18px;
+    }
+    h3 {
+        font-size: 16px;
+    }
+    h4 {
+        font-size: 14px;
+    }
+
+    p, li {
+        font-size: 14px;
+    }
+}

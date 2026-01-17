@@ -1,0 +1,138 @@
+.trocas-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.trocas-modal {
+    width: min(1100px, 100%);
+    max-height: 92vh;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.trocas-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.trocas-title {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.trocas-close {
+    border: 0;
+    background: transparent;
+    font-weight: 600;
+}
+
+.trocas-body {
+    padding: 16px;
+    overflow: auto;
+}
+
+.trocas-step-title {
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.trocas-hint {
+    margin-top: 8px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.trocas-sale-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    padding: 10px 12px;
+    background: #f7f7f7;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.trocas-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.trocas-table th,
+.trocas-table td {
+    border-bottom: 1px solid #eee;
+    padding: 8px;
+    text-align: left;
+}
+
+.trocas-table input[type='number'] {
+    width: 120px;
+    padding: 6px 8px;
+}
+
+.trocas-footer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+}
+
+.trocas-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.trocas-primary,
+.trocas-secondary {
+    border: 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.trocas-primary {
+    background: #280a3c;
+    color: #fff;
+}
+
+.trocas-secondary {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+.trocas-radio-group {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 12px 0;
+}
+
+.trocas-estorno-row {
+    display: grid;
+    grid-template-columns: 1fr 160px auto;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.trocas-link {
+    border: 0;
+    background: transparent;
+    color: #2563eb;
+    font-weight: 600;
+    padding: 0;
+    text-align: left;
+}
+

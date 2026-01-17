@@ -35,8 +35,14 @@ class OrdemServico extends Model
         return $this->hasMany('App\Models\ServicoOs', 'ordem_servico_id', 'id');
     }
 
+    
     public function produtos(){
         return $this->hasMany(ProdutoOs::class, 'ordem_servico_id', 'id');
+    }
+
+    public function itens()
+    {
+        return $this->produtos();
     }
 
     public function relatorios(){
@@ -55,6 +61,11 @@ class OrdemServico extends Model
         return $this->belongsTo(Usuario::class, 'usuario_id');
     }
 
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class, 'empresa_id');
+    }
+
     public static function statusOs()
     {
         return [
@@ -69,6 +80,37 @@ class OrdemServico extends Model
     {
         $status = self::statusOs();
         return $status[$value] ?? (string)$value;
+    }
+
+    public function getTotalValueServicosAttribute()
+    {
+        return $this->servicos->sum(function ($servico) {
+            return (float)($servico->subtotal ?? 0);
+        });
+    }
+
+    public function getTotalValueItensAttribute()
+    {
+        return $this->itens->sum(function ($item) {
+            return (float)($item->subtotal ?? 0);
+        });
+    }
+
+    public function getSubtotalItensAndServicesAttribute()
+    {
+        return (float)$this->total_value_itens + (float)$this->total_value_servicos;
+    }
+
+    /**
+     * Compat: usado em views antigas como método.
+     */
+    public function getTotalValueAttribute()
+    {
+        $subtotal = (float)$this->subtotal_itens_and_services;
+        $desconto = (float)($this->desconto ?? 0);
+        $acrescimo = (float)($this->acrescimo ?? 0);
+
+        return ($subtotal - $desconto) + $acrescimo;
     }
 
     public static function filtroData($dataInicial, $dataFinal, $estado){

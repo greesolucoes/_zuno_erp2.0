@@ -64,7 +64,7 @@
     </td>
     <td class="text-center">
         @if($item->ordemServico)
-            <a href="{{ route('ordem-servico.show', $item->ordem_servico_id) }}" target="_blank">
+            <a href="{{ route('ordemServico.show', $item->ordem_servico_id) }}" target="_blank">
                 #{{ $item->ordemServico->codigo_sequencial }}
             </a>
         @else

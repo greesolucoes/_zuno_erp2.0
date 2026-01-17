@@ -49,8 +49,8 @@ class CreateContaRecebersTable extends Migration
             $table->foreign('venda_caixa_id')->references('id')
             ->on('venda_caixas')->onDelete('cascade');
 
-            $table->string('observacao', 100)->deafault('');
-            $table->string('tipo_pagamento', 20)->deafault('');
+            $table->string('observacao', 100)->default('');
+            $table->string('tipo_pagamento', 20)->default('');
 
             $table->integer('filial_id')->unsigned()->nullable();
             $table->foreign('filial_id')->references('id')->on('filials')->onDelete('cascade');

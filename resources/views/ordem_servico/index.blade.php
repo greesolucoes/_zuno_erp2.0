@@ -8,6 +8,9 @@
                     <a href="{{ route('ordemServico.create')}}" type="button" class="btn btn-success">
                         <i class="bx bx-plus"></i> Nova ordem de serviço
                     </a>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_termo_garantia_os">
+                        <i class="bx bx-file"></i> Termo garantia
+                    </button>
                 </div>
             </div>
             <hr>
@@ -101,4 +104,6 @@
         </div>
     </div>
 </div>
+
+@include('modals._termo_garantia_os', ['empresa' => $empresa ?? null])
 @endsection

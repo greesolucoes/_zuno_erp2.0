@@ -783,6 +783,9 @@ Route::middleware([
         Route::get('/imprimir/{id}', 'OrderController@imprimir')->name('ordemServico.imprimir');
         // Route::get('/delete/{id}', 'OrderController@delete')->name('ordemServico.delete');
         Route::get('/completa/{id}', 'OrderController@completa')->name('ordemServico.completa');
+
+        Route::get('/termo-garantia', 'OrderController@termoGarantia')->name('ordemServico.termoGarantia');
+        Route::post('/termo-garantia', 'OrderController@updateTermoGarantia')->name('ordemServico.termoGarantia.update');
     });
 
     Route::resource('ordemServico', 'OrderController');

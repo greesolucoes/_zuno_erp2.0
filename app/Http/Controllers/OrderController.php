@@ -9,6 +9,7 @@ use App\Models\Funcionario;
 use App\Models\FuncionarioOs;
 use App\Models\GrupoCliente;
 use App\Models\OrdemServico;
+use App\Models\Empresa;
 use App\Models\Pais;
 use App\Models\ProdutoOs;
 use App\Models\RelatorioOs;
@@ -41,6 +42,8 @@ class OrderController extends Controller
         $end_date = $request->get('end_date');
         $cliente_id = $request->get('cliente_id');
         $estado = $request->get('estado');
+
+        $empresa = Empresa::find($request->empresa_id);
         $data = OrdemServico::where('empresa_id', $request->empresa_id)
         ->when(!empty($start_date), function ($query) use ($start_date) {
             return $query->whereDate('created_at', '>=', $start_date);
@@ -56,7 +59,7 @@ class OrderController extends Controller
         })
         ->orderBy('created_at', 'asc')
         ->paginate(env("PAGINACAO"));
-        return view('ordem_servico.index', compact('data'));
+        return view('ordem_servico.index', compact('data', 'empresa'));
     }
 
     public function create(Request $request)
@@ -123,6 +126,11 @@ class OrderController extends Controller
             'ordem_servico.ordem_completa',
             compact('funcionarios', 'ordem', 'servicos', 'relatorio')
         );
+    }
+
+    public function show($id)
+    {
+        return $this->completa($id);
     }
 
     public function storeFuncionario(Request $request)
@@ -404,6 +412,35 @@ class OrderController extends Controller
         }else{
             return redirect('/403');
         }
+    }
+
+    public function termoGarantia()
+    {
+        return redirect()->route('ordemServico.index');
+    }
+
+    public function updateTermoGarantia(Request $request)
+    {
+        $this->validate($request, [
+            'termo_garantia_os' => 'nullable|string',
+        ]);
+
+        try {
+            $empresa = Empresa::findOrFail($request->empresa_id ?? $this->empresa_id);
+            if (!__valida_objeto($empresa)) {
+                abort(403);
+            }
+
+            $empresa->termo_garantia_os = $request->termo_garantia_os;
+            $empresa->save();
+
+            session()->flash('flash_sucesso', 'Termo de garantia atualizado com sucesso!');
+        } catch (\Exception $e) {
+            session()->flash('flash_erro', 'Algo deu errado: ' . $e->getMessage());
+            __saveLogError($e, $request->empresa_id ?? request()->empresa_id);
+        }
+
+        return redirect()->route('ordemServico.index');
     }
 
 

@@ -15,7 +15,6 @@ use App\Models\Petshop\Plano;
 use App\Models\Produto;
 use App\Models\Servico;
 use App\Models\ServicoOs;
-use App\Services\Notificacao\EsteticaNotificacaoService;
 use App\Services\Petshop\EsteticaService;
 use Carbon\Carbon;
 use Exception;
@@ -212,9 +211,6 @@ class EsteticaController extends Controller
 
                 return $estetica;
             });
-
-            $esteticaParaNotificacao = $estetica->fresh(['empresa', 'cliente', 'animal', 'servicos.servico']);
-            (new EsteticaNotificacaoService())->nova($esteticaParaNotificacao ?? $estetica);
 
             return response()->json([
                 'success' => true,

@@ -27,7 +27,6 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Petshop\Quarto;
 use App\Models\Petshop\SalaDeAula;
 use App\Models\PlanoUser;
-use App\Services\Notificacao\EsteticaNotificacaoService;
 use App\Services\Petshop\EsteticaService;
 use App\Services\Petshop\PlanoLimiteService;
 use Dompdf\Dompdf;
@@ -190,9 +189,6 @@ class EsteticaController extends Controller
                     return redirect()->back()->withInput();
                 }
             }
-
-            $esteticaParaNotificacao = $estetica->fresh(['empresa', 'cliente', 'animal', 'servicos.servico']);
-            (new EsteticaNotificacaoService())->nova($esteticaParaNotificacao ?? $estetica);
 
             session()->flash('flash_sucesso', 'Agendamento criado com sucesso!');
         } catch (\Exception $e) {

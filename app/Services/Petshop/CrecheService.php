@@ -5,6 +5,7 @@ namespace App\Services\Petshop;
 use App\Models\ContaReceber;
 use App\Models\Petshop\Creche;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class CrecheService
 {
@@ -15,14 +16,17 @@ class CrecheService
      * @param int $conta_receber_id id da conta a receber
      */
     public function updateContaReceberId(int $creche_id, int $conta_receber_id) {
-        $conta_receber = ContaReceber::findOrFail($conta_receber_id);
+        DB::transaction(function () use ($creche_id, $conta_receber_id) {
+            $creche = Creche::findOrFail($creche_id);
+            $conta_receber = ContaReceber::findOrFail($conta_receber_id);
 
-        $conta_receber->creche_id = $creche_id;
+            if ((int)$conta_receber->empresa_id !== (int)$creche->empresa_id) {
+                throw new \Exception('Conta a receber não pertence à mesma empresa do agendamento.');
+            }
 
-        $creche = Creche::findOrFail($creche_id);
-
-        $creche->save();
-        $conta_receber->save();
+            $conta_receber->creche_id = $creche_id;
+            $conta_receber->save();
+        });
     }
 
     /**

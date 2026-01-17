@@ -2,6 +2,7 @@
 
 namespace App\Services\Petshop;
 
+use App\Models\CategoriaConta;
 use App\Models\ContaReceber;
 use App\Models\OrdemServico;
 use App\Models\Petshop\Estetica;
@@ -9,8 +10,8 @@ use App\Models\Petshop\EsteticaServico;
 use App\Models\PlanoUser;
 use App\Models\ProdutoOs;
 use App\Models\ServicoOs;
-use App\Services\Notificacao\EsteticaNotificacaoService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class EsteticaService
@@ -24,14 +25,17 @@ class EsteticaService
      * @param int $conta_receber_id id da conta a receber
      */
     public function updateContaReceberId(int $estetica_id, int $conta_receber_id) {
-        $conta_receber = ContaReceber::findOrFail($conta_receber_id);
+        DB::transaction(function () use ($estetica_id, $conta_receber_id) {
+            $estetica = Estetica::findOrFail($estetica_id);
+            $conta_receber = ContaReceber::findOrFail($conta_receber_id);
 
-        $conta_receber->estetica_id = $estetica_id;
+            if ((int)$conta_receber->empresa_id !== (int)$estetica->empresa_id) {
+                throw new \Exception('Conta a receber não pertence à mesma empresa do agendamento.');
+            }
 
-        $estetica = Estetica::findOrFail($estetica_id);
-        
-        $estetica->save();
-        $conta_receber->save();
+            $conta_receber->estetica_id = $estetica_id;
+            $conta_receber->save();
+        });
     }
 
     /**
@@ -122,9 +126,6 @@ class EsteticaService
         $estetica->estado = 'agendado';
         $estetica->save();
 
-        $esteticaParaNotificacao = $estetica->fresh(['empresa', 'cliente', 'animal', 'servicos.servico']);
-        (new EsteticaNotificacaoService())->statusAtualizado($esteticaParaNotificacao ?? $estetica);
-
         return [
             'success' => true,
             'message' => 'Agendamento aprovado com sucesso!'
@@ -141,9 +142,6 @@ class EsteticaService
             $estetica->ordemServico->save();
         }
 
-        $esteticaParaNotificacao = $estetica->fresh(['empresa', 'cliente', 'animal', 'servicos.servico']);
-        (new EsteticaNotificacaoService())->statusAtualizado($esteticaParaNotificacao ?? $estetica);
-
         session()->flash('flash_success', 'Agendamento rejeitado com sucesso!');
 
         return [
@@ -154,7 +152,7 @@ class EsteticaService
 
     public function criarOrdemServico(Estetica $estetica): bool
     {
-        $estetica->load(['servicos.servico', 'produtos']);
+        $estetica->load(['servicos.servico', 'produtos', 'contaReceber']);
 
         if ($estetica->plano_id) {
             $planoUser = PlanoUser::where('cliente_id', $estetica->cliente_id)
@@ -187,47 +185,79 @@ class EsteticaService
 
         $data_final_agendamento = $data->copy()->addMinutes($tempo_execucao_servicos);
 
-        $ordem = OrdemServico::create(OrdemServico::filterAttributesForTable([
-            'descricao'          => 'Ordem de Serviço Estetica',
-            'cliente_id'         => $estetica->cliente_id,
-            'empresa_id'         => $estetica->empresa_id,
-            'funcionario_id'     => $estetica->colaborador_id,
-            'animal_id'          => $estetica->animal_id,
-            'plano_id'           => null,
-            'modulos'            => 'Estetica',
-            'modulo_ids'         => ['Estetica' => [$estetica->id]],
-            'usuario_id'         => get_id_user() ?? auth()->id(),
-            'codigo_sequencial'  => $codigoSequencial,
-            'valor'              => $valorTotal,
-            'total_sem_desconto' => $valorTotal,
-            'data_inicio'        => $data,
-            'data_entrega'       => $data_final_agendamento,
-            'estado'             => $codigoSequencial !== null ? 'AG' : 'pendente',
-        ]));
+        DB::transaction(function () use ($estetica, $codigoSequencial, $valorTotal, $data, $data_final_agendamento) {
+            $ordem = OrdemServico::create(OrdemServico::filterAttributesForTable([
+                'descricao'          => 'Ordem de Serviço Estetica',
+                'cliente_id'         => $estetica->cliente_id,
+                'empresa_id'         => $estetica->empresa_id,
+                'funcionario_id'     => $estetica->colaborador_id,
+                'animal_id'          => $estetica->animal_id,
+                'plano_id'           => null,
+                'modulos'            => 'Estetica',
+                'modulo_ids'         => ['Estetica' => [$estetica->id]],
+                'usuario_id'         => get_id_user() ?? auth()->id(),
+                'codigo_sequencial'  => $codigoSequencial,
+                'valor'              => $valorTotal,
+                'total_sem_desconto' => $valorTotal,
+                'data_inicio'        => $data,
+                'data_entrega'       => $data_final_agendamento,
+                'estado'             => $codigoSequencial !== null ? 'AG' : 'pendente',
+            ]));
 
-        $estetica->update(['ordem_servico_id' => $ordem->id]);
+            $estetica->update(['ordem_servico_id' => $ordem->id]);
 
-        foreach ($estetica->servicos as $servico) {
-            ServicoOs::create([
-                'ordem_servico_id' => $ordem->id,
-                'servico_id'       => $servico->servico_id,
-                'quantidade'       => 1,
-                'valor'            => $servico->subtotal,
-                'subtotal'         => $servico->subtotal,
-            ]);
-        }
+            foreach ($estetica->servicos as $servico) {
+                ServicoOs::create([
+                    'ordem_servico_id' => $ordem->id,
+                    'servico_id'       => $servico->servico_id,
+                    'quantidade'       => 1,
+                    'valor'            => $servico->subtotal,
+                    'subtotal'         => $servico->subtotal,
+                ]);
+            }
 
-        foreach ($estetica->produtos as $produto) {
-            $valorOriginalProduto = ($produto->valor ?? 0) * ($produto->quantidade ?? 0);
-            ProdutoOs::create([
-                'ordem_servico_id' => $ordem->id,
-                'produto_id'       => $produto->produto_id,
-                'quantidade'       => $produto->quantidade,
-                'valor'            => $produto->valor,
-                'subtotal'         => $produto->subtotal,
-                'desconto'         => $valorOriginalProduto - $produto->subtotal,
-            ]);
-        }
+            foreach ($estetica->produtos as $produto) {
+                $valorOriginalProduto = ($produto->valor ?? 0) * ($produto->quantidade ?? 0);
+                ProdutoOs::create([
+                    'ordem_servico_id' => $ordem->id,
+                    'produto_id'       => $produto->produto_id,
+                    'quantidade'       => $produto->quantidade,
+                    'valor'            => $produto->valor,
+                    'subtotal'         => $produto->subtotal,
+                    'desconto'         => $valorOriginalProduto - $produto->subtotal,
+                ]);
+            }
+
+            if (!$estetica->contaReceber) {
+                $categoria = CategoriaConta::where('empresa_id', $estetica->empresa_id)
+                    ->where('tipo', 'receber')
+                    ->first();
+
+                if (!$categoria) {
+                    throw new \Exception('Categoria de contas a receber não configurada para esta empresa.');
+                }
+
+                ContaReceber::create([
+                    'venda_id' => null,
+                    'cliente_id' => $estetica->cliente_id,
+                    'data_vencimento' => Carbon::parse($estetica->data_agendamento)->format('Y-m-d'),
+                    'data_recebimento' => Carbon::parse($estetica->data_agendamento)->format('Y-m-d'),
+                    'valor_integral' => $valorTotal,
+                    'tipo_pagamento' => '',
+                    'valor_recebido' => 0,
+                    'status' => 0,
+                    'referencia' => 'Reserva ESTETICA #' . $estetica->id . ' / OS #' . $ordem->id,
+                    'categoria_id' => $categoria->id,
+                    'empresa_id' => $estetica->empresa_id,
+                    'juros' => 0,
+                    'multa' => 0,
+                    'venda_caixa_id' => null,
+                    'estetica_id' => $estetica->id,
+                    'observacao' => '',
+                    'filial_id' => null,
+                ]);
+            }
+        });
 
         return true;
     }

@@ -117,6 +117,7 @@ class FrontBoxController extends Controller
         if ($prevenda_id != null) {
             $item = VendaCaixaPreVenda::findOrFail($prevenda_id);
         }
+        $empresa = Empresa::find(request()->empresa_id);
         $config = ConfigNota::where('empresa_id', request()->empresa_id)
         ->first();
         if($config == null){
@@ -228,34 +229,93 @@ class FrontBoxController extends Controller
                     date('Y-m-d H:i:s')
                 ])->get();
             }
-            return view('frontBox.index', compact(
-                'tiposPagamento',
-                'config',
-                'item',
-                'abertura',
-                'certificado',
-                'rascunhos',
-                'preVendas',
-                'estados',
-                'sangrias',
-                'vendas',
-                'suprimentos',
-                'cidades',
-                'pais',
-                'grupos',
-                'acessores',
-                'vendedor',
-                'usuarios',
-                'funcionarios',
-                'lista',
-                'produtosMaisVendidos',
-                'atalhos',
-                'usuario',
-                'clientes',
-                'categorias',
-                'tiposPagamentoMulti',
-                'filial'
-            ));
+            $props = [
+                'operador_nome' => $usuario->nome,
+                'user' => [
+                    'id' => $usuario->id,
+                    'empresa' => [
+                        'empresa_id' => (int)request()->empresa_id,
+                        'empresa' => [
+                            'id' => (int)request()->empresa_id,
+                            'logo' => $config->logo ?? '',
+                            'nao_fiscal' => (bool)($empresa->nao_fiscal ?? false),
+                            'plano' => [
+                                'plano' => [
+                                    'segmento' => [
+                                        'nome' => $empresa?->plano?->plano?->segmento?->nome ?? null,
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'abertura' => [
+                    'id' => $abertura->id ?? 0,
+                ],
+                'funcionarios' => $funcionarios,
+                'item' => null,
+                'tiposPagamento' => $tiposPagamento,
+                'detalhesFormas' => [],
+                'config' => [
+                    'vendedor_obrigatorio' => (int)($config->vendedor_obrigatorio ?? 0),
+                ],
+                'vendedores' => $vendedor,
+                'teclas_atalhos' => ['pre_venda', 'fluxo_diario', 'suprimento', 'sangria', 'comanda'],
+                'bandeiras' => [],
+                'caixa_fisico' => null,
+                'local' => $filial,
+                'banner' => '',
+            ];
+
+            $rascunhoId = request()->rascunho_id;
+            if ($rascunhoId) {
+                $rascunho = VendaCaixa::with(['itens.produto', 'cliente'])
+                    ->where('empresa_id', request()->empresa_id)
+                    ->where('rascunho', 1)
+                    ->find($rascunhoId);
+
+                if ($rascunho) {
+                    $props['item'] = [
+                        [
+                            'id' => $rascunho->id,
+                            'empresa_id' => $rascunho->empresa_id,
+                            'cliente_id' => $rascunho->cliente_id,
+                            'total' => (string)$rascunho->valor_total,
+                            'desconto' => (string)$rascunho->desconto,
+                            'acrescimo' => (string)$rascunho->acrescimo,
+                            'observacao' => $rascunho->observacao,
+                            'tipo_pagamento' => (string)$rascunho->tipo_pagamento,
+                            'local_id' => (int)($rascunho->filial_id ?? 0),
+                            'user_id' => (int)$rascunho->usuario_id,
+                            'funcionario_id' => null,
+                            'created_at' => (string)$rascunho->created_at,
+                            'updated_at' => (string)$rascunho->updated_at,
+                            'cliente' => $rascunho->cliente ? $rascunho->cliente->toArray() : null,
+                            'itens' => $rascunho->itens->map(function ($i) use ($rascunho) {
+                                $qtd = (float)$i->quantidade;
+                                $vu = (float)$i->valor;
+                                return [
+                                    'id' => $i->id,
+                                    'venda_id' => $rascunho->id,
+                                    'produto_id' => $i->produto_id,
+                                    'variacao_id' => null,
+                                    'quantidade' => (string)$i->quantidade,
+                                    'valor_unitario' => (string)$i->valor,
+                                    'sub_total' => (string)($qtd * $vu),
+                                    'created_at' => (string)$i->created_at,
+                                    'updated_at' => (string)$i->updated_at,
+                                    'produto' => $i->produto ? $i->produto->toArray() : null,
+                                ];
+                            })->values()->toArray(),
+                        ],
+                    ];
+                    $props['isVendaSuspensa'] = 1;
+                }
+            }
+
+            return view('frontBox.pdv_react', [
+                'props' => $props,
+            ]);
         }
     }
 

@@ -14,6 +14,59 @@ use Illuminate\Http\Request;
 
 class ProdutoController extends Controller
 {
+    public function validaEstoque(Request $request)
+    {
+        try {
+            $productId = (int)($request->product_id ?? 0);
+            $qtd = (float)($request->qtd ?? 1);
+            $filialId = $request->filial_id ?? null;
+            $empresaId = $request->empresa_id ?? null;
+
+            if ($productId <= 0) {
+                return response()->json('product_id é obrigatório', 400);
+            }
+            if ($qtd <= 0) {
+                return response()->json('qtd inválida', 400);
+            }
+            if (!$empresaId) {
+                return response()->json('empresa_id é obrigatório', 400);
+            }
+
+            $produto = Produto::where('empresa_id', $empresaId)
+                ->findOrFail($productId);
+
+            if ((int)($produto->gerenciar_estoque ?? 0) !== 1) {
+                return response()->json('OK', 200);
+            }
+
+            if ($filialId === '-1' || $filialId === -1 || $filialId === 'todos') {
+                $filialId = null;
+            }
+
+            $estoque = Estoque::where('produto_id', $produto->id)
+                ->where('empresa_id', $empresaId)
+                ->when($filialId !== null && $filialId !== '', function ($q) use ($filialId) {
+                    return $q->where('filial_id', $filialId);
+                }, function ($q) {
+                    return $q->whereNull('filial_id');
+                })
+                ->first();
+
+            $estoqueAtual = (float)($estoque->quantidade ?? 0);
+            if ($estoqueAtual < $qtd) {
+                return response()->json('Estoque insuficiente. Atual: ' . $estoqueAtual, 400);
+            }
+
+            return response()->json('OK', 200);
+        } catch (\Exception $e) {
+            $empresaId = $request->empresa_id ?? request()->empresa_id ?? null;
+            if ($empresaId) {
+                __saveLogError($e, $empresaId);
+            }
+            return response()->json($e->getMessage(), 400);
+        }
+    }
+
     public function getBarcode()
     {
         try {

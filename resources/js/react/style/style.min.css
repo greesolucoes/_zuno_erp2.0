@@ -1,0 +1,4 @@
+.company__logo{object-fit:contain;max-height:40px;width:auto;}
+.product-table-wrapper{position:relative;}
+.product-table-wrapper table#item-table{position:relative;z-index:1;}
+.company__logo--watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:.1;max-width:40%;width:auto;z-index:0;pointer-events:none;}.product-photo{width:40px;height:40px;object-fit:cover;border-radius:4px;}

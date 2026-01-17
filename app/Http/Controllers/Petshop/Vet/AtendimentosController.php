@@ -525,7 +525,7 @@ class AtendimentosController extends Controller
             'ordem_servico' => [
                 'id' => $order->id,
                 'codigo' => $order->codigo_sequencial,
-                'url' => route('ordem-servico.show', $order->id),
+                'url' => route('ordemServico.show', $order->id),
             ],
         ]);
     }

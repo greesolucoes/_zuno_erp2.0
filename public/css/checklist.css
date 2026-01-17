@@ -1,0 +1,34 @@
+.styled-single-checkbox {
+    width: 1.6em;
+    height: 1.6em;
+    cursor: pointer;
+    transform: scale(1.2);
+    accent-color: #198754;
+    vertical-align: middle;
+    margin-right: 6px;
+}
+
+.styled-single-checkbox:checked {
+    background-color: #198754;
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.4);
+}
+
+.checklist-group {
+    margin-bottom: 2rem;
+}
+
+.checklist-group label.form-label {
+    display: block;
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.checklist-options .form-check {
+    margin-bottom: 0.5rem;
+}
+.modal-header.bg-dark {
+    background-color: #3a1e4b !important;
+    color: #fff;
+}

@@ -1,8 +1,6 @@
 <tr>
     <td class="text-left">{{ $c->id }}</td>
-    @if (__isSegmento(Auth::user()->empresa, 'OFICINA'))
-        <td class="text-left">{{ $c->veiculo?->marca?->nome . ' ' . $c->veiculo?->modelo}}</td>
-    @endif
+    <td class="text-left">{{ ($c->veiculo?->marca?->nome ?? '') . ' ' . ($c->veiculo?->modelo ?? '') }}</td>
     <td class="text-left">{{ __data_pt($c->created_at) }}</td>
     <td class="text-left">{{ __data_pt($c->data_vencimento, 0) }}</td>
     <td class="text-left">{{ $c->statusLabel}}</td>

@@ -13,7 +13,6 @@ use App\Models\Produto;
 use App\Models\ProdutoOs;
 use App\Models\Servico;
 use App\Models\ServicoOs;
-use App\Services\Notificacao\CrecheNotificacaoService;
 use App\Services\Petshop\CrecheService;
 use App\Services\TurmaService;
 use Carbon\Carbon;
@@ -267,18 +266,6 @@ class CrecheController extends Controller
                     'desconto' => 0,
                 ]);
             }
-
-            $crecheParaNotificacao = $creche->fresh([
-                'empresa',
-                'cliente',
-                'animal',
-                'turma',
-                'colaborador',
-                'servicos',
-                'produtos',
-            ]);
-
-            (new CrecheNotificacaoService())->nova($crecheParaNotificacao ?? $creche);
 
             session()->flash('flash_sucesso', 'Reserva cadastrada com sucesso!');
         } catch (\Exception $e) {

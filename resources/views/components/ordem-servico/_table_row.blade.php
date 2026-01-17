@@ -1,6 +1,6 @@
 <tr>
     <td style="min-width: max-content; width: auto">
-        <form action="{{ route('ordem-servico.destroy', $item->id) }}"
+        <form action="{{ route('ordemServico.destroy', $item->id) }}"
             method="post"
             id="form-{{ $item->id }}"
             class="gap-3"
@@ -35,7 +35,7 @@
             @if ($item->estado != 'PG')
                 @can('ordem_servico_edit')
                     <a title='Editar' class="border-0 m-0 p-0 bg-transparent text-color-back"
-                    href="{{ route('ordem-servico.show', [$item->id]) }}">
+                    href="{{ route('ordemServico.show', [$item->id]) }}">
                         <img
                             height="26"
                             width="26"
@@ -54,7 +54,7 @@
                 @endcan
             @else
                 <a title='Visualizar O.S' class="border-0 m-0 p-0 bg-transparent text-color-back"
-                href="{{ route('ordem-servico.show', [$item->id]) }}">
+                href="{{ route('ordemServico.show', [$item->id]) }}">
                     <img
                         height="26"
                         width="26"
@@ -70,7 +70,7 @@
                 type="button"
                 class="border-0 m-0 p-0 bg-transparent text-color-back"
             >
-                <a href="{{ route('ordem-servico.imprimir', $item->id) }}" target="_blank">
+                <a href="{{ route('ordemServico.imprimir', $item->id) }}" target="_blank">
                     <img
                         height="26"
                         width="26"
@@ -128,7 +128,8 @@
             <ul>
                 @if (isset($item->cliente->email) && $item->cliente->email != '')
                     <li>
-                        <form action="{{ route('ordem-servico.enviar-email', ['id' => $item->id]) }}" method="POST" class="d-inline">
+                        @if(\Route::has('ordemServico.enviar-email'))
+                        <form action="{{ route('ordemServico.enviar-email', ['id' => $item->id]) }}" method="POST" class="d-inline">
                             @csrf
                             <button
                                 type="submit"
@@ -147,6 +148,7 @@
                             </button>
                             <input type="hidden" name="email" value="{{ $item->cliente->email }}">
                         </form>
+                        @endif
                     </li>
                 @endif
                 <li>
@@ -166,7 +168,8 @@
                     </button>
                 </li>
                 @if (isset($item->cliente->telefone) && $item->cliente->telefone != '')
-                    <form action="{{ route('ordem-servico.enviar-whatsapp', $item->id) }}" method="POST" class="d-inline">
+                    @if(\Route::has('ordemServico.enviar-whatsapp'))
+                    <form action="{{ route('ordemServico.enviar-whatsapp', $item->id) }}" method="POST" class="d-inline">
                         @csrf
                         <button
                             type="submit"
@@ -185,6 +188,7 @@
                         </button>
                         <input type="hidden" name="number" value="{{ $item->cliente->telefone }}" />
                     </form>
+                    @endif
                 @else
                     <li>
                         <img
@@ -218,7 +222,7 @@
                         <a 
                             title="Gerar NF-e"
                             class="border-0 m-0 p-0 bg-transparent text-color-back d-flex align-items-center gap-2"
-                            href="{{ route('ordem-servico.gerar-nfe', $item->id) }}"
+                            href="{{ \Route::has('ordemServico.gerar-nfe') ? route('ordemServico.gerar-nfe', $item->id) : '#' }}"
                         >
                             <img 
                                 height="18" 
@@ -241,7 +245,7 @@
                         <a 
                             title="Gerar NFS-e"
                             class="border-0 m-0 p-0 bg-transparent text-color-back d-flex align-items-center gap-2"
-                            href="{{ route('ordem-servico.gerar-nfse', $item->id) }}"
+                            href="{{ \Route::has('ordemServico.gerar-nfse') ? route('ordemServico.gerar-nfse', $item->id) : '#' }}"
                         >
                             <img 
                                 height="18" 
@@ -311,7 +315,7 @@
         <p class="p-0 m-0 text-center">{{$item?->cliente?->cpf_cnpj ?? '--'}}</p>
     </td>
     <td class="text-center">
-        <form action="{{ route('ordem-servico.update', [ $item->id, 'atualiza_status' => 'true']) }}" method="POST" id="statusForm">
+        <form action="{{ route('ordemServico.update', [ $item->id, 'atualiza_status' => 'true']) }}" method="POST" id="statusForm">
             @method('PUT')
             @csrf
             <select
@@ -348,6 +352,10 @@
     <td class="text-center">{{ __data_pt($item->data_entrega, 1) }}</td>
     <td class="text-right text-green">R$ <b>{{ __moeda($item->valor) }}</b></td>
 
-    @include('modals._enviar_email', ['item' => $item, 'route' => 'ordem-servico.enviar-email', 'title' => 'Enviar ordem de serviço por e-mail'] )
-    @include('modals._enviar_whatsapp', ['item' => $item, 'route' => 'ordem-servico.enviar-whatsapp', 'title' => 'Enviar ordem de serviço por Whatsapp'])
+    @if(\Route::has('ordemServico.enviar-email'))
+        @include('modals._enviar_email', ['item' => $item, 'route' => 'ordemServico.enviar-email', 'title' => 'Enviar ordem de serviço por e-mail'] )
+    @endif
+    @if(\Route::has('ordemServico.enviar-whatsapp'))
+        @include('modals._enviar_whatsapp', ['item' => $item, 'route' => 'ordemServico.enviar-whatsapp', 'title' => 'Enviar ordem de serviço por Whatsapp'])
+    @endif
 </tr>

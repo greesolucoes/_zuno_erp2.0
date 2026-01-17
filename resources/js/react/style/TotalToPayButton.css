@@ -1,0 +1,52 @@
+/* ==== BOTÃO TOTAL A PAGAR ===================================== */
+.total-to-pay-button{
+    /* layout */
+    position:fixed;
+    bottom:84px;                 /* altura acima do footer          */
+    right:97px;                 /* desloca da borda direita        */
+    width:clamp(240px,28vw,340px);
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:.25rem;
+    padding:14px 24px;
+
+    /* visual */
+    background:linear-gradient(135deg,#ffb400 0%,#ff7300 100%);
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    font-family:inherit;
+    text-align:center;
+    box-shadow:0 4px 12px rgba(0,0,0,.35);
+    transition:transform .25s cubic-bezier(.4,0,.2,1),
+    box-shadow .25s;
+
+    /* leve pulsação contínua  */
+    animation:glow 4s ease-in-out infinite;
+    z-index:0;
+}
+
+.total-to-pay-button:hover{
+    box-shadow:0 8px 18px rgba(0,0,0,.4);
+}
+
+/* tipografia individual */
+.total-label{
+    font-size:1.2rem;
+    font-weight:700;
+    letter-spacing:.4px;
+}
+
+.total-amount{
+    font-size:2.2rem;
+    font-weight:800;
+    line-height:1;
+}
+
+/* animação de brilho suave */
+@keyframes glow{
+    0%,100%{ filter:brightness(1); }
+    50%    { filter:brightness(1.15); }
+}

@@ -1,0 +1,196 @@
+/* ============================================================
+   VARIÁVEIS GERAIS
+   ============================================================ */
+:root{
+    --gap                 : 1rem;
+    --sb-open             : 260px;   /* sidebar aberta   */
+    --sb-close            : 78px;    /* sidebar fechada  */
+    --new-border-radius   : 10px;
+    --new-input-box-shadow: 0 2px 4px rgba(0,0,0,.15);
+    --new-primary-color   : #3a1e4b;
+}
+
+/* ============================================================
+   FOOTER — contêiner principal fixo ao fundo
+   ============================================================ */
+footer{
+    inset: auto 0 0 0;              /* top | left | bottom | right */
+    height: 72px;
+
+    display: flex;
+    align-items: stretch;
+    gap: 1.75rem;
+    padding-inline: 1.75rem;
+    background   : #393d73;
+    border-radius: var(--new-border-radius);
+    box-shadow   : var(--new-input-box-shadow);
+    box-shadow   : 0 -2px 0 #393d73 inset;
+    z-index: 90;
+}
+
+/* Folga lateral quando a sidebar estiver recolhida */
+body.sidebar--close footer{ left: var(--sb-close); }
+
+/* ============================================================
+   BLOCO ESQUERDO — Informações
+   ============================================================ */
+.footer__container{
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* Ícone “F1” (mantido caso exista) */
+.footer__kbd{
+    flex: 0 0 64px;
+    width : 64px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(180deg,#ffb200 0%,#f0462d 100%);
+    border-radius: 6px;
+    box-shadow:
+        0 2px 4px rgba(0,0,0,.25) inset,
+        0 0 0 1px rgba(255,255,255,.12);
+
+    font-size: 1.25rem;
+    letter-spacing: .04em;
+    color: #fff;
+    font-weight: 700;
+}
+
+/* ------------------- NOVO LAYOUT DAS INFORMAÇÕES ------------------- */
+.footer__infos{
+    display: flex;
+    align-items: center;
+    column-gap: 2.25rem;   /* separação horizontal */
+    row-gap: .5rem;        /* caso haja wrap */
+    flex-wrap: wrap;
+    font-size: 1.35rem;    /* maior legibilidade */
+    white-space: nowrap;
+}
+
+.footer__info{
+    display: inline-flex;
+    align-items: baseline;
+    gap: .35rem;           /* espaço label/valor */
+    position: relative;
+}
+
+/* divisor vertical entre itens (exceto o primeiro) */
+.footer__info + .footer__info::before{
+    content: '';
+    position: absolute;
+    left: -1.125rem;       /* metade do column-gap */
+    top: 15%;
+    width: 1px;
+    height: 70%;
+    background: rgba(255,255,255,.25);
+}
+
+/* cores e ênfase */
+.footer__infos b          { color:#ffb200; font-weight:700; }
+.footer__infos em,
+.footer__infos span       { color:#fff; font-style:normal; font-weight:600; }
+
+.footer__credit{
+    margin-left: .75rem;
+    padding: .1rem .5rem;
+    border-radius: 999px;
+    background: rgba(46, 204, 113, .18);
+    color: #2ecc71;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+/* ============================================================
+   BLOCO DIREITO — Botão
+   ============================================================ */
+.footer__containte--actions{
+    flex: 0 0 260px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+#action_container{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Botão “Finalizar Venda” */
+.action__button{
+    flex: 0 0 100%;
+    height: 48px;
+
+    background: linear-gradient(90deg,#ffb200 0%,#f0462d 100%);
+    border: none;
+    border-radius: 8px;
+
+    color: #fff;
+    font-size: 1.35rem;
+    font-weight: 700;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .75rem;
+
+    cursor: pointer;
+    transition: transform .1s ease, filter .1s ease;
+}
+
+.action__button img{
+    width : 36px;
+    height: 36px;
+}
+
+.action__button:hover   { filter: brightness(.94); }
+.action__button:active  { transform: scale(.97);   }
+.action__button:disabled{
+    opacity : .5;
+    cursor  : not-allowed;
+}
+
+/* ============================================================
+   RESPONSIVO (≤ 720 px)
+   ============================================================ */
+@media (max-width: 720px){
+    footer{
+        flex-direction: column;
+        height: auto;
+        padding: 1rem;
+    }
+
+    .footer__container{
+        justify-content: center;
+        text-align: center;
+        flex-wrap: wrap;
+    }
+
+    .footer__infos{
+        justify-content: center;
+        font-size: 1.15rem;     /* reduz suavemente */
+    }
+
+    .footer__info + .footer__info::before{
+        display: none;          /* remove divisores em mobile */
+    }
+
+    .footer__containte--actions,
+    #action_container{
+        width: 100%;
+        justify-content: center;
+    }
+
+    .action__button{
+        flex: 0 1 100%;
+    }
+}

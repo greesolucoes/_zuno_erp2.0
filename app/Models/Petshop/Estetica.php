@@ -119,7 +119,7 @@ class Estetica extends Model
 
     public function contaReceber()
     {
-        return $this->hasOne(ContaReceber::class);
+        return $this->hasOne(ContaReceber::class, 'estetica_id', 'id');
     }
 
     public function ordemServico()

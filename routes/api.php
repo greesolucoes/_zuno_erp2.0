@@ -216,6 +216,7 @@ Route::group(['prefix' => 'produtos'], function () {
     Route::get('/find/{id}', 'API\\ProdutoController@find');
     Route::get('/findByBarcode', 'API\\ProdutoController@findByBarcode');
     Route::get('/findByBarcodeReference', 'API\\ProdutoController@findByBarcodeReference');
+    Route::get('/valida-estoque', 'API\\ProdutoController@validaEstoque');
     Route::get('/linhaProdutoCompra', 'API\\ProdutoController@linhaProdutoCompra');
     Route::get('/linhaParcelaCompra', 'API\\ProdutoController@linhaParcelaCompra');
     Route::post('/storeProdutoRapido', 'API\\ProdutoController@storeProdutoRapido');
@@ -258,6 +259,11 @@ Route::group(['prefix' => 'vendas'], function () {
 
 Route::group(['prefix' => 'pdv'], function () {
     Route::post('/store', 'API\\VendaCaixaController@store');
+    Route::get('/tipos-pagamento', 'API\\PdvController@tiposPagamento');
+    Route::post('/sangria', 'API\\PdvController@sangria');
+    Route::post('/suprimento', 'API\\PdvController@suprimento');
+    Route::get('/sangria-print/{id}', 'API\\PdvController@printSangria');
+    Route::get('/suprimento-print/{id}', 'API\\PdvController@printSuprimento');
 });
 
 Route::group(['prefix' => 'produtosEcommerce'], function () {
@@ -285,6 +291,13 @@ Route::group(['prefix' => 'frenteCaixa'], function () {
     Route::get('/linhaProdutoVenda', 'API\\FrontBoxController@linhaProdutoVenda');
     Route::get('/linhaProdutoVenda', 'API\\FrontBoxController@linhaProdutoVenda');
     Route::get('/linhaParcelaVenda', 'API\\FrontBoxController@linhaParcelaVenda');
+    Route::post('/store', 'API\\VendaCaixaController@store');
+    Route::post('/suspender', 'API\\FrenteCaixaController@suspender');
+    Route::get('/venda-suspensas', 'API\\FrenteCaixaController@vendasSuspensas');
+    Route::post('/venda-suspensas/{id}/delete', 'API\\FrenteCaixaController@deleteVendaSuspensa');
+    Route::get('/fluxo-diario', 'API\\FrenteCaixaController@fluxoDiario');
+    Route::get('/pre-vendas', 'API\\FrenteCaixaController@preVendas');
+    Route::get('/pre-vendas/{id}', 'API\\FrenteCaixaController@preVendaShow');
 });
 
 Route::group(['prefix' => 'ordemServico'], function () {

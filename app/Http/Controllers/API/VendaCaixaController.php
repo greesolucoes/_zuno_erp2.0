@@ -27,6 +27,14 @@ class VendaCaixaController extends Controller
                 $valor_total = $this->somaItens($request);
                 $empresa = Empresa::findOrFail($request->empresa_id);
 
+                $vendaSuspensaId = $request->venda_suspensa_id ?? null;
+                $vendaSuspensa = null;
+                if ($vendaSuspensaId) {
+                    $vendaSuspensa = VendaCaixa::where('empresa_id', $request->empresa_id)
+                        ->where('rascunho', 1)
+                        ->find($vendaSuspensaId);
+                }
+
                 $prevenda = VendaCaixaPreVenda::find($request->prevenda_id);
                 if ($prevenda != null) {
                     $prevenda->status = 1;
@@ -61,7 +69,17 @@ class VendaCaixaController extends Controller
                     'filial_id' => $request->filial_id != -1 ? $request->filial_id : null
                 ]);
 
-                $vendaCaixa = VendaCaixa::create($request->all());
+                if ($vendaSuspensa) {
+                    $vendaSuspensa->fill($request->all());
+                    $vendaSuspensa->rascunho = 0;
+                    $vendaSuspensa->consignado = 0;
+                    $vendaSuspensa->save();
+                    $vendaSuspensa->itens()->delete();
+                    $vendaSuspensa->fatura()->delete();
+                    $vendaCaixa = $vendaSuspensa;
+                } else {
+                    $vendaCaixa = VendaCaixa::create($request->all());
+                }
                 $stockMove = new StockMove();
                 for ($i = 0; $i < sizeof($request->produto_id); $i++) {
                     $product = Produto::findOrFail($request->produto_id[$i]);

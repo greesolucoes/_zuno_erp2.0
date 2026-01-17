@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use App\Models\ContaReceberParcela;
 use App\Models\ContaReceber;
 use App\Models\PlanoUser;
-use App\Services\Notificacao\EsteticaNotificacaoService;
 use App\Services\Petshop\PlanoLimiteService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -290,11 +289,6 @@ class AgendamentosController extends Controller
                 'servico_id'  => $servico->id,
                 'subtotal'    => $valor,
             ]);
-        }
-
-        if ($novoAgendamento) {
-            $esteticaParaNotificacao = $estetica->fresh(['empresa', 'cliente', 'animal', 'servicos.servico']);
-            (new EsteticaNotificacaoService())->nova($esteticaParaNotificacao ?? $estetica);
         }
 
         return response()->json(['success' => true]);
