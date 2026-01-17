@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class OrdemServico extends Model
 {
@@ -10,6 +11,25 @@ class OrdemServico extends Model
     protected $fillable = [
         'descricao', 'cliente_id', 'usuario_id', 'empresa_id', 'valor'
     ];
+
+    public static function filterAttributesForTable(array $attributes): array
+    {
+        static $columns = null;
+        if ($columns === null) {
+            $columns = Schema::getColumnListing('ordem_servicos');
+        }
+
+        return array_intersect_key($attributes, array_flip($columns));
+    }
+
+    public static function nextCodigoSequencial(int $empresaId): ?int
+    {
+        if (!Schema::hasColumn('ordem_servicos', 'codigo_sequencial')) {
+            return null;
+        }
+
+        return ((int) (self::query()->where('empresa_id', $empresaId)->max('codigo_sequencial') ?? 0)) + 1;
+    }
 
     public function servicos(){
         return $this->hasMany('App\Models\ServicoOs', 'ordem_servico_id', 'id');

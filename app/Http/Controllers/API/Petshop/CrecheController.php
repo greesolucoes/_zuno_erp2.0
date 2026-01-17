@@ -255,22 +255,22 @@ class CrecheController extends Controller
                     $creche->produtos()->sync($produtos_data);
                 }
 
-                $codigo_sequencial = (OrdemServico::where('empresa_id', $empresa_id)->max('codigo_sequencial') ?? 0) + 1;
+                $codigo_sequencial = OrdemServico::nextCodigoSequencial($empresa_id);
 
-                $ordem = OrdemServico::create([
-                    'descricao' => 'Ordem de Serviço Creche',
-                    'cliente_id' => $pet->cliente_id,
-                    'empresa_id' => $empresa_id,
-                    'funcionario_id' => $request->colaborador_id,
-                    'animal_id' => $pet->id,
-                    'creche_id' => $creche->id,
-                    'usuario_id' => auth()->id(),
+                $ordem = OrdemServico::create(OrdemServico::filterAttributesForTable([
+                    'descricao'         => 'Ordem de Serviço Creche',
+                    'cliente_id'        => $pet->cliente_id,
+                    'empresa_id'        => $empresa_id,
+                    'funcionario_id'    => $request->colaborador_id,
+                    'animal_id'         => $pet->id,
+                    'creche_id'         => $creche->id,
+                    'usuario_id'        => get_id_user() ?? auth()->id(),
                     'codigo_sequencial' => $codigo_sequencial,
-                    'valor' => $valor_servicos + $valor_produtos,
-                    'data_inicio' => $data_entrada,
-                    'data_entrega' => $data_saida,
-                    'estado' => 'AG',
-                ]);
+                    'valor'             => $valor_servicos + $valor_produtos,
+                    'data_inicio'       => $data_entrada,
+                    'data_entrega'      => $data_saida,
+                    'estado'            => $codigo_sequencial !== null ? 'AG' : 'pendente',
+                ]));
 
                 $creche->update(['ordem_servico_id' => $ordem->id]);
 

@@ -18,7 +18,6 @@ use App\Services\Notificacao\HotelNotificacaoService;
 use App\Services\Petshop\HotelService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Services\QuartoService;
@@ -37,7 +36,7 @@ class HotelController extends Controller
     public function index(Request $request)
     {
 
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = $request->empresa_id;
 
         $pesquisa = $request->input('pesquisa');
         $checkin = $request->input('checkin_start_date');
@@ -92,7 +91,7 @@ class HotelController extends Controller
     public function create()
     {
 
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = request()->empresa_id;
 
         $servicos = Servico::whereHas('categoria', function ($query) {
             $query->where('nome', 'HOTEL');
@@ -114,7 +113,7 @@ class HotelController extends Controller
     {
         $quarto_service = new QuartoService();
 
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = $request->empresa_id;
         Log::debug('HotelController@store payload', $request->only('checkin', 'timecheckin', 'checkout', 'timecheckout'));
 
         $request->merge([
@@ -165,6 +164,7 @@ class HotelController extends Controller
         ]);
 
         $request->validate([
+            'empresa_id' => 'required|integer',
             // Dados da reserva
 
             'animal_id' => 'required|exists:petshop_animais,id',
@@ -323,9 +323,9 @@ class HotelController extends Controller
                 $hotel->produtos()->sync($produtos_data);
             }
 
-            $codigoSequencial = (OrdemServico::where('empresa_id', $empresa_id)->max('codigo_sequencial') ?? 0) + 1;
+            $codigoSequencial = OrdemServico::nextCodigoSequencial($empresa_id);
 
-            $ordem = OrdemServico::create([
+            $ordem = OrdemServico::create(OrdemServico::filterAttributesForTable([
                 'descricao'         => 'Ordem de Serviço Avulso',
                 'cliente_id'        => $pet->cliente_id,
                 'empresa_id'        => $empresa_id,
@@ -333,13 +333,13 @@ class HotelController extends Controller
                 'animal_id'         => $pet->id,
                 'plano_id'          => null,
                 'hotel_id'          => $hotel->id,
-                'usuario_id'        => auth()->id(),
+                'usuario_id'        => get_id_user() ?? auth()->id(),
                 'codigo_sequencial' => $codigoSequencial,
                 'valor'             => $valor_servicos + $valor_produtos,
                 'data_inicio'       => $checkin,
                 'data_entrega'      => $checkout,
-                'estado'            => 'EA',
-            ]);
+                'estado'            => $codigoSequencial !== null ? 'EA' : 'pendente',
+            ]));
 
             $hotel->update(['ordem_servico_id' => $ordem->id]);
 
@@ -462,7 +462,7 @@ class HotelController extends Controller
 
     public function edit(string $id)
     {
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = request()->empresa_id;
 
         $data = Hotel::with('servicos.categoria')->where('empresa_id', $empresa_id)->findOrFail($id);
 
@@ -499,7 +499,7 @@ class HotelController extends Controller
     public function update(Request $request, $id)
     {
         $quarto_servie = new QuartoService();
-        $empresa_id = Auth::user()?->empresa?->empresa_id;
+        $empresa_id = $request->empresa_id;
         Log::debug('HotelController@update payload', $request->only('checkin', 'timecheckin', 'checkout', 'timecheckout'));
 
         $request->merge([
@@ -539,6 +539,7 @@ class HotelController extends Controller
         ]);
 
         $request->validate([
+            'empresa_id' => 'required|integer',
             // Dados da reserva
 
             'animal_id' => 'required|exists:petshop_animais,id',

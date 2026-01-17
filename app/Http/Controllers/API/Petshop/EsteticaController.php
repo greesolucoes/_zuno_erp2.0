@@ -299,10 +299,10 @@ class EsteticaController extends Controller
                         ->whereYear('data_entrega', $dataNova->year)
                         ->first();
 
-                    $codigoSequencial = (OrdemServico::where('empresa_id', $estetica->empresa_id)->max('codigo_sequencial') ?? 0) + 1;
+                    $codigoSequencial = OrdemServico::nextCodigoSequencial($estetica->empresa_id);
 
                     if (!$ordemNova) {
-                        $ordemNova = OrdemServico::create([
+                        $ordemNova = OrdemServico::create(OrdemServico::filterAttributesForTable([
                             'empresa_id'        => $empresa_id,
                             'plano_id'          => $estetica->plano_id,
                             'codigo_sequencial' => $codigoSequencial,
@@ -313,8 +313,8 @@ class EsteticaController extends Controller
                             'cliente_id'        => $estetica->cliente_id,
                             'descricao'         => 'ORDEM DE SERVIÇO: ' . $estetica->plano_id . ' (MÊS: ' . $dataNova->format('Y-m') . ')',
                             'funcionario_id'    => $estetica->colaborador_id,
-                            'estado'            => $estetica->estado === "AG" ? 'AF' : 'FZ',
-                        ]);
+                            'estado'            => $codigoSequencial !== null ? ($estetica->estado === "AG" ? 'AF' : 'FZ') : 'pendente',
+                        ]));
                     } else {
                         $modulos = $ordemNova->modulo_ids ?? [];
                         if (!in_array($estetica->id, $modulos['Estetica'] ?? [])) {

@@ -100,14 +100,15 @@ class CrecheController extends Controller
 
     public function store(Request $request)
     {
-        $empresa_id = request()->empresa_id;
-            
+        $empresa_id = $request->empresa_id ?? (session('user_logged')['empresa'] ?? null);
+        $request->merge(['empresa_id' => $empresa_id]);
+	            
         $this->_validate($request);
 
         $servico_reserva = $request->servico_ids[0] ? Servico::with('categoria')->find($request->servico_ids[0]) : null;
 
         if (!$servico_reserva || strtoupper($servico_reserva->categoria->nome) !== 'CRECHE') {
-            return back()->withErrors(['servico_ids.0' => 'Selecione um serviço de hotel como primeiro serviço.'])->withInput();
+            return back()->withErrors(['servico_ids.0' => 'Selecione um serviço de creche como primeiro serviço.'])->withInput();
         }
 
         try {
@@ -204,22 +205,22 @@ class CrecheController extends Controller
                 $creche->produtos()->sync($produtos_data);
             }
 
-            $codigo_sequencial = (OrdemServico::where('empresa_id', $empresa_id)->max('codigo_sequencial') ?? 0) + 1;
+            $codigo_sequencial = OrdemServico::nextCodigoSequencial($empresa_id);
 
-            $ordem = OrdemServico::create([
-                'descricao' => 'Ordem de Serviço Creche',
-                'cliente_id' => $pet->cliente_id,
-                'empresa_id' => $empresa_id,
-                'funcionario_id' => $request->colaborador_id,
-                'animal_id' => $pet->id,
-                'creche_id' => $creche->id,
-                'usuario_id' => auth()->id(),
+            $ordem = OrdemServico::create(OrdemServico::filterAttributesForTable([
+                'descricao'         => 'Ordem de Serviço Creche',
+                'cliente_id'        => $pet->cliente_id,
+                'empresa_id'        => $empresa_id,
+                'funcionario_id'    => $request->colaborador_id,
+                'animal_id'         => $pet->id,
+                'creche_id'         => $creche->id,
+                'usuario_id'        => get_id_user() ?? auth()->id(),
                 'codigo_sequencial' => $codigo_sequencial,
-                'valor' => $valor_servicos + $valor_produtos,
-                'data_inicio' => $data_entrada,
-                'data_entrega' => $data_saida,
-                'estado' => 'AG',
-            ]);
+                'valor'             => $valor_servicos + $valor_produtos,
+                'data_inicio'       => $data_entrada,
+                'data_entrega'      => $data_saida,
+                'estado'            => $codigo_sequencial !== null ? 'AG' : 'pendente',
+            ]));
 
             $creche->update(['ordem_servico_id' => $ordem->id]);
 
@@ -352,7 +353,8 @@ class CrecheController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $empresa_id = request()->empresa_id;
+        $empresa_id = $request->empresa_id ?? (session('user_logged')['empresa'] ?? null);
+        $request->merge(['empresa_id' => $empresa_id]);
 
         $this->_validate($request);
 
@@ -545,7 +547,7 @@ class CrecheController extends Controller
         return redirect()->route('creches.index');
     }
 
-    private function _validate(Request $request) {
+	    private function _validate(Request $request) {
         $request->merge([
             'servico_ids' => array_values(
                 array_map(
@@ -593,8 +595,9 @@ class CrecheController extends Controller
                 ->toArray(),
         ]);
             
-        $rules = [
-            // Dados da reserva
+	        $rules = [
+                'empresa_id' => 'required|integer',
+	            // Dados da reserva
 
             'animal_id' => 'required|exists:petshop_animais,id',
             'turma_id' => 'required|exists:petshop_turmas,id',

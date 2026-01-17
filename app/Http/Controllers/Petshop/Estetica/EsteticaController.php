@@ -377,7 +377,7 @@ class EsteticaController extends Controller
 
             $ordem = $estetica->ordemServico;
             if ($ordem) {
-                $ordem->update([
+                $ordem->update(OrdemServico::filterAttributesForTable([
                     'cliente_id'         => $pet->cliente_id,
                     'empresa_id'         => $empresa_id,
                     'funcionario_id'     => $request->colaborador_id,
@@ -386,10 +386,10 @@ class EsteticaController extends Controller
                     'total_sem_desconto' => $valorTotal,
                     'data_inicio'        => $data,
                     'data_entrega'       => $data_final_agendamento,
-                ]);
+                ]));
             } else {
-                $codigoSequencial = (OrdemServico::where('empresa_id', $empresa_id)->max('codigo_sequencial') ?? 0) + 1;
-                $ordem = OrdemServico::create([
+                $codigoSequencial = OrdemServico::nextCodigoSequencial($empresa_id);
+                $ordem = OrdemServico::create(OrdemServico::filterAttributesForTable([
                     'descricao'          => 'Ordem de Serviço Estetica',
                     'cliente_id'         => $pet->cliente_id,
                     'empresa_id'         => $empresa_id,
@@ -398,14 +398,14 @@ class EsteticaController extends Controller
                     'plano_id'           => null,
                     'modulos'            => 'Estetica',
                     'modulo_ids'         => ['Estetica' => [$estetica->id]],
-                    'usuario_id'         => auth()->id(),
+                    'usuario_id'         => get_id_user() ?? auth()->id(),
                     'codigo_sequencial'  => $codigoSequencial,
                     'valor'              => $valorTotal,
                     'total_sem_desconto' => $valorTotal,
                     'data_inicio'        => $data,
                     'data_entrega'       => $data,
-                    'estado'             => 'AF',
-                ]);
+                    'estado'             => $codigoSequencial !== null ? 'AF' : 'pendente',
+                ]));
                 $estetica->update(['ordem_servico_id' => $ordem->id]);
             }
 

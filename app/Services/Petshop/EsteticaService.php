@@ -180,15 +180,14 @@ class EsteticaService
         $valorProdutos = $estetica->produtos->sum('subtotal');
         $valorTotal = $valorServicos + $valorProdutos;
 
-        $codigoSequencial = (OrdemServico::where('empresa_id', $estetica->empresa_id)
-            ->max('codigo_sequencial') ?? 0) + 1;
+        $codigoSequencial = OrdemServico::nextCodigoSequencial($estetica->empresa_id);
 
         $data = Carbon::parse($estetica->data_agendamento)
             ->setTimeFromTimeString($estetica->horario_agendamento);
 
         $data_final_agendamento = $data->copy()->addMinutes($tempo_execucao_servicos);
 
-        $ordem = OrdemServico::create([
+        $ordem = OrdemServico::create(OrdemServico::filterAttributesForTable([
             'descricao'          => 'Ordem de Serviço Estetica',
             'cliente_id'         => $estetica->cliente_id,
             'empresa_id'         => $estetica->empresa_id,
@@ -197,14 +196,14 @@ class EsteticaService
             'plano_id'           => null,
             'modulos'            => 'Estetica',
             'modulo_ids'         => ['Estetica' => [$estetica->id]],
-            'usuario_id'         => auth()->id(),
+            'usuario_id'         => get_id_user() ?? auth()->id(),
             'codigo_sequencial'  => $codigoSequencial,
             'valor'              => $valorTotal,
             'total_sem_desconto' => $valorTotal,
             'data_inicio'        => $data,
             'data_entrega'       => $data_final_agendamento,
-            'estado'             => OrdemServico::STATUS_AGENDADO,
-        ]);
+            'estado'             => $codigoSequencial !== null ? 'AG' : 'pendente',
+        ]));
 
         $estetica->update(['ordem_servico_id' => $ordem->id]);
 

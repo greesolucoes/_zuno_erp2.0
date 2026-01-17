@@ -275,9 +275,9 @@ class HotelController extends Controller
                     $hotel->produtos()->sync($produtos_data);
                 }
 
-                $codigoSequencial = (OrdemServico::where('empresa_id', $empresa_id)->max('codigo_sequencial') ?? 0) + 1;
+                $codigoSequencial = OrdemServico::nextCodigoSequencial($empresa_id);
 
-                $ordem = OrdemServico::create([
+                $ordem = OrdemServico::create(OrdemServico::filterAttributesForTable([
                     'descricao'         => 'Ordem de Serviço Avulso',
                     'cliente_id'        => $pet->cliente_id,
                     'empresa_id'        => $empresa_id,
@@ -285,13 +285,13 @@ class HotelController extends Controller
                     'animal_id'         => $pet->id,
                     'plano_id'          => null,
                     'hotel_id'          => $hotel->id,
-                    'usuario_id'        => auth()->id(),
+                    'usuario_id'        => get_id_user() ?? auth()->id(),
                     'codigo_sequencial' => $codigoSequencial,
                     'valor'             => $valor_servicos + $valor_produtos,
                     'data_inicio'       => $checkin,
                     'data_entrega'      => $checkout,
-                    'estado'            => 'EA',
-                ]);
+                    'estado'            => $codigoSequencial !== null ? 'EA' : 'pendente',
+                ]));
 
                 $hotel->update(['ordem_servico_id' => $ordem->id]);
 
