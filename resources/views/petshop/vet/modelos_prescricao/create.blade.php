@@ -2,7 +2,7 @@
 
 @section('content')
     @php
-        $availableCategories = \App\Support\Petshop\Vet\PrescriptionModelOptions::categories();
+        $availableCategories = \App\Models\Petshop\ModeloPrescricao::categories();
         $categoryOptions = ['' => 'Selecione'] + $availableCategories;
         $selectedCategory = old('category');
         $customCategoryValue = old('custom_category');

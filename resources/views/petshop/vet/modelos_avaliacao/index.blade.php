@@ -2,8 +2,8 @@
 
 @section('content')
     @php
-        $categoryFilterOptions = ['' => 'Todas'] + \App\Support\Petshop\Vet\AssessmentModelOptions::categories();
-        $statusFilterOptions = ['' => 'Todos'] + \App\Support\Petshop\Vet\AssessmentModelOptions::statusOptions();
+        $categoryFilterOptions = ['' => 'Todas'] + \App\Models\Petshop\ModeloAvaliacao::categories();
+        $statusFilterOptions = ['' => 'Todos'] + \App\Models\Petshop\ModeloAvaliacao::statusOptions();
     @endphp
 
     <x-table

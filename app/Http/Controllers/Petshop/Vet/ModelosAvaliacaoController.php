@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Petshop\StoreModeloAvaliacaoRequest;
 use App\Http\Requests\Petshop\UpdateModeloAvaliacaoRequest;
 use App\Models\Petshop\ModeloAvaliacao;
-use App\Support\Petshop\Vet\AssessmentModelOptions;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -47,7 +46,7 @@ class ModelosAvaliacaoController extends Controller
                 }
 
                 if ($categoria === 'personalizado') {
-                    $categoriasPadrao = array_keys(AssessmentModelOptions::categories());
+                    $categoriasPadrao = array_keys(ModeloAvaliacao::categories());
 
                     $query->where(function ($subQuery) use ($categoriasPadrao) {
                         $subQuery
@@ -67,7 +66,7 @@ class ModelosAvaliacaoController extends Controller
             ->when($request->filled('status'), function ($query) use ($request) {
                 $status = $request->string('status')->toString();
 
-                if (in_array($status, AssessmentModelOptions::statuses(), true)) {
+                if (in_array($status, ModeloAvaliacao::statuses(), true)) {
                     $query->where('status', $status);
                 }
             })
@@ -139,7 +138,7 @@ class ModelosAvaliacaoController extends Controller
                     'category' => $categoria,
                     'notes' => $observacoes,
                     'fields' => $campos,
-                    'status' => AssessmentModelOptions::STATUS_ACTIVE,
+                    'status' => ModeloAvaliacao::STATUS_ACTIVE,
                     'created_by' => $userId,
                     'updated_by' => $userId,
                 ]);
@@ -174,8 +173,8 @@ class ModelosAvaliacaoController extends Controller
 
         return view('petshop.vet.modelos_avaliacao.edit', [
             'modelo' => $modelo,
-            'categorias' => AssessmentModelOptions::categories(),
-            'statusOptions' => AssessmentModelOptions::statusOptions(),
+            'categorias' => ModeloAvaliacao::categories(),
+            'statusOptions' => ModeloAvaliacao::statusOptions(),
         ]);
     }
 
@@ -222,8 +221,8 @@ class ModelosAvaliacaoController extends Controller
             $observacoes = null;
         }
 
-        if (! in_array($status, AssessmentModelOptions::statuses(), true)) {
-            $status = $modelo->status ?? AssessmentModelOptions::STATUS_ACTIVE;
+        if (! in_array($status, ModeloAvaliacao::statuses(), true)) {
+            $status = $modelo->status ?? ModeloAvaliacao::STATUS_ACTIVE;
         }
 
         try {
@@ -270,7 +269,7 @@ class ModelosAvaliacaoController extends Controller
 
             $tipoCampo = Str::of($tipoCampo)->trim()->toString();
 
-            if (! in_array($tipoCampo, AssessmentModelOptions::fieldTypes(), true)) {
+            if (! in_array($tipoCampo, ModeloAvaliacao::fieldTypes(), true)) {
                 continue;
             }
 
@@ -288,7 +287,7 @@ class ModelosAvaliacaoController extends Controller
 
     private function extrairConfiguracoes(array $fields, string $tipo, int $indice): array
     {
-        $configKeys = AssessmentModelOptions::configKeysForType($tipo);
+        $configKeys = ModeloAvaliacao::configKeysForType($tipo);
         $config = [];
 
         foreach ($configKeys as $key) {
@@ -364,7 +363,7 @@ class ModelosAvaliacaoController extends Controller
         return [
             'id' => $modelo->id,
             'title' => $modelo->title,
-            'category' => AssessmentModelOptions::categoryLabel($modelo->category) ?? '—',
+            'category' => ModeloAvaliacao::categoryLabel($modelo->category) ?? '—',
             'updated_at' => optional($modelo->updated_at)?->format('d/m/Y H:i'),
             'status' => $this->rotuloStatus($modelo->status),
             'status_class' => $this->classeStatus($modelo->status),
@@ -374,8 +373,8 @@ class ModelosAvaliacaoController extends Controller
     private function rotuloStatus(?string $status): string
     {
         return match ($status) {
-            AssessmentModelOptions::STATUS_ACTIVE => 'Ativo',
-            AssessmentModelOptions::STATUS_INACTIVE => 'Inativo',
+            ModeloAvaliacao::STATUS_ACTIVE => 'Ativo',
+            ModeloAvaliacao::STATUS_INACTIVE => 'Inativo',
             default => '—',
         };
     }
@@ -383,8 +382,8 @@ class ModelosAvaliacaoController extends Controller
     private function classeStatus(?string $status): string
     {
         return match ($status) {
-            AssessmentModelOptions::STATUS_ACTIVE => 'badge bg-success',
-            AssessmentModelOptions::STATUS_INACTIVE => 'badge bg-secondary',
+            ModeloAvaliacao::STATUS_ACTIVE => 'badge bg-success',
+            ModeloAvaliacao::STATUS_INACTIVE => 'badge bg-secondary',
             default => 'badge bg-light text-dark',
         };
     }
@@ -418,7 +417,7 @@ class ModelosAvaliacaoController extends Controller
                 return [
                     'label' => $label,
                     'type' => $tipo,
-                    'type_label' => AssessmentModelOptions::fieldTypeLabel($tipo),
+                    'type_label' => ModeloAvaliacao::fieldTypeLabel($tipo),
                     'configuracoes' => $this->formatarConfiguracoesParaVisualizacao(
                         $tipo,
                         is_array($campo['config'] ?? null) ? $campo['config'] : []
@@ -429,7 +428,7 @@ class ModelosAvaliacaoController extends Controller
 
         return [
             'title' => $modelo->title,
-            'category_label' => AssessmentModelOptions::categoryLabel($modelo->category) ?? '—',
+            'category_label' => ModeloAvaliacao::categoryLabel($modelo->category) ?? '—',
             'notes' => $modelo->notes,
             'status_label' => $this->rotuloStatus($modelo->status),
             'status_class' => $this->classeStatus($modelo->status),
@@ -453,7 +452,7 @@ class ModelosAvaliacaoController extends Controller
             }
 
             $resultado[] = [
-                'label' => AssessmentModelOptions::configLabel((string) $chave, $tipo),
+                'label' => ModeloAvaliacao::configLabel((string) $chave, $tipo),
                 'value' => $this->formatarValorConfiguracaoParaVisualizacao((string) $chave, $valor),
                 'is_html' => $chave === 'rich_text_default',
             ];

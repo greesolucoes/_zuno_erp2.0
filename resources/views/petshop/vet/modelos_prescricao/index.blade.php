@@ -2,8 +2,8 @@
 
 @section('content')
     @php
-        $categoryFilterOptions = ['' => 'Todas'] + \App\Support\Petshop\Vet\PrescriptionModelOptions::categories();
-        $statusFilterOptions = ['' => 'Todos'] + \App\Support\Petshop\Vet\PrescriptionModelOptions::statusOptions();
+        $categoryFilterOptions = ['' => 'Todas'] + \App\Models\Petshop\ModeloPrescricao::categories();
+        $statusFilterOptions = ['' => 'Todos'] + \App\Models\Petshop\ModeloPrescricao::statusOptions();
     @endphp
 
     <x-table

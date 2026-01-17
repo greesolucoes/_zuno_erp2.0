@@ -3,10 +3,6 @@
 namespace App\Http\Controllers\Petshop\Vet;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Petshop\StoreExamTypeRequest;
-use App\Http\Requests\Petshop\StoreVetExamRequest;
-use App\Http\Requests\Petshop\UpdateVetExamCollectionRequest;
-use App\Http\Requests\Petshop\UpdateVetExamReportRequest;
 use App\Models\Petshop\Animal;
 use App\Models\Petshop\Atendimento;
 use App\Models\Petshop\Exame;
@@ -36,6 +32,50 @@ class ExamesController extends Controller
     private const ATTACHMENT_STORAGE_DISK = 's3';
 
     private const ATTACHMENT_DIRECTORY = 'uploads/vet/solicitacao_exames/';
+
+    private const DEFAULT_ACTION = 'confirm_and_schedule_vaccination';
+
+    private const REQUEST_ATTACHMENT_EXTENSIONS = [
+        'pdf',
+        'doc',
+        'docx',
+        'xls',
+        'xlsx',
+        'ppt',
+        'pptx',
+        'csv',
+        'txt',
+        'rtf',
+        'odt',
+        'ods',
+        'jpg',
+        'jpeg',
+        'png',
+        'mp4',
+    ];
+
+    private const COLLECTION_ATTACHMENT_EXTENSIONS = [
+        'pdf',
+        'doc',
+        'docx',
+        'xls',
+        'xlsx',
+        'ppt',
+        'pptx',
+        'csv',
+        'txt',
+        'rtf',
+        'odt',
+        'ods',
+        'jpg',
+        'jpeg',
+        'png',
+        'mp4',
+        'dcm',
+        'dicom',
+    ];
+
+    private const ATTACHMENT_MAX_SIZE_KB = 25600;
 
     private const SUPPORTED_DICOM_EXTENSIONS = ['dcm', 'dicom'];
 
@@ -109,8 +149,8 @@ class ExamesController extends Controller
         $animals = $this->loadAnimalOptions($companyId);
         $attendances = $this->loadAttendanceOptions($companyId, $selectedAttendance);
 
-        $requestAttachmentExtensions = StoreVetExamRequest::ATTACHMENT_EXTENSIONS;
-        $requestAttachmentAccept = StoreVetExamRequest::attachmentAcceptAttribute();
+        $requestAttachmentExtensions = self::REQUEST_ATTACHMENT_EXTENSIONS;
+        $requestAttachmentAccept = $this->buildAttachmentAcceptAttribute($requestAttachmentExtensions);
 
         return view('petshop.vet.exames.create', [
             'examTypes' => $examTypes,
@@ -162,8 +202,8 @@ class ExamesController extends Controller
                 ? $this->formatAttendanceContext($exam->attendance)
                 : null,
             'documents' => $this->formatExamDocuments($exam),
-            'collectionAttachmentExtensions' => UpdateVetExamCollectionRequest::ATTACHMENT_EXTENSIONS,
-            'collectionAttachmentAccept' => UpdateVetExamCollectionRequest::attachmentAcceptAttribute(),
+            'collectionAttachmentExtensions' => self::COLLECTION_ATTACHMENT_EXTENSIONS,
+            'collectionAttachmentAccept' => $this->buildAttachmentAcceptAttribute(self::COLLECTION_ATTACHMENT_EXTENSIONS),
         ]);
     }
 
@@ -219,7 +259,7 @@ class ExamesController extends Controller
         ]);
     }
 
-    public function updateReport(UpdateVetExamReportRequest $request, VetExame $exam): RedirectResponse
+    public function updateReport(Request $request, VetExame $exam): RedirectResponse
     {
         $companyId = $this->getEmpresaId();
 
@@ -231,7 +271,7 @@ class ExamesController extends Controller
             abort(403, 'Este exame não pertence à empresa autenticada.');
         }
 
-        $data = $request->validated();
+        $data = $this->_validateUpdateReport($request);
 
         $exam->fill([
             'laudo' => $data['laudo'] ?? null,
@@ -278,7 +318,7 @@ class ExamesController extends Controller
         return redirect()->route('vet.exams.report', $redirectParams);
     }
 
-    public function store(StoreVetExamRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $companyId = $this->getEmpresaId();
 
@@ -286,8 +326,8 @@ class ExamesController extends Controller
             abort(403, 'Empresa não localizada para o usuário autenticado.');
         }
 
-        $data = $request->validated();
-        $action = $data['action'] ?? StoreVetExamRequest::DEFAULT_ACTION;
+        $data = $this->_validateStore($request);
+        $action = $data['action'] ?? self::DEFAULT_ACTION;
 
         $attendance = null;
 
@@ -316,20 +356,31 @@ class ExamesController extends Controller
             }
         }
 
-        $exam = VetExame::create([
-            'empresa_id' => $companyId,
-            'atendimento_id' => $attendance?->id,
-            'animal_id' => $data['animal_id'],
-            'medico_id' => $data['medico_id'],
-            'exame_id' => $data['exame_id'],
-            'data_prevista_coleta' => $data['data_prevista_coleta'] ?? null,
-            'laboratorio_parceiro' => $data['laboratorio_parceiro'] ?? null,
-            'prioridade' => $data['prioridade'],
-            'observacoes_clinicas' => $data['observacoes_clinicas'] ?? null,
-            'status' => $this->resolveStatusFromAction($action),
-        ]);
+        try {
+            $exam = null;
 
-        $this->storeRequestAttachments($exam, (array) $request->file('attachments', []));
+            DB::transaction(function () use ($companyId, $attendance, $data, $action, $request, &$exam) {
+                $exam = VetExame::create([
+                    'empresa_id' => $companyId,
+                    'atendimento_id' => $attendance?->id,
+                    'animal_id' => $data['animal_id'],
+                    'medico_id' => $data['medico_id'],
+                    'exame_id' => $data['exame_id'],
+                    'data_prevista_coleta' => $data['data_prevista_coleta'] ?? null,
+                    'laboratorio_parceiro' => $data['laboratorio_parceiro'] ?? null,
+                    'prioridade' => $data['prioridade'],
+                    'observacoes_clinicas' => $data['observacoes_clinicas'] ?? null,
+                    'status' => $this->resolveStatusFromAction($action),
+                ]);
+
+                $this->storeRequestAttachments($exam, (array) $request->file('attachments', []));
+            });
+        } catch (\Throwable $exception) {
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
+            __saveLogError($exception, request()->empresa_id);
+
+            return redirect()->back()->withInput();
+        }
 
         $message = $exam->status === VetExame::STATUS_RASCUNHO
             ? 'Rascunho de solicitação de exame salvo com sucesso.'
@@ -354,7 +405,7 @@ class ExamesController extends Controller
         return redirect()->route('vet.exams.index');
     }
 
-    public function update(UpdateVetExamCollectionRequest $request, VetExame $exam): RedirectResponse
+    public function update(Request $request, VetExame $exam): RedirectResponse
     {
         $companyId = $this->getEmpresaId();
 
@@ -366,17 +417,26 @@ class ExamesController extends Controller
             abort(403, 'Este exame não pertence à empresa autenticada.');
         }
 
-        $data = $request->validated();
+        $data = $this->_validateUpdateCollection($request);
 
         $exam->fill([
             'observacoes_clinicas' => $data['observacoes_clinicas'] ?? null,
         ]);
 
-        if ($exam->isDirty()) {
-            $exam->save();
-        }
+        try {
+            DB::transaction(function () use ($exam, $request) {
+                if ($exam->isDirty()) {
+                    $exam->save();
+                }
 
-        $this->storeCollectionAttachments($exam, (array) $request->file('collection_attachments', []));
+                $this->storeCollectionAttachments($exam, (array) $request->file('collection_attachments', []));
+            });
+        } catch (\Throwable $exception) {
+            session()->flash("flash_erro", "Algo deu errado: " . $exception->getMessage());
+            __saveLogError($exception, request()->empresa_id);
+
+            return redirect()->back()->withInput();
+        }
 
         session()->flash("flash_sucesso", "Informações da coleta atualizadas!");
 
@@ -399,7 +459,7 @@ class ExamesController extends Controller
         ]);
     }
 
-    public function storeType(StoreExamTypeRequest $request): RedirectResponse
+    public function storeType(Request $request): RedirectResponse
     {
         $companyId = $this->getEmpresaId();
 
@@ -407,7 +467,7 @@ class ExamesController extends Controller
             abort(403, 'Empresa não localizada para o usuário autenticado.');
         }
 
-        $data = $request->validated();
+        $data = $this->_validateStoreType($request);
 
         try {
             DB::transaction(function () use ($companyId, $data) {
@@ -427,6 +487,95 @@ class ExamesController extends Controller
         }
 
         return redirect()->route('vet.exams.types');
+    }
+
+    private function _validateStore(Request $request): array
+    {
+        $rules = [
+            'atendimento_id' => 'nullable|integer',
+            'animal_id' => 'required|integer',
+            'medico_id' => 'required|integer',
+            'exame_id' => 'required|integer',
+            'data_prevista_coleta' => 'required|date',
+            'laboratorio_parceiro' => 'required|string|max:200',
+            'prioridade' => 'required|in:' . implode(',', array_keys(VetExame::priorityOptions())),
+            'observacoes_clinicas' => 'nullable|string|max:2000',
+            'action' => 'nullable|string',
+            'attachments' => 'sometimes|array',
+            'attachments.*' => 'file|max:' . self::ATTACHMENT_MAX_SIZE_KB
+                . '|mimes:' . implode(',', self::REQUEST_ATTACHMENT_EXTENSIONS),
+        ];
+
+        $messages = [
+            'animal_id.required' => 'Selecione o paciente.',
+            'medico_id.required' => 'Selecione o veterinário.',
+            'exame_id.required' => 'Selecione o tipo de exame.',
+            'data_prevista_coleta.required' => 'Informe a data prevista de coleta.',
+            'laboratorio_parceiro.required' => 'Informe o laboratório parceiro.',
+            'prioridade.required' => 'Selecione a prioridade.',
+            'attachments.*.mimes' => 'Formato de anexo inválido.',
+            'attachments.*.max' => 'Cada arquivo deve ter no máximo 25 MB.',
+        ];
+
+        return $this->validate($request, $rules, $messages);
+    }
+
+    private function _validateUpdateCollection(Request $request): array
+    {
+        $rules = [
+            'observacoes_clinicas' => 'nullable|string|max:2000',
+            'collection_attachments' => 'sometimes|array',
+            'collection_attachments.*' => 'file|max:' . self::ATTACHMENT_MAX_SIZE_KB
+                . '|mimes:' . implode(',', self::COLLECTION_ATTACHMENT_EXTENSIONS),
+        ];
+
+        $messages = [
+            'collection_attachments.*.mimes' => 'Formato de anexo inválido.',
+            'collection_attachments.*.max' => 'Cada arquivo deve ter no máximo 25 MB.',
+        ];
+
+        return $this->validate($request, $rules, $messages);
+    }
+
+    private function _validateUpdateReport(Request $request): array
+    {
+        $rules = [
+            'laudo' => 'nullable|string|max:20000',
+            'status' => 'required|in:' . implode(',', array_keys(VetExame::statusLabels())),
+            'data_conclusao' => 'nullable|date_format:Y-m-d\\TH:i',
+            'attendance' => 'nullable|integer',
+            'analysis_state' => 'nullable|string',
+        ];
+
+        $messages = [
+            'status.required' => 'Selecione o status do exame.',
+            'data_conclusao.date_format' => 'Informe uma data de conclusão válida.',
+        ];
+
+        return $this->validate($request, $rules, $messages);
+    }
+
+    private function _validateStoreType(Request $request): array
+    {
+        $rules = [
+            'nome' => 'required|string|max:200',
+            'descricao' => 'nullable|string|max:2000',
+        ];
+
+        $messages = [
+            'nome.required' => 'Informe o nome do exame.',
+        ];
+
+        return $this->validateWithBag('storeExamType', $request, $rules, $messages);
+    }
+
+    private function buildAttachmentAcceptAttribute(array $extensions): string
+    {
+        return collect($extensions)
+            ->filter(fn ($extension) => is_string($extension) && trim($extension) !== '')
+            ->map(fn (string $extension) => '.' . ltrim(strtolower(trim($extension)), '.'))
+            ->unique()
+            ->implode(',');
     }
 
     public function destroy(VetExame $exam): RedirectResponse

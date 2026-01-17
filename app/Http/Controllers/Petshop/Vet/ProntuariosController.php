@@ -14,7 +14,6 @@ use App\Models\Petshop\Medico;
 use App\Models\Petshop\ModeloAvaliacao;
 use App\Models\Petshop\Prontuario;
 use App\Models\Petshop\ProntuarioEvolucao;
-use App\Support\Petshop\Vet\AssessmentModelOptions;
 use App\Utils\UploadUtil;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\Factory as ViewFactory;
@@ -925,7 +924,7 @@ class ProntuariosController extends Controller
         $assessmentModels = ModeloAvaliacao::query()
             ->select(['id', 'title', 'category', 'notes', 'fields', 'status'])
             ->where('empresa_id', $companyId)
-            ->where('status', AssessmentModelOptions::STATUS_ACTIVE)
+            ->where('status', ModeloAvaliacao::STATUS_ACTIVE)
             ->orderBy('title')
             ->get()
             ->map(function (ModeloAvaliacao $modelo) {
@@ -941,7 +940,7 @@ class ProntuariosController extends Controller
             $assessmentModels = array_values(array_map(
                 function (array $model): array {
                     $model['fields_count'] = $model['fields_count'] ?? count($model['fields'] ?? []);
-                    $model['status'] = AssessmentModelOptions::STATUS_ACTIVE;
+                    $model['status'] = ModeloAvaliacao::STATUS_ACTIVE;
 
                     return $model;
                 },
@@ -1595,7 +1594,7 @@ class ProntuariosController extends Controller
                 ->where('empresa_id', $companyId)
                 ->first();
 
-            if ($modelo && $modelo->status === AssessmentModelOptions::STATUS_ACTIVE) {
+            if ($modelo && $modelo->status === ModeloAvaliacao::STATUS_ACTIVE) {
                 return response()->json($this->transformAssessmentModel($modelo));
             }
         }
@@ -2006,7 +2005,7 @@ class ProntuariosController extends Controller
                     'id' => (string) $model->id,
                     'title' => $model->title,
                     'category' => $model->category,
-                    'category_label' => AssessmentModelOptions::categoryLabel($model->category) ?? 'Personalizado',
+                    'category_label' => ModeloAvaliacao::categoryLabel($model->category) ?? 'Personalizado',
                     'notes' => $model->notes,
                     'status' => $model->status,
                 ];
@@ -2020,7 +2019,7 @@ class ProntuariosController extends Controller
                 'category' => $meta['model_category'] ?? null,
                 'category_label' => $meta['model_category_label'] ?? (
                     isset($meta['model_category'])
-                        ? AssessmentModelOptions::categoryLabel((string) $meta['model_category'])
+                        ? ModeloAvaliacao::categoryLabel((string) $meta['model_category'])
                         : null
                 ),
                 'notes' => $meta['model_notes'] ?? null,
@@ -2060,7 +2059,7 @@ class ProntuariosController extends Controller
                 return [
                     'label' => $label,
                     'type' => $type,
-                    'type_label' => AssessmentModelOptions::fieldTypeLabel($type),
+                    'type_label' => ModeloAvaliacao::fieldTypeLabel($type),
                     'config' => $config,
                 ];
             })
@@ -2070,7 +2069,7 @@ class ProntuariosController extends Controller
             'id' => (string) $modelo->id,
             'title' => $modelo->title,
             'category' => $modelo->category,
-            'category_label' => AssessmentModelOptions::categoryLabel($modelo->category) ?? 'Personalizado',
+            'category_label' => ModeloAvaliacao::categoryLabel($modelo->category) ?? 'Personalizado',
             'notes' => $modelo->notes,
             'fields' => $fields,
             'fields_count' => count($fields),
@@ -2119,7 +2118,7 @@ class ProntuariosController extends Controller
                     [
                         'label' => 'Queixa principal',
                         'type' => 'textarea',
-                        'type_label' => AssessmentModelOptions::fieldTypeLabel('textarea'),
+                        'type_label' => ModeloAvaliacao::fieldTypeLabel('textarea'),
                         'config' => [
                             'textarea_placeholder' => 'Descreva a queixa principal informada pelo tutor.',
                         ],
@@ -2127,7 +2126,7 @@ class ProntuariosController extends Controller
                     [
                         'label' => 'Histórico clínico',
                         'type' => 'textarea',
-                        'type_label' => AssessmentModelOptions::fieldTypeLabel('textarea'),
+                        'type_label' => ModeloAvaliacao::fieldTypeLabel('textarea'),
                         'config' => [
                             'textarea_placeholder' => 'Alimentação, rotina, ambiente e eventos recentes.',
                         ],
@@ -2135,7 +2134,7 @@ class ProntuariosController extends Controller
                     [
                         'label' => 'Exame físico',
                         'type' => 'rich_text',
-                        'type_label' => AssessmentModelOptions::fieldTypeLabel('rich_text'),
+                        'type_label' => ModeloAvaliacao::fieldTypeLabel('rich_text'),
                         'config' => [
                             'rich_text_default' => '<p>Temperatura, mucosas, hidratação, palpação abdominal...</p>',
                         ],
@@ -2143,7 +2142,7 @@ class ProntuariosController extends Controller
                     [
                         'label' => 'Plano terapêutico',
                         'type' => 'textarea',
-                        'type_label' => AssessmentModelOptions::fieldTypeLabel('textarea'),
+                        'type_label' => ModeloAvaliacao::fieldTypeLabel('textarea'),
                         'config' => [
                             'textarea_placeholder' => 'Exames complementares, medicações e recomendações.',
                         ],
@@ -2160,7 +2159,7 @@ class ProntuariosController extends Controller
                     [
                         'label' => 'Data da cirurgia',
                         'type' => 'date',
-                        'type_label' => AssessmentModelOptions::fieldTypeLabel('date'),
+                        'type_label' => ModeloAvaliacao::fieldTypeLabel('date'),
                         'config' => [
                             'date_hint' => 'Informe a data do procedimento cirúrgico.',
                         ],
@@ -2168,7 +2167,7 @@ class ProntuariosController extends Controller
                     [
                         'label' => 'Curativo',
                         'type' => 'select',
-                        'type_label' => AssessmentModelOptions::fieldTypeLabel('select'),
+                        'type_label' => ModeloAvaliacao::fieldTypeLabel('select'),
                         'config' => [
                             'select_options' => ['Íntegro', 'Úmido', 'Sinais de infecção'],
                         ],
@@ -2176,7 +2175,7 @@ class ProntuariosController extends Controller
                     [
                         'label' => 'Dor percebida',
                         'type' => 'radio_group',
-                        'type_label' => AssessmentModelOptions::fieldTypeLabel('radio_group'),
+                        'type_label' => ModeloAvaliacao::fieldTypeLabel('radio_group'),
                         'config' => [
                             'radio_group_options' => ['0 - Sem dor', '1 - Leve', '2 - Moderada', '3 - Intensa'],
                             'radio_group_default' => '1 - Leve',
@@ -2185,7 +2184,7 @@ class ProntuariosController extends Controller
                     [
                         'label' => 'Prescrição atualizada',
                         'type' => 'checkbox',
-                        'type_label' => AssessmentModelOptions::fieldTypeLabel('checkbox'),
+                        'type_label' => ModeloAvaliacao::fieldTypeLabel('checkbox'),
                         'config' => [
                             'checkbox_label_checked' => 'Prescrição revisada e entregue ao tutor',
                             'checkbox_label_unchecked' => 'Revisar prescrição antes da alta',

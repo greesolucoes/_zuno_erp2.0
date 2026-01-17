@@ -174,6 +174,87 @@
             line-height: 1;
         }
 
+        .vet-encounter-actions__card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vet-encounter-actions__divider {
+            height: 1px;
+            background: rgba(33, 37, 41, 0.08);
+            margin: 1rem 0 .75rem;
+        }
+
+        .vet-encounter-actions__section-title {
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: #6c757d;
+            margin-bottom: .25rem;
+        }
+
+        .vet-encounter-actions__indicator {
+            position: absolute;
+            top: .75rem;
+            right: .75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.4rem;
+            height: 1.5rem;
+            padding: 0 .55rem;
+            border-radius: 999px;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            border: 1px solid rgba(33, 37, 41, 0.08);
+            background: rgba(33, 37, 41, 0.06);
+            color: #2f2c4a;
+        }
+
+        .vet-encounter-actions__indicator.is-new {
+            background: rgba(108, 117, 125, 0.12);
+            border-color: rgba(108, 117, 125, 0.24);
+            color: #495057;
+        }
+
+        .vet-encounter-actions__indicator.is-linked {
+            background: rgba(40, 199, 111, 0.14);
+            border-color: rgba(40, 199, 111, 0.35);
+            color: #1a7f4b;
+        }
+
+        .vet-encounter-actions__tag {
+            position: absolute;
+            top: .75rem;
+            right: .75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 1.5rem;
+            padding: 0 .6rem;
+            border-radius: 999px;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            border: 1px solid rgba(33, 37, 41, 0.08);
+            background: rgba(33, 37, 41, 0.06);
+            color: #2f2c4a;
+        }
+
+        .vet-encounter-actions__tag--finance {
+            background: rgba(85, 110, 230, 0.12);
+            border-color: rgba(85, 110, 230, 0.22);
+            color: #3b4bb6;
+        }
+
+        .vet-encounter-actions__card--finance {
+            background: linear-gradient(135deg, #ffffff 0%, rgba(85, 110, 230, 0.06) 100%);
+        }
+
         @media (max-width: 1199.98px) {
             .vet-encounter-timeline::before {
                 left: 6.75rem;

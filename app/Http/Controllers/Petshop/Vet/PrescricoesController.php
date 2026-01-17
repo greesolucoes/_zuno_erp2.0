@@ -15,7 +15,6 @@ use App\Models\Petshop\Medico;
 use App\Models\Petshop\ModeloPrescricao;
 use App\Models\Petshop\Prescricao;
 use App\Models\Petshop\PrescricaoMedicamento;
-use App\Support\Petshop\Vet\PrescriptionModelOptions;
 use App\Utils\UploadUtil;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
@@ -764,7 +763,7 @@ class PrescricoesController extends Controller
         return [
             'id' => (string) $modelo->id,
             'label' => $modelo->title,
-            'category' => PrescriptionModelOptions::categoryLabel($modelo->category),
+            'category' => ModeloPrescricao::categoryLabel($modelo->category),
             'notes' => $modelo->notes,
             'fields' => $this->normalizeTemplateFields($modelo->fields ?? []),
         ];
@@ -1199,7 +1198,7 @@ class PrescricoesController extends Controller
 
         return ModeloPrescricao::query()
             ->where('empresa_id', $companyId)
-            ->where('status', PrescriptionModelOptions::STATUS_ACTIVE)
+            ->where('status', ModeloPrescricao::STATUS_ACTIVE)
             ->orderBy('title')
             ->get()
             ->map(fn (ModeloPrescricao $modelo) => $this->transformTemplateModel($modelo))
@@ -1216,7 +1215,7 @@ class PrescricoesController extends Controller
                     ? trim($field['type'])
                     : null;
 
-                if (! $type || ! in_array($type, PrescriptionModelOptions::fieldTypes(), true)) {
+                if (! $type || ! in_array($type, ModeloPrescricao::fieldTypes(), true)) {
                     return null;
                 }
 
@@ -1236,7 +1235,7 @@ class PrescricoesController extends Controller
                     'id' => 'field_' . ($index + 1),
                     'label' => $label,
                     'type' => $type,
-                    'type_label' => PrescriptionModelOptions::fieldTypeLabel($type),
+                    'type_label' => ModeloPrescricao::fieldTypeLabel($type),
                     'config' => $this->normalizeFieldConfig($config, $type),
                 ];
             })
@@ -1247,7 +1246,7 @@ class PrescricoesController extends Controller
 
     private function normalizeFieldConfig(array $config, string $type): array
     {
-        $allowedKeys = PrescriptionModelOptions::configKeysForType($type);
+        $allowedKeys = ModeloPrescricao::configKeysForType($type);
 
         $normalized = [];
 

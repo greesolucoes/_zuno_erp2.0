@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Petshop\StoreModeloPrescricaoRequest;
 use App\Http\Requests\Petshop\UpdateModeloPrescricaoRequest;
 use App\Models\Petshop\ModeloPrescricao;
-use App\Support\Petshop\Vet\PrescriptionModelOptions;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -47,7 +46,7 @@ class ModelosPrescricaoController extends Controller
                 }
 
                 if ($categoria === 'personalizado') {
-                    $categoriasPadrao = array_keys(PrescriptionModelOptions::categories());
+                    $categoriasPadrao = array_keys(ModeloPrescricao::categories());
 
                     $query->where(function ($subQuery) use ($categoriasPadrao) {
                         $subQuery
@@ -67,7 +66,7 @@ class ModelosPrescricaoController extends Controller
             ->when($request->filled('status'), function ($query) use ($request) {
                 $status = $request->string('status')->toString();
 
-                if (in_array($status, PrescriptionModelOptions::statuses(), true)) {
+                if (in_array($status, ModeloPrescricao::statuses(), true)) {
                     $query->where('status', $status);
                 }
             })
@@ -139,7 +138,7 @@ class ModelosPrescricaoController extends Controller
                     'category' => $categoria,
                     'notes' => $observacoes,
                     'fields' => $campos,
-                    'status' => PrescriptionModelOptions::STATUS_ACTIVE,
+                    'status' => ModeloPrescricao::STATUS_ACTIVE,
                     'created_by' => $userId,
                     'updated_by' => $userId,
                 ]);
@@ -174,8 +173,8 @@ class ModelosPrescricaoController extends Controller
 
         return view('petshop.vet.modelos_prescricao.edit', [
             'modelo' => $modelo,
-            'categorias' => PrescriptionModelOptions::categories(),
-            'statusOptions' => PrescriptionModelOptions::statusOptions(),
+            'categorias' => ModeloPrescricao::categories(),
+            'statusOptions' => ModeloPrescricao::statusOptions(),
         ]);
     }
 
@@ -222,8 +221,8 @@ class ModelosPrescricaoController extends Controller
             $observacoes = null;
         }
 
-        if (! in_array($status, PrescriptionModelOptions::statuses(), true)) {
-            $status = $modelo->status ?? PrescriptionModelOptions::STATUS_ACTIVE;
+        if (! in_array($status, ModeloPrescricao::statuses(), true)) {
+            $status = $modelo->status ?? ModeloPrescricao::STATUS_ACTIVE;
         }
 
         try {
@@ -270,7 +269,7 @@ class ModelosPrescricaoController extends Controller
 
             $tipoCampo = Str::of($tipoCampo)->trim()->toString();
 
-            if (! in_array($tipoCampo, PrescriptionModelOptions::fieldTypes(), true)) {
+            if (! in_array($tipoCampo, ModeloPrescricao::fieldTypes(), true)) {
                 continue;
             }
 
@@ -288,7 +287,7 @@ class ModelosPrescricaoController extends Controller
 
     private function extrairConfiguracoes(array $fields, string $tipo, int $indice): array
     {
-        $configKeys = PrescriptionModelOptions::configKeysForType($tipo);
+        $configKeys = ModeloPrescricao::configKeysForType($tipo);
         $config = [];
 
         foreach ($configKeys as $key) {
@@ -364,7 +363,7 @@ class ModelosPrescricaoController extends Controller
         return [
             'id' => $modelo->id,
             'title' => $modelo->title,
-            'category' => PrescriptionModelOptions::categoryLabel($modelo->category) ?? '—',
+            'category' => ModeloPrescricao::categoryLabel($modelo->category) ?? '—',
             'updated_at' => optional($modelo->updated_at)?->format('d/m/Y H:i'),
             'status' => $this->rotuloStatus($modelo->status),
             'status_class' => $this->classeStatus($modelo->status),
@@ -374,8 +373,8 @@ class ModelosPrescricaoController extends Controller
     private function rotuloStatus(?string $status): string
     {
         return match ($status) {
-            PrescriptionModelOptions::STATUS_ACTIVE => 'Ativo',
-            PrescriptionModelOptions::STATUS_INACTIVE => 'Inativo',
+            ModeloPrescricao::STATUS_ACTIVE => 'Ativo',
+            ModeloPrescricao::STATUS_INACTIVE => 'Inativo',
             default => '—',
         };
     }
@@ -383,8 +382,8 @@ class ModelosPrescricaoController extends Controller
     private function classeStatus(?string $status): string
     {
         return match ($status) {
-            PrescriptionModelOptions::STATUS_ACTIVE => 'badge bg-success',
-            PrescriptionModelOptions::STATUS_INACTIVE => 'badge bg-secondary',
+            ModeloPrescricao::STATUS_ACTIVE => 'badge bg-success',
+            ModeloPrescricao::STATUS_INACTIVE => 'badge bg-secondary',
             default => 'badge bg-light text-dark',
         };
     }
@@ -418,7 +417,7 @@ class ModelosPrescricaoController extends Controller
                 return [
                     'label' => $label,
                     'type' => $tipo,
-                    'type_label' => PrescriptionModelOptions::fieldTypeLabel($tipo),
+                    'type_label' => ModeloPrescricao::fieldTypeLabel($tipo),
                     'configuracoes' => $this->formatarConfiguracoesParaVisualizacao(
                         $tipo,
                         is_array($campo['config'] ?? null) ? $campo['config'] : []
@@ -429,7 +428,7 @@ class ModelosPrescricaoController extends Controller
 
         return [
             'title' => $modelo->title,
-            'category_label' => PrescriptionModelOptions::categoryLabel($modelo->category) ?? '—',
+            'category_label' => ModeloPrescricao::categoryLabel($modelo->category) ?? '—',
             'notes' => $modelo->notes,
             'status_label' => $this->rotuloStatus($modelo->status),
             'status_class' => $this->classeStatus($modelo->status),
@@ -453,7 +452,7 @@ class ModelosPrescricaoController extends Controller
             }
 
             $resultado[] = [
-                'label' => PrescriptionModelOptions::configLabel((string) $chave, $tipo),
+                'label' => ModeloPrescricao::configLabel((string) $chave, $tipo),
                 'value' => $this->formatarValorConfiguracaoParaVisualizacao((string) $chave, $valor),
                 'is_html' => $chave === 'rich_text_default',
             ];

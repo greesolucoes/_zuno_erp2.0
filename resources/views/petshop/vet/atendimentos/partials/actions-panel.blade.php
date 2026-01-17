@@ -3,12 +3,13 @@
     $attendanceId = $encounter['id'] ?? null;
     $latestExamRequestId = data_get($encounter, 'latest_exam_request.id');
     $latestPrescriptionId = data_get($encounter, 'latest_prescription.id');
+    $recordsCount = (int) data_get($encounter, 'records_count', 0);
     $prescriptionsCount = (int) data_get($encounter, 'prescriptions_count', 0);
     $examRequestsCount = (int) data_get($encounter, 'exam_requests_count', 0);
     $latestVaccinationId = data_get($encounter, 'latest_vaccination.id');
     $vaccinationsCount = (int) data_get($encounter, 'vaccinations_count', 0);
 
-    $hasRecord = !empty($latestRecordId);
+    $hasRecord = $recordsCount > 0 || !empty($latestRecordId);
     $hasPrescriptions = $prescriptionsCount > 0 && !empty($latestPrescriptionId);
     $hasExamRequests = $examRequestsCount > 0 && !empty($attendanceId);
     $hasVaccinations = $vaccinationsCount > 0 && !empty($latestVaccinationId);
@@ -97,6 +98,47 @@
     $hasBilling = filled($billingInfo);
     $billingTitle = $hasBilling ? 'Editar faturamento' : 'Faturar atendimento';
 
+    $indicatorNew = ['label' => 'Novo', 'class' => 'is-new', 'title' => 'Nenhum registro vinculado'];
+    $recordIndicator = $hasRecord
+        ? [
+            'label' => (string) max(1, $recordsCount),
+            'class' => 'is-linked',
+            'title' => 'Já possui prontuário vinculado',
+        ]
+        : $indicatorNew;
+    $prescriptionIndicator = $hasPrescriptions
+        ? [
+            'label' => (string) max(1, $prescriptionsCount),
+            'class' => 'is-linked',
+            'title' => 'Já possui receita vinculada',
+        ]
+        : $indicatorNew;
+    $examIndicator = $hasExamRequests
+        ? [
+            'label' => (string) max(1, $examRequestsCount),
+            'class' => 'is-linked',
+            'title' => 'Já possui solicitação de exame vinculada',
+        ]
+        : $indicatorNew;
+    $vaccinationIndicator = $hasVaccinations
+        ? [
+            'label' => (string) max(1, $vaccinationsCount),
+            'class' => 'is-linked',
+            'title' => 'Já possui vacinação vinculada',
+        ]
+        : $indicatorNew;
+    $hospitalizationIndicator = $hospitalizationViewUrl
+        ? [
+            'label' => 'Ativa',
+            'class' => 'is-linked',
+            'title' => 'Já possui internação ativa',
+        ]
+        : [
+            'label' => 'Nova',
+            'class' => 'is-new',
+            'title' => 'Sem internação ativa',
+        ];
+
     $actionCards = [
         [
             'label' => 'Histórico',
@@ -125,6 +167,7 @@
             'icon' => 'bx bx-bed',
             'textClass' => 'text-info',
             'disabled' => empty($hospitalizationActionUrl),
+            'indicator' => $hospitalizationIndicator,
             'target' => '_blank',
             'rel' => 'noopener noreferrer',
         ],
@@ -135,6 +178,7 @@
             'icon' => 'bx bx-first-aid',
             'textClass' => 'text-primary',
             'disabled' => false,
+            'indicator' => $vaccinationIndicator,
             'target' => '_blank',
             'rel' => 'noopener noreferrer',
         ],
@@ -145,6 +189,7 @@
             'icon' => 'bx bx-test-tube',
             'textClass' => 'text-warning',
             'disabled' => false,
+            'indicator' => $examIndicator,
             'target' => '_blank',
             'rel' => 'noopener noreferrer',
         ],
@@ -155,6 +200,7 @@
             'icon' => 'bx bx-receipt',
             'textClass' => 'text-success',
             'disabled' => $prescriptionActionDisabled,
+            'indicator' => $prescriptionActionDisabled ? null : $prescriptionIndicator,
             'target' => '_blank',
             'rel' => 'noopener noreferrer',
         ],
@@ -165,9 +211,13 @@
             'icon' => 'bx bx-notepad',
             'textClass' => 'text-info',
             'disabled' => false,
+            'indicator' => $recordIndicator,
             'target' => '_blank',
             'rel' => 'noopener noreferrer',
         ],
+    ];
+
+    $financeCards = [
         [
             'label' => 'Faturamento',
             'url' => route('vet.atendimentos.billing', $attendanceId),
@@ -175,6 +225,7 @@
             'icon' => 'bx bx-money',
             'textClass' => 'text-secondary',
             'disabled' => false,
+            'variant' => 'finance',
             'target' => '_blank',
             'rel' => 'noopener noreferrer',
         ],
@@ -260,11 +311,19 @@
                     @else
                         <a
                             href="{{ $url }}"
-                            class="card h-100 border-0 shadow-sm text-decoration-none"
+                            class="card h-100 border-0 shadow-sm text-decoration-none vet-encounter-actions__card {{ ($card['variant'] ?? null) === 'finance' ? 'vet-encounter-actions__card--finance' : '' }}"
                             title="{{ $card['title'] ?? '' }}"
                             @if (!empty($card['target'])) target="{{ $card['target'] }}" @endif
                             @if (!empty($card['rel'])) rel="{{ $card['rel'] }}" @endif
                         >
+                            @if (!empty($card['indicator']))
+                                <span
+                                    class="vet-encounter-actions__indicator {{ $card['indicator']['class'] ?? '' }}"
+                                    title="{{ $card['indicator']['title'] ?? '' }}"
+                                >
+                                    {{ $card['indicator']['label'] ?? '' }}
+                                </span>
+                            @endif
                             <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
                                 <div class="vet-encounter-actions__icon mb-2">
                                     <i class="{{ $card['icon'] ?? 'bx bx-grid-alt' }} vet-encounter-actions__glyph {{ $card['textClass'] ?? 'text-secondary' }}"></i>
@@ -276,5 +335,49 @@
                 </div>
             @endforeach
         </div>
+
+        @if (!empty($financeCards))
+            <div class="vet-encounter-actions__divider"></div>
+            <div class="vet-encounter-actions__section-title">Financeiro</div>
+            <div class="row row-cols-2 row-cols-md-2 row-cols-xl-3 g-3 mt-1">
+                @foreach ($financeCards as $card)
+                    <div class="col">
+                        @php
+                            $isDisabled = !empty($card['disabled']);
+                            $url = $card['url'] ?? '#';
+                        @endphp
+                        @if ($isDisabled)
+                            <div class="card h-100 border-0 shadow-sm opacity-50" title="{{ $card['title'] ?? '' }}">
+                                <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
+                                    <div class="vet-encounter-actions__icon mb-2">
+                                        <i class="{{ $card['icon'] ?? 'bx bx-grid-alt' }} vet-encounter-actions__glyph {{ $card['textClass'] ?? 'text-secondary' }}"></i>
+                                    </div>
+                                    <div class="fw-semibold text-color">{{ $card['label'] }}</div>
+                                    <div class="small text-muted">Indisponível</div>
+                                </div>
+                            </div>
+                        @else
+                            <a
+                                href="{{ $url }}"
+                                class="card h-100 border-0 shadow-sm text-decoration-none vet-encounter-actions__card vet-encounter-actions__card--finance"
+                                title="{{ $card['title'] ?? '' }}"
+                                @if (!empty($card['target'])) target="{{ $card['target'] }}" @endif
+                                @if (!empty($card['rel'])) rel="{{ $card['rel'] }}" @endif
+                            >
+                                <span class="vet-encounter-actions__tag vet-encounter-actions__tag--finance" title="Cobrança do atendimento">
+                                    Cobrança
+                                </span>
+                                <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
+                                    <div class="vet-encounter-actions__icon mb-2">
+                                        <i class="{{ $card['icon'] ?? 'bx bx-grid-alt' }} vet-encounter-actions__glyph {{ $card['textClass'] ?? 'text-secondary' }}"></i>
+                                    </div>
+                                    <div class="fw-semibold text-color">{{ $card['label'] }}</div>
+                                </div>
+                            </a>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </div>
 </div>

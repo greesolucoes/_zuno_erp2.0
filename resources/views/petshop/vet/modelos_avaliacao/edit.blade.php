@@ -8,7 +8,7 @@
             @php
                 $availableCategories = $categorias;
                 $categoryOptions = ['' => 'Selecione'] + $availableCategories;
-                $statusOptions = $statusOptions ?? \App\Support\Petshop\Vet\AssessmentModelOptions::statusOptions();
+                $statusOptions = $statusOptions ?? \App\Models\Petshop\ModeloAvaliacao::statusOptions();
                 $selectedCategory = old('category', $modelo->category);
                 $customCategoryValue = old('custom_category');
                 $isCustomCategory = false;
@@ -58,7 +58,7 @@
                         <div class="col-md-3">
                             {!! Form::select('status', 'Status', $statusOptions)
                                 ->attrs(['class' => 'form-select'])
-                                ->value(old('status', $modelo->status ?? \App\Support\Petshop\Vet\AssessmentModelOptions::STATUS_ACTIVE)) !!}
+                                ->value(old('status', $modelo->status ?? \App\Models\Petshop\ModeloAvaliacao::STATUS_ACTIVE)) !!}
                         </div>
 
                         <div class="col-md-12">
